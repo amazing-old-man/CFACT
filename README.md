@@ -66,6 +66,7 @@ python3.10 scripts/bootstrap_sim.py --runtime-root .runtime --python /usr/bin/py
 python3.10 scripts/bootstrap_export.py --runtime-root .runtime
 source .runtime/activate.sh
 export HF_HUB_DISABLE_XET=1
+export HF_HOME="${CFACT_HF_CACHE:-$HF_HOME}"
 cfact download-assets --runtime-root .runtime
 cfact doctor --runtime-root .runtime --render --gpu 0 --output .cache/doctor.json
 ```
@@ -74,11 +75,15 @@ cfact doctor --runtime-root .runtime --render --gpu 0 --output .cache/doctor.jso
 本次安装的 `CFACT_RUNTIME_ROOT`、`CFACT_SOURCE_ROOT`、缓存位置、EGL 与
 `CFACT_EXPORT_PYTHON`；这些均由安装位置生成。`HF_HUB_DISABLE_XET=1` 使用
 官方 HTTP 传输，本机 Xet 连接失败时采用此方式，不使用个人隧道。
+如果同一主机已下载这些公开包，可在安装前显式设置 `PIP_CACHE_DIR` 为 pip
+下载缓存、`CFACT_HF_CACHE` 为 Hugging Face 下载缓存；默认均使用新 runtime
+内缓存。这里只复用固定 revision 的下载内容，仍独立创建 venv、依赖源码和
+解压资产，并保存 Source/资产 SHA receipt；不复用旧 prepared 或运行输出。
 
 资产压缩包约 10.2 GiB，另需解压空间、两个 venv 和输出空间。三个本轮
 Source tar 合计约 240 MiB。资源取决于场景和视频数量，不能把本机参数当作
 所有机器的最低配置。本机约 188 GiB RAM、RTX PRO 6000 Blackwell 96 GiB
-显存；验收配置保留 20 GiB RAM、每 worker 8192 MiB 预算（首轮 Source 回放峰值约 4774 MiB）、GPU 10 GiB
+显存；验收配置保留 20 GiB RAM、每 worker 8192 MiB 预算（首轮 Source 回放最高峰值约 5677 MiB）、GPU 10 GiB
 余量、磁盘 50 GiB 余量及 85°C 上限。应根据新主机实测峰值至少加 1.2 倍
 余量调整 YAML，不能为了跑通而绕过保护。生成前和 worker 调度均检查资源；
 其他用户的进程不被终止。

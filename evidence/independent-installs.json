@@ -1,0 +1,32 @@
+[
+  {
+    "environment": ".venv-sdist",
+    "import_exit_code": 0,
+    "import": {
+      "module": "/mnt/ssd2/yanghc/CFACT/.venv-sdist/lib/python3.10/site-packages/cfact/__init__.py",
+      "version": "0.7.1.dev0",
+      "sys_path": [
+        "/usr/lib/python310.zip",
+        "/usr/lib/python3.10",
+        "/usr/lib/python3.10/lib-dynload",
+        "/mnt/ssd2/yanghc/CFACT/.venv-sdist/lib/python3.10/site-packages"
+      ]
+    },
+    "cli_help_exit_code": 0
+  },
+  {
+    "environment": ".cache/t1-checkout/.venv",
+    "import_exit_code": 0,
+    "import": {
+      "module": "/mnt/ssd2/yanghc/CFACT/.cache/t1-checkout/.venv/lib/python3.10/site-packages/cfact/__init__.py",
+      "version": "0.7.1.dev0",
+      "sys_path": [
+        "/usr/lib/python310.zip",
+        "/usr/lib/python3.10",
+        "/usr/lib/python3.10/lib-dynload",
+        "/mnt/ssd2/yanghc/CFACT/.cache/t1-checkout/.venv/lib/python3.10/site-packages"
+      ]
+    },
+    "cli_help_exit_code": 0
+  }
+]
