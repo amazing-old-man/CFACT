@@ -1,0 +1,74 @@
+{
+  "schema_version": "5.0.0",
+  "run_seed": 20260922,
+  "candidate_pool": {
+    "g0_max": 2,
+    "g1_g2_slots": "shared_remaining_slots",
+    "max_executed_options_per_node": 9,
+    "max_raw_proposals_per_generator": 12,
+    "max_selected_g0": 2,
+    "outcome_based_selection": false,
+    "reference_max": 1,
+    "selection": "compatibility_then_mode_coverage"
+  },
+  "tree_limits": {
+    "candidate_pools_per_root": 5,
+    "frontier_family_priority": [
+      "G2",
+      "G1",
+      "Reference",
+      "G0"
+    ],
+    "maximum_decision_depth": 3,
+    "second_depth_pools": 2,
+    "third_depth_pools": 2
+  },
+  "execution": {
+    "budget_accounting": "all_env_steps_including_root_probe_restores_local_fixed_and_validation",
+    "continuation_steps": 150,
+    "control_hz": 20,
+    "interpolation_steps": 5,
+    "local_timeout_steps": 160,
+    "max_env_steps_per_root": 6000,
+    "max_task_path_steps": 6000,
+    "state_sampling": "every_control_step"
+  },
+  "video": {
+    "cameras": [
+      "robot0_agentview_left",
+      "robot0_agentview_right",
+      "robot0_eye_in_hand"
+    ],
+    "cell_height": 360,
+    "cell_width": 640,
+    "codec": "libx264",
+    "fps": 20,
+    "review_only": true
+  },
+  "contact_guard": {
+    "mode": "off",
+    "reason": "ordinary physical contact is retained; technical invalidity remains separately recorded"
+  },
+  "motion_validation": {
+    "mode": "off",
+    "reason": "candidate physics is measured during execution; no universal collision-proof gate"
+  },
+  "generator_revision": "cfact-0.7.0",
+  "resource": {
+    "requested_scene_workers": 1,
+    "ffmpeg_workers": 1,
+    "maximum_output_gb": 100,
+    "minimum_host_free_gib": 10,
+    "admission_gpu_mib_per_scene": 1800,
+    "admission_gpu_reserve_mib": 2048,
+    "admission_ram_mib_per_scene": 3584,
+    "admission_ram_reserve_mib": 4096,
+    "runtime_gpu_free_floor_mib": 4096,
+    "runtime_ram_reserve_fraction": 0.15
+  },
+  "storage": {
+    "schema": "cfact.dual-view.v1",
+    "output_root": "outputs/CFACT-20",
+    "export_python": null
+  }
+}

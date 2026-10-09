@@ -1,0 +1,38 @@
+[
+  {
+    "type": "file",
+    "oid": "f261afcb37cd0a272001cf79b418d90161bd273d",
+    "size": 71342080,
+    "lfs": {
+      "oid": "9ec49a3e752b7ba7d12efa04a7e9e75d80fabfec4c572bbbe3b23e0c5d033fa9",
+      "size": 71342080,
+      "pointerSize": 133
+    },
+    "xetHash": "8315d055bacedc39c9a98ad512c1d7f8cb1d5b4afb5f107366e7b52d97842797",
+    "path": "pretrain/atomic/OpenDrawer/20250819/lerobot.tar"
+  },
+  {
+    "type": "file",
+    "oid": "ad7192b95d34722e8a6971147780d36a2eab97c9",
+    "size": 101980160,
+    "lfs": {
+      "oid": "77048d567e223e9e52be1fafc7eaf168a4bedc3ed417de3e3e573615c23c4fe5",
+      "size": 101980160,
+      "pointerSize": 134
+    },
+    "xetHash": "bbf2e8a96740f15c40aa7725b08d8450dbf551d86bcf6a533475b8d88c63cc74",
+    "path": "pretrain/atomic/PickPlaceCounterToCabinet/20250819/lerobot.tar"
+  },
+  {
+    "type": "file",
+    "oid": "086bdc0f58f8f85aa2ccac263f5c9ba75b5fedba",
+    "size": 77875200,
+    "lfs": {
+      "oid": "15ad619d0392a03f3efe11afd294b5ecb0066c88d7dd173193a987b298657080",
+      "size": 77875200,
+      "pointerSize": 133
+    },
+    "xetHash": "a4f143a86e3083be3295297ae6a0542ab6b19d31f92973ab08f76e116cfe0253",
+    "path": "pretrain/atomic/TurnOnSinkFaucet/20250819/lerobot.tar"
+  }
+]

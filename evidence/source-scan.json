@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "files_scanned": 125,
+  "issues": [],
+  "scope": "Source, tests, scripts, configs and requirements; dependency/runtime caches and run data excluded from distribution"
+}

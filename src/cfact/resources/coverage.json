@@ -1,0 +1,23 @@
+{
+  "schema": "cfact.engineering-profile.v1",
+  "name": "coverage",
+  "tasks": 20,
+  "roots_per_task": 3,
+  "unique_roots": 60,
+  "target_workers": 6,
+  "max_workers": 6,
+  "max_candidates_per_family": 1,
+  "max_children_per_parent": 1,
+  "max_decision_parents_per_root": 2,
+  "max_edges": 480,
+  "selection": "full_proposal_pool_then_existing_family_order_budget",
+  "frontier_selection": "first_legal_in_existing_frontier_order",
+  "resource": {
+    "admission_gpu_reserve_mib": 10240,
+    "admission_ram_reserve_mib": 30720,
+    "admission_gpu_mib_per_scene": 2160,
+    "admission_ram_mib_per_scene": 4301,
+    "minimum_host_free_gib": 50,
+    "runtime_gpu_free_floor_mib": 10240
+  }
+}

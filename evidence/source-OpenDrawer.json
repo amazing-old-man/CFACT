@@ -1,0 +1,247 @@
+{
+  "status": "SCHEMA_VALID_REPLAY_NOT_TESTED",
+  "sha256": "8d7e5c5df5e4ca3737ed787d037fb56f5228a689f69c9014d3ebac5718d8376f",
+  "task": "OpenDrawer",
+  "control_hz": 20,
+  "control_hz_origin": "pinned_RoboCasa_Kitchen_default",
+  "env_args": {
+    "env_kwargs": {
+      "clutter_mode": 0,
+      "controller_configs": {
+        "body_parts": {
+          "base": {
+            "interpolation": "null",
+            "type": "JOINT_VELOCITY"
+          },
+          "right": {
+            "damping_ratio": 1,
+            "damping_ratio_limits": [
+              0,
+              10
+            ],
+            "gripper": {
+              "type": "GRIP"
+            },
+            "impedance_mode": "fixed",
+            "input_max": 1,
+            "input_min": -1,
+            "input_ref_frame": "base",
+            "input_type": "delta",
+            "interpolation": null,
+            "kp": 150,
+            "kp_limits": [
+              0,
+              300
+            ],
+            "orientation_limits": null,
+            "output_max": [
+              0.05,
+              0.05,
+              0.05,
+              0.5,
+              0.5,
+              0.5
+            ],
+            "output_min": [
+              -0.05,
+              -0.05,
+              -0.05,
+              -0.5,
+              -0.5,
+              -0.5
+            ],
+            "position_limits": null,
+            "ramp_ratio": 0.2,
+            "type": "OSC_POSE",
+            "uncouple_pos_ori": true
+          },
+          "torso": {
+            "interpolation": "null",
+            "kp": 2000,
+            "type": "JOINT_POSITION"
+          }
+        },
+        "composite_controller_specific_configs": {
+          "body_part_ordering": [
+            "right",
+            "right_gripper",
+            "base",
+            "torso"
+          ],
+          "left2arm_transform": [
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "left2finger_transform": [
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "left_offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "right2arm_transform": [
+            [
+              0,
+              0.7071068,
+              0.7071068,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0.7071068,
+              -0.7071068,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "right2finger_transform": [
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          "right_offset": [
+            -0.15,
+            0.0,
+            0.35
+          ]
+        },
+        "type": "HYBRID_MOBILE_BASE"
+      },
+      "env_name": "OpenDrawer",
+      "layout_and_style_ids": null,
+      "layout_ids": -2,
+      "obj_instance_split": "pretrain",
+      "robots": "PandaOmron",
+      "style_ids": -2,
+      "translucent_robot": false
+    },
+    "env_name": "OpenDrawer",
+    "env_version": "0.5.1",
+    "mujoco_version": "3.3.1",
+    "robosuite_version": "1.5.2",
+    "type": 1
+  },
+  "episodes": [
+    {
+      "demo": "demo_0",
+      "original_episode_id": "demo_0",
+      "steps": 185,
+      "state_width": 206,
+      "start_time_s": 0.5000000000000003,
+      "end_time_s": 9.749999999999925,
+      "irregular_clock_intervals": [
+        {
+          "after_row": 0,
+          "delta_s": 0.10000000000000009
+        }
+      ]
+    },
+    {
+      "demo": "demo_1",
+      "original_episode_id": "demo_1",
+      "steps": 203,
+      "state_width": 224,
+      "start_time_s": 0.5000000000000003,
+      "end_time_s": 10.650000000000226,
+      "irregular_clock_intervals": [
+        {
+          "after_row": 0,
+          "delta_s": 0.10000000000000009
+        }
+      ]
+    },
+    {
+      "demo": "demo_2",
+      "original_episode_id": "demo_2",
+      "steps": 194,
+      "state_width": 185,
+      "start_time_s": 0.5000000000000003,
+      "end_time_s": 10.200000000000076,
+      "irregular_clock_intervals": [
+        {
+          "after_row": 0,
+          "delta_s": 0.10000000000000009
+        }
+      ]
+    }
+  ],
+  "physics_replay_verified": false
+}

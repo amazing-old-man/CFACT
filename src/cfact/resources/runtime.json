@@ -1,0 +1,655 @@
+{
+  "schema_version": 1,
+  "python": "3.10",
+  "platform": "Linux x86_64 with NVIDIA EGL",
+  "repositories": {
+    "robocasa": {
+      "url": "https://github.com/robocasa/robocasa.git",
+      "revision": "0c81ff9c39b771afc330349cbbe50be9776a74fa"
+    },
+    "robosuite": {
+      "url": "https://github.com/ARISE-Initiative/robosuite.git",
+      "revision": "5ce6643f3092639d08f7b0f90ed1c6a84f50552c"
+    },
+    "mimicgen": {
+      "url": "https://github.com/robocasa-benchmark/mimicgen.git",
+      "revision": "b89c3b5e02927ceb8599401cc01551a8da21fbf8"
+    },
+    "robomimic": {
+      "url": "https://github.com/ARISE-Initiative/robomimic.git",
+      "revision": "271a76c2d55c8b0f94d3d589f26fcae0d47f64a1"
+    }
+  },
+  "assets": [
+    {
+      "name": "textures",
+      "repo_id": "robocasa/robocasa-assets",
+      "revision": "1b92c3d02ca4354984fec961357db0bff7b32166",
+      "filename": "textures.zip",
+      "folder": "textures"
+    },
+    {
+      "name": "generative_textures",
+      "repo_id": "robocasa/robocasa-assets",
+      "revision": "1b92c3d02ca4354984fec961357db0bff7b32166",
+      "filename": "generative_textures.zip",
+      "folder": "generative_textures"
+    },
+    {
+      "name": "objaverse",
+      "repo_id": "robocasa/robocasa-assets",
+      "revision": "1b92c3d02ca4354984fec961357db0bff7b32166",
+      "filename": "objaverse.zip",
+      "folder": "objects/objaverse"
+    },
+    {
+      "name": "aigen",
+      "repo_id": "robocasa/robocasa-assets",
+      "revision": "1b92c3d02ca4354984fec961357db0bff7b32166",
+      "filename": "aigen_objs.zip",
+      "folder": "objects/aigen_objs"
+    },
+    {
+      "name": "fixtures_blenders",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/blenders.zip",
+      "folder": "fixtures/blenders"
+    },
+    {
+      "name": "fixtures_cabinets",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/cabinets.zip",
+      "folder": "fixtures/cabinets"
+    },
+    {
+      "name": "fixtures_coffee_machines",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/coffee_machines.zip",
+      "folder": "fixtures/coffee_machines"
+    },
+    {
+      "name": "fixtures_dishwashers",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/dishwashers.zip",
+      "folder": "fixtures/dishwashers"
+    },
+    {
+      "name": "fixtures_electric_kettles",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/electric_kettles.zip",
+      "folder": "fixtures/electric_kettles"
+    },
+    {
+      "name": "fixtures_fridges",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/fridges.zip",
+      "folder": "fixtures/fridges"
+    },
+    {
+      "name": "fixtures_handles",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/handles.zip",
+      "folder": "fixtures/handles"
+    },
+    {
+      "name": "fixtures_hoods",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/hoods.zip",
+      "folder": "fixtures/hoods"
+    },
+    {
+      "name": "fixtures_microwaves",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/microwaves.zip",
+      "folder": "fixtures/microwaves"
+    },
+    {
+      "name": "fixtures_ovens",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/ovens.zip",
+      "folder": "fixtures/ovens"
+    },
+    {
+      "name": "fixtures_sinks",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/sinks.zip",
+      "folder": "fixtures/sinks"
+    },
+    {
+      "name": "fixtures_stand_mixers",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/stand_mixers.zip",
+      "folder": "fixtures/stand_mixers"
+    },
+    {
+      "name": "fixtures_stoves",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/stoves.zip",
+      "folder": "fixtures/stoves"
+    },
+    {
+      "name": "fixtures_stovetops",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/stovetops.zip",
+      "folder": "fixtures/stovetops"
+    },
+    {
+      "name": "fixtures_toaster_ovens",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/toaster_ovens.zip",
+      "folder": "fixtures/toaster_ovens"
+    },
+    {
+      "name": "fixtures_toasters",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/toasters.zip",
+      "folder": "fixtures/toasters"
+    },
+    {
+      "name": "fixtures_windows",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "fixtures_lightwheel/windows.zip",
+      "folder": "fixtures/windows"
+    },
+    {
+      "name": "objects_aluminum_foil",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/aluminum_foil.zip",
+      "folder": "objects/lightwheel/aluminum_foil"
+    },
+    {
+      "name": "objects_basket",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/basket.zip",
+      "folder": "objects/lightwheel/basket"
+    },
+    {
+      "name": "objects_blender_jug",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/blender_jug.zip",
+      "folder": "objects/lightwheel/blender_jug"
+    },
+    {
+      "name": "objects_cheese_grater",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/cheese_grater.zip",
+      "folder": "objects/lightwheel/cheese_grater"
+    },
+    {
+      "name": "objects_chicken_drumstick",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/chicken_drumstick.zip",
+      "folder": "objects/lightwheel/chicken_drumstick"
+    },
+    {
+      "name": "objects_cinnamon",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/cinnamon.zip",
+      "folder": "objects/lightwheel/cinnamon"
+    },
+    {
+      "name": "objects_colander",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/colander.zip",
+      "folder": "objects/lightwheel/colander"
+    },
+    {
+      "name": "objects_cookie_dough_ball",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/cookie_dough_ball.zip",
+      "folder": "objects/lightwheel/cookie_dough_ball"
+    },
+    {
+      "name": "objects_cream_cheese_stick",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/cream_cheese_stick.zip",
+      "folder": "objects/lightwheel/cream_cheese_stick"
+    },
+    {
+      "name": "objects_digital_scale",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/digital_scale.zip",
+      "folder": "objects/lightwheel/digital_scale"
+    },
+    {
+      "name": "objects_dish_brush",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/dish_brush.zip",
+      "folder": "objects/lightwheel/dish_brush"
+    },
+    {
+      "name": "objects_dish_rack",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/dish_rack.zip",
+      "folder": "objects/lightwheel/dish_rack"
+    },
+    {
+      "name": "objects_flour_bag",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/flour_bag.zip",
+      "folder": "objects/lightwheel/flour_bag"
+    },
+    {
+      "name": "objects_flower_vase",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/flower_vase.zip",
+      "folder": "objects/lightwheel/flower_vase"
+    },
+    {
+      "name": "objects_fruit_bowl",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/fruit_bowl.zip",
+      "folder": "objects/lightwheel/fruit_bowl"
+    },
+    {
+      "name": "objects_glass_cup",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/glass_cup.zip",
+      "folder": "objects/lightwheel/glass_cup"
+    },
+    {
+      "name": "objects_honey_bottle",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/honey_bottle.zip",
+      "folder": "objects/lightwheel/honey_bottle"
+    },
+    {
+      "name": "objects_hotdog_bun",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/hotdog_bun.zip",
+      "folder": "objects/lightwheel/hotdog_bun"
+    },
+    {
+      "name": "objects_ice_cube",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/ice_cube.zip",
+      "folder": "objects/lightwheel/ice_cube"
+    },
+    {
+      "name": "objects_ice_cube_tray",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/ice_cube_tray.zip",
+      "folder": "objects/lightwheel/ice_cube_tray"
+    },
+    {
+      "name": "objects_jar",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/jar.zip",
+      "folder": "objects/lightwheel/jar"
+    },
+    {
+      "name": "objects_juice",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/juice.zip",
+      "folder": "objects/lightwheel/juice"
+    },
+    {
+      "name": "objects_kebab_skewer",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/kebab_skewer.zip",
+      "folder": "objects/lightwheel/kebab_skewer"
+    },
+    {
+      "name": "objects_kettle",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/kettle.zip",
+      "folder": "objects/lightwheel/kettle"
+    },
+    {
+      "name": "objects_knife_block",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/knife_block.zip",
+      "folder": "objects/lightwheel/knife_block"
+    },
+    {
+      "name": "objects_lemon_wedge",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/lemon_wedge.zip",
+      "folder": "objects/lightwheel/lemon_wedge"
+    },
+    {
+      "name": "objects_lettuce",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/lettuce.zip",
+      "folder": "objects/lightwheel/lettuce"
+    },
+    {
+      "name": "objects_marshmallow",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/marshmallow.zip",
+      "folder": "objects/lightwheel/marshmallow"
+    },
+    {
+      "name": "objects_mayonnaise",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/mayonnaise.zip",
+      "folder": "objects/lightwheel/mayonnaise"
+    },
+    {
+      "name": "objects_measuring_cup",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/measuring_cup.zip",
+      "folder": "objects/lightwheel/measuring_cup"
+    },
+    {
+      "name": "objects_mug_tree",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/mug_tree.zip",
+      "folder": "objects/lightwheel/mug_tree"
+    },
+    {
+      "name": "objects_mustard",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/mustard.zip",
+      "folder": "objects/lightwheel/mustard"
+    },
+    {
+      "name": "objects_oil_and_vinegar_bottle",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/oil_and_vinegar_bottle.zip",
+      "folder": "objects/lightwheel/oil_and_vinegar_bottle"
+    },
+    {
+      "name": "objects_oven_tray",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/oven_tray.zip",
+      "folder": "objects/lightwheel/oven_tray"
+    },
+    {
+      "name": "objects_pancake",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pancake.zip",
+      "folder": "objects/lightwheel/pancake"
+    },
+    {
+      "name": "objects_paper_towel_holder",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/paper_towel_holder.zip",
+      "folder": "objects/lightwheel/paper_towel_holder"
+    },
+    {
+      "name": "objects_paprika",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/paprika.zip",
+      "folder": "objects/lightwheel/paprika"
+    },
+    {
+      "name": "objects_peeler",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/peeler.zip",
+      "folder": "objects/lightwheel/peeler"
+    },
+    {
+      "name": "objects_pickle_slice",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pickle_slice.zip",
+      "folder": "objects/lightwheel/pickle_slice"
+    },
+    {
+      "name": "objects_pitcher",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pitcher.zip",
+      "folder": "objects/lightwheel/pitcher"
+    },
+    {
+      "name": "objects_pizza",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pizza.zip",
+      "folder": "objects/lightwheel/pizza"
+    },
+    {
+      "name": "objects_pizza_cutter",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pizza_cutter.zip",
+      "folder": "objects/lightwheel/pizza_cutter"
+    },
+    {
+      "name": "objects_placemat",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/placemat.zip",
+      "folder": "objects/lightwheel/placemat"
+    },
+    {
+      "name": "objects_plant",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/plant.zip",
+      "folder": "objects/lightwheel/plant"
+    },
+    {
+      "name": "objects_pot",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/pot.zip",
+      "folder": "objects/lightwheel/pot"
+    },
+    {
+      "name": "objects_reamer",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/reamer.zip",
+      "folder": "objects/lightwheel/reamer"
+    },
+    {
+      "name": "objects_salt_and_pepper_shaker",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/salt_and_pepper_shaker.zip",
+      "folder": "objects/lightwheel/salt_and_pepper_shaker"
+    },
+    {
+      "name": "objects_sandwich_bread",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/sandwich_bread.zip",
+      "folder": "objects/lightwheel/sandwich_bread"
+    },
+    {
+      "name": "objects_saucepan",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/saucepan.zip",
+      "folder": "objects/lightwheel/saucepan"
+    },
+    {
+      "name": "objects_shrimp",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/shrimp.zip",
+      "folder": "objects/lightwheel/shrimp"
+    },
+    {
+      "name": "objects_soap_dispenser",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/soap_dispenser.zip",
+      "folder": "objects/lightwheel/soap_dispenser"
+    },
+    {
+      "name": "objects_spray",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/spray.zip",
+      "folder": "objects/lightwheel/spray"
+    },
+    {
+      "name": "objects_stool",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/stool.zip",
+      "folder": "objects/lightwheel/stool"
+    },
+    {
+      "name": "objects_strainer",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/strainer.zip",
+      "folder": "objects/lightwheel/strainer"
+    },
+    {
+      "name": "objects_straw",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/straw.zip",
+      "folder": "objects/lightwheel/straw"
+    },
+    {
+      "name": "objects_sugar_cube",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/sugar_cube.zip",
+      "folder": "objects/lightwheel/sugar_cube"
+    },
+    {
+      "name": "objects_syrup_bottle",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/syrup_bottle.zip",
+      "folder": "objects/lightwheel/syrup_bottle"
+    },
+    {
+      "name": "objects_tiered_basket",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tiered_basket.zip",
+      "folder": "objects/lightwheel/tiered_basket"
+    },
+    {
+      "name": "objects_tiered_shelf",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tiered_shelf.zip",
+      "folder": "objects/lightwheel/tiered_shelf"
+    },
+    {
+      "name": "objects_tomato_slice",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tomato_slice.zip",
+      "folder": "objects/lightwheel/tomato_slice"
+    },
+    {
+      "name": "objects_tongs",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tongs.zip",
+      "folder": "objects/lightwheel/tongs"
+    },
+    {
+      "name": "objects_tray",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tray.zip",
+      "folder": "objects/lightwheel/tray"
+    },
+    {
+      "name": "objects_tupperware",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/tupperware.zip",
+      "folder": "objects/lightwheel/tupperware"
+    },
+    {
+      "name": "objects_turkey_slice",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/turkey_slice.zip",
+      "folder": "objects/lightwheel/turkey_slice"
+    },
+    {
+      "name": "objects_turmeric",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/turmeric.zip",
+      "folder": "objects/lightwheel/turmeric"
+    },
+    {
+      "name": "objects_utensil_rack",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/utensil_rack.zip",
+      "folder": "objects/lightwheel/utensil_rack"
+    },
+    {
+      "name": "objects_utensil_set",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/utensil_set.zip",
+      "folder": "objects/lightwheel/utensil_set"
+    },
+    {
+      "name": "objects_whisk",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/whisk.zip",
+      "folder": "objects/lightwheel/whisk"
+    },
+    {
+      "name": "objects_wooden_spoon",
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "filename": "objects_lightwheel/wooden_spoon.zip",
+      "folder": "objects/lightwheel/wooden_spoon"
+    }
+  ]
+}

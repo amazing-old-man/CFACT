@@ -1,0 +1,170 @@
+{
+  "PickPlaceCounterToCabinet": {
+    "event_minimum_duration": 10,
+    "event_object_ref": "obj",
+    "event_signal": "stage_contact_obj",
+    "operation_object_ref": "cab",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 0.8,
+      "entry_translation_m": 0.22,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "PickPlaceCounterToSink": {
+    "event_minimum_duration": 10,
+    "event_object_ref": "obj",
+    "event_signal": "stage_contact_obj",
+    "operation_object_ref": "sink",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 1.0,
+      "entry_translation_m": 0.3,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "OpenCabinet": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle_1",
+    "event_signal": "stage_contact_handle_1",
+    "operation_object_ref": "handle_1",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 0.6,
+      "entry_translation_m": 0.06,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "OpenDrawer": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle",
+    "event_signal": "stage_contact_handle",
+    "operation_object_ref": "handle",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 0.6,
+      "entry_translation_m": 0.06,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "OpenOven": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle",
+    "event_signal": "stage_contact_handle",
+    "operation_object_ref": "handle",
+    "reference_neighborhood": {}
+  },
+  "CloseCabinet": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "door_1",
+    "event_signal": "stage_contact_door_1",
+    "operation_object_ref": "door_1",
+    "reference_neighborhood": {}
+  },
+  "CloseDrawer": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle",
+    "event_signal": "stage_contact_drawer",
+    "operation_object_ref": "handle",
+    "reference_neighborhood": {}
+  },
+  "CloseOven": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle",
+    "event_signal": "stage_contact_door",
+    "operation_object_ref": "handle",
+    "reference_neighborhood": {}
+  },
+  "OpenBlenderLid": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "lid_handle",
+    "event_signal": "stage_contact_lid",
+    "operation_object_ref": "lid_handle",
+    "reference_neighborhood": {}
+  },
+  "CloseBlenderLid": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "lid_handle",
+    "event_signal": "stage_contact_lid",
+    "operation_object_ref": "blender",
+    "reference_neighborhood": {}
+  },
+  "CoffeeSetupMug": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "obj",
+    "event_signal": "stage_contact_obj",
+    "operation_object_ref": "coffee_machine",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 1.0,
+      "entry_translation_m": 0.13,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "CoffeeServeMug": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "obj",
+    "event_signal": "stage_contact_obj",
+    "operation_object_ref": "coffee_machine",
+    "reference_neighborhood": {
+      "entry_rotation_rad": 0.5,
+      "entry_translation_m": 0.1,
+      "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+    }
+  },
+  "TurnOnMicrowave": {
+    "event_minimum_duration": 3,
+    "event_object_ref": "button",
+    "event_signal": "stage_contact_button",
+    "operation_object_ref": "button",
+    "reference_neighborhood": {}
+  },
+  "StartCoffeeMachine": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "button",
+    "event_signal": "success",
+    "operation_object_ref": "button",
+    "reference_neighborhood": {}
+  },
+  "SlideDishwasherRack": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "rack",
+    "event_signal": "stage_contact_rack",
+    "operation_object_ref": "rack",
+    "reference_neighborhood": {}
+  },
+  "SlideOvenRack": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "rack",
+    "event_signal": "stage_contact_rack",
+    "operation_object_ref": "rack",
+    "reference_neighborhood": {}
+  },
+  "TurnOnSinkFaucet": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "handle",
+    "event_signal": "stage_contact_handle",
+    "operation_object_ref": "handle",
+    "reference_neighborhood": {},
+    "operation_joint_role": {
+      "fixture_attribute": "sink",
+      "joint_property": "handle_joint"
+    }
+  },
+  "TurnOnToaster": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "lever",
+    "event_signal": "stage_contact_lever",
+    "operation_object_ref": "lever",
+    "reference_neighborhood": {}
+  },
+  "TurnOnStove": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "knob",
+    "event_signal": "stage_contact_knob",
+    "operation_object_ref": "knob",
+    "reference_neighborhood": {}
+  },
+  "AdjustToasterOvenTemperature": {
+    "event_minimum_duration": 1,
+    "event_object_ref": "knob",
+    "event_signal": "stage_contact_knob",
+    "operation_object_ref": "knob",
+    "reference_neighborhood": {}
+  }
+}

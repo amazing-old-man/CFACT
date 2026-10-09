@@ -1,0 +1,58 @@
+[
+  {
+    "component": "robocasa",
+    "license_files": [
+      {
+        "name": "LICENSE",
+        "sha256": "5da18670b3f00c59847b1ded9c28dee59940d963b1e03b528b0108d9c5a09885",
+        "first_lines": [
+          "MIT License",
+          "",
+          "Copyright (c) 2026 the RoboCasa Team"
+        ]
+      }
+    ]
+  },
+  {
+    "component": "robosuite",
+    "license_files": [
+      {
+        "name": "LICENSE",
+        "sha256": "177978cbece0a4c454c2aaec5b3f145b39270814874c43109da9e829c39d9cba",
+        "first_lines": [
+          "MIT License",
+          "",
+          "Copyright (c) 2022 Stanford Vision and Learning Lab and UT Robot Perception and Learning Lab"
+        ]
+      }
+    ]
+  },
+  {
+    "component": "mimicgen",
+    "license_files": [
+      {
+        "name": "LICENSE",
+        "sha256": "c61872e27a1c33a016491dfd9145211deb46230ec4e94338e022df23ea81b9b5",
+        "first_lines": [
+          "NVIDIA License",
+          "",
+          "1. Definitions"
+        ]
+      }
+    ]
+  },
+  {
+    "component": "robomimic",
+    "license_files": [
+      {
+        "name": "LICENSE",
+        "sha256": "7cdbfab482b23a4d925d59ff169ab0bc5f8c97ceb0db79f9fd5bf46ef8aa1556",
+        "first_lines": [
+          "MIT License",
+          "",
+          "Copyright (c) 2021 Stanford Vision and Learning Lab"
+        ]
+      }
+    ]
+  }
+]

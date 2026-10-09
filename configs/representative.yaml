@@ -1,0 +1,34 @@
+schema: cfact.run.v1
+source_dataset: PhysicalAI-Robotics-Manipulation-Kitchen-Demos
+seed: 20260922
+workers: 1
+maximum_decision_depth: 2
+media: full
+resource:
+  admission_ram_reserve_mib: 20480
+  admission_ram_mib_per_scene: 8192
+  ram_basis: 8192 MiB budget exceeds measured Source replay peak 4774 MiB by more than 1.2; remeasure on a new host
+  admission_gpu_reserve_mib: 10240
+  admission_gpu_mib_per_scene: 2160
+  minimum_host_free_gib: 50
+  maximum_output_gb: 100
+  maximum_gpu_temperature_c: 85
+tasks:
+- task: OpenDrawer
+  roots:
+  - demo_0
+  donors:
+  - demo_1
+  - demo_2
+- task: PickPlaceCounterToCabinet
+  roots:
+  - demo_0
+  donors:
+  - demo_1
+  - demo_2
+- task: TurnOnSinkFaucet
+  roots:
+  - demo_0
+  donors:
+  - demo_1
+  - demo_2

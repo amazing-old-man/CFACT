@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "Please cite this software's exact Git commit and source provenance. No paper DOI has been assigned in this repository."
+title: CFACT
+type: software
+version: 0.7.1.dev0
+authors:
+  - name: CFACT contributors
+license: MIT

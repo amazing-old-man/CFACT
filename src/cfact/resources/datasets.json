@@ -1,0 +1,96 @@
+{
+  "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Kitchen-Demos",
+  "registry_revision": "0c81ff9c39b771afc330349cbbe50be9776a74fa",
+  "datasets": {
+    "PickPlaceCounterToCabinet": {
+      "pretrain/mimicgen": "pretrain/atomic/PickPlaceCounterToCabinet/20250819/mg/demo/2025-08-20-21-56-25/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/PickPlaceCounterToCabinet/20250819/lerobot.tar",
+      "target/human": "target/atomic/PickPlaceCounterToCabinet/20250811/lerobot.tar",
+      "real/human": "real_data/PickPlaceCounterToCabinet//lerobot.tar"
+    },
+    "PickPlaceCounterToSink": {
+      "pretrain/mimicgen": "pretrain/atomic/PickPlaceCounterToSink/20250819/mg/demo/2025-08-20-22-32-27/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/PickPlaceCounterToSink/20250819/lerobot.tar"
+    },
+    "OpenCabinet": {
+      "pretrain/mimicgen": "pretrain/atomic/OpenCabinet/20250819/mg/demo/2025-08-20-21-54-43/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/OpenCabinet/20250819/lerobot.tar",
+      "target/human": "target/atomic/OpenCabinet/20250813/lerobot.tar"
+    },
+    "OpenDrawer": {
+      "pretrain/mimicgen": "pretrain/atomic/OpenDrawer/20250819/mg/demo/2025-08-20-21-55-00/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/OpenDrawer/20250819/lerobot.tar",
+      "target/human": "target/atomic/OpenDrawer/20250816/lerobot.tar"
+    },
+    "OpenOven": {
+      "pretrain/mimicgen": "pretrain/atomic/OpenOven/20250820/mg/demo/2025-08-20-21-55-18/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/OpenOven/20250820/lerobot.tar"
+    },
+    "CloseCabinet": {
+      "pretrain/mimicgen": "pretrain/atomic/CloseCabinet/20250819/mg/demo/2025-08-20-21-30-42/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CloseCabinet/20250819/lerobot.tar"
+    },
+    "CloseDrawer": {
+      "pretrain/mimicgen": "pretrain/atomic/CloseDrawer/20250819/mg/demo/2025-08-20-21-53-15/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CloseDrawer/20250819/lerobot.tar"
+    },
+    "CloseOven": {
+      "pretrain/mimicgen": "pretrain/atomic/CloseOven/20250820/mg/demo/2025-08-20-21-54-06/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CloseOven/20250820/lerobot.tar"
+    },
+    "OpenBlenderLid": {
+      "pretrain/mimicgen": "pretrain/atomic/OpenBlenderLid/20250822/mg/demo/2025-08-22-13-33-18/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/OpenBlenderLid/20250822/lerobot.tar"
+    },
+    "CloseBlenderLid": {
+      "pretrain/mimicgen": "pretrain/atomic/CloseBlenderLid/20250822/mg/demo/2025-08-22-14-45-29/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CloseBlenderLid/20250822/lerobot.tar",
+      "target/human": "target/atomic/CloseBlenderLid/20250822/lerobot.tar"
+    },
+    "CoffeeSetupMug": {
+      "pretrain/mimicgen": "pretrain/atomic/CoffeeSetupMug/20250819/mg/demo/2025-08-20-21-54-35/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CoffeeSetupMug/20250819/lerobot.tar",
+      "target/human": "target/atomic/CoffeeSetupMug/20250813/lerobot.tar"
+    },
+    "CoffeeServeMug": {
+      "pretrain/mimicgen": "pretrain/atomic/CoffeeServeMug/20250819/mg/demo/2025-08-20-21-54-30/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/CoffeeServeMug/20250819/lerobot.tar"
+    },
+    "TurnOnMicrowave": {
+      "pretrain/mimicgen": "pretrain/atomic/TurnOnMicrowave/20250819/mg/demo/2025-08-21-12-09-53/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/TurnOnMicrowave/20250819/lerobot.tar",
+      "target/human": "target/atomic/TurnOnMicrowave/20250813/lerobot.tar"
+    },
+    "StartCoffeeMachine": {
+      "pretrain/mimicgen": "pretrain/atomic/StartCoffeeMachine/20250819/mg/demo/2025-08-21-09-42-00/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/StartCoffeeMachine/20250819/lerobot.tar"
+    },
+    "SlideDishwasherRack": {
+      "pretrain/mimicgen": "pretrain/atomic/SlideDishwasherRack/20250820/mg/demo/2025-08-20-21-57-11/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/SlideDishwasherRack/20250820/lerobot.tar",
+      "target/human": "target/atomic/SlideDishwasherRack/20250820/lerobot.tar"
+    },
+    "SlideOvenRack": {
+      "pretrain/mimicgen": "pretrain/atomic/SlideOvenRack/20250820/mg/demo/2025-08-20-21-57-16/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/SlideOvenRack/20250820/lerobot.tar"
+    },
+    "TurnOnSinkFaucet": {
+      "pretrain/mimicgen": "pretrain/atomic/TurnOnSinkFaucet/20250819/mg/demo/2025-08-21-12-24-03/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/TurnOnSinkFaucet/20250819/lerobot.tar",
+      "target/human": "target/atomic/TurnOnSinkFaucet/20250812/lerobot.tar"
+    },
+    "TurnOnToaster": {
+      "pretrain/mimicgen": "pretrain/atomic/TurnOnToaster/20250820/mg/demo/2025-08-21-12-08-30/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/TurnOnToaster/20250820/lerobot.tar"
+    },
+    "TurnOnStove": {
+      "pretrain/mimicgen": "pretrain/atomic/TurnOnStove/20250819/mg/demo/2025-08-21-12-08-41/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/TurnOnStove/20250819/lerobot.tar"
+    },
+    "AdjustToasterOvenTemperature": {
+      "pretrain/mimicgen": "pretrain/atomic/AdjustToasterOvenTemperature/20250820/mg/demo/2025-08-20-21-21-37/lerobot.tar",
+      "pretrain/human": "pretrain/atomic/AdjustToasterOvenTemperature/20250820/lerobot.tar"
+    }
+  },
+  "default_revision": "522e4ffa3bb9d9729f79b241c65fc9e589f2659c"
+}

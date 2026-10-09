@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CFACT 实测动作树浏览器</title>
+<style>
+:root{color-scheme:light;--ink:#18212f;--muted:#617084;--line:#dbe3ec;--blue:#185abc;--pale:#f3f6fa}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#f7f9fc}
+header{padding:14px 20px;background:#13243a;color:white;position:sticky;top:0;z-index:5}header h1{font-size:19px;margin:0 0 5px}header p{margin:0;color:#c8d5e6;font-size:12px}#progress{margin-top:8px;color:#bfe4cf;font-size:12px}
+main{display:grid;grid-template-columns:minmax(290px,380px) minmax(0,1fr)}aside{padding:14px;border-right:1px solid var(--line);background:white;max-height:calc(100vh - 105px);overflow:auto;position:sticky;top:105px}section{padding:16px;min-width:0}
+label{font-size:12px;color:var(--muted);font-weight:600}select,input,button{font:inherit}select,input{width:100%;padding:7px;border:1px solid var(--line);border-radius:6px;background:white;color:var(--ink)}
+.controls{display:grid;gap:8px;margin-bottom:14px}.toolbar,.transition-row{display:flex;gap:7px;align-items:center}.toolbar button,.link{border:1px solid var(--line);background:white;border-radius:6px;padding:6px 9px;color:var(--blue);text-decoration:none}
+.pool{border:1px solid var(--line);border-radius:8px;background:white;margin:7px 0;padding:8px}.pool>summary{font-weight:700;cursor:pointer}.meta{font-weight:400;color:var(--muted);font-size:12px}
+.edge{margin:7px 0 0 9px;padding:8px;border-left:3px solid #bdcad9;background:var(--pale);border-radius:0 6px 6px 0}.edge.selected{border-left-color:var(--blue);background:#eaf2ff}.edge button{width:100%;text-align:left;border:0;background:none;padding:0;color:inherit;cursor:pointer}.edge-title{font-weight:700}.edge-sub{font-size:12px;color:var(--muted)}
+.children{margin-left:10px;padding-left:9px;border-left:1px dashed #a8b7c9}.card{background:white;border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:11px}.card h2{font-size:15px;margin:0 0 8px}.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+video{width:100%;max-height:70vh;background:#101820;border-radius:7px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f1f4f8;padding:9px;border-radius:6px;max-height:320px;overflow:auto;margin:7px 0;font-size:12px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:4px 8px}.kv b{color:var(--muted)}.small{font-size:12px;color:var(--muted)}#error{color:#b42318}.transition-row input{max-width:80px}
+@media(max-width:850px){main{grid-template-columns:1fr}aside{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
+</style></head>
+<body><header><h1>CFACT 实测动作树浏览器</h1><p>按真实父节点分组候选；可播放完整审阅视频，读取实测转移，并查看 LeRobot episode 映射。</p><div id="progress">读取队列…</div></header>
+<main><aside><div class="controls">
+<div><label for="task">任务</label><select id="task"></select></div><div><label for="root">来源根（已完成）</label><select id="root"></select></div>
+<div><label for="method">方法筛选（候选仍按共同父节点分组）</label><select id="method"><option value="">全部</option><option>Reference</option><option>G0</option><option>G1</option><option>G2</option></select></div>
+<div class="toolbar"><button id="refresh">刷新队列</button><span id="rootStatus" class="small"></span></div></div><div id="tree"></div></aside>
+<section><div id="error"></div><div class="card"><h2 id="title">选择一条边</h2><div id="path" class="small"></div><div class="cols">
+<div><video id="video" controls preload="metadata"></video><div id="videoNote" class="small"></div></div>
+<div><div id="summary" class="kv"></div><p id="arrays"></p><p id="episodes" class="small"></p>
+<div class="transition-row"><label for="segment">转移</label><select id="segment"><option value="local">local</option><option value="fixed_continuation">fixed continuation</option></select><input id="index" type="number" min="0" value="0"><button class="link" id="read">读取 s[t], a[t], s[t+1]</button></div><pre id="transition">选择转移后显示执行前状态、真实动作和实测后状态。</pre></div></div></div>
+<div class="cols"><div class="card"><h2>候选与操作</h2><pre id="option"></pre></div><div class="card"><h2>实际结果与停止原因</h2><pre id="result"></pre></div></div>
+</section></main>
+<script>
+const $=x=>document.getElementById(x), enc=x=>encodeURIComponent(x), esc=x=>String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let roots=[],tree=null,chosen=null;
+async function get(url){let r=await fetch(url,{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||r.statusText);return d}
+function qs(o){return Object.keys(o).map(k=>enc(k)+"="+enc(o[k])).join("&")}
+async function progress(){try{let p=await get("/api/progress"),c=p.effective_status_counts||{},extra=Object.keys(c).filter(k=>!["PHYSICS_COMPLETE","ACTIVE","PENDING"].includes(k)).map(k=>k+" "+c[k]).join(" · ");$("progress").textContent="台账 "+p.sampled_at+" ｜ 完成 "+(c.PHYSICS_COMPLETE||0)+" ｜ 运行 "+(c.ACTIVE||0)+" ｜ 待处理 "+(c.PENDING||0)+(extra?" ｜ "+extra:"")}catch(e){$("progress").textContent="队列状态读取失败："+e.message}}
+async function reload(keep=true){await progress();let ot=$("task").value,or=$("root").value;roots=(await get("/api/roots")).roots||[];let tasks=[...new Set(roots.map(r=>r.task).filter(Boolean))].sort();$("task").replaceChildren(...tasks.map(t=>{let x=document.createElement("option");x.value=t;x.textContent=t;return x}));if(keep&&tasks.includes(ot))$("task").value=ot;fillRoots(keep?or:"")}
+function fillRoots(preferred){let rows=roots.filter(r=>r.task===$("task").value);$("root").replaceChildren(...rows.map(r=>{let x=document.createElement("option");x.value=r.root_id;x.textContent=(r.request_id||r.root_id)+" · "+r.status;return x}));if(rows.some(r=>r.root_id===preferred))$("root").value=preferred;showTree()}
+function childPools(e){return [...(tree.child_pools||[]),...(tree.third_pools||[])].filter(p=>p.parent_edge===e.edge_path)}
+function poolNode(pool,path){let d=document.createElement("details");d.className="pool";d.open=path.length===0;let s=document.createElement("summary");s.textContent="同父候选池 · "+(pool.node_id||"node");let m=document.createElement("span");m.className="meta";m.textContent=" · "+(pool.edges||[]).length+" 条边"+(pool.parent_edge?" · parent "+pool.parent_edge.split("/").pop():" · root");s.appendChild(m);d.appendChild(s);
+for(let e of pool.edges||[]){let v=e._viewer||{};if($("method").value&&$("method").value!==v.method)continue;let w=document.createElement("div");w.className="edge";w.dataset.id=e.candidate_id;let b=document.createElement("button"),t=document.createElement("div"),sub=document.createElement("div");t.className="edge-title";t.textContent=(v.method||"unknown")+" · "+e.candidate_id;sub.className="edge-sub";sub.textContent=[v.operation,v.subtype,e.local_event,e.Y_fixed].filter(Boolean).join(" · ");b.append(t,sub);b.onclick=()=>select(e);w.appendChild(b);let kids=childPools(e);if(kids.length){let c=document.createElement("div");c.className="children";for(let p of kids)c.appendChild(poolNode(p,[...path,e.candidate_id]));w.appendChild(c)}d.appendChild(w)}return d}
+async function showTree(){if(!$("task").value||!$("root").value)return;try{let d=await get("/api/tree?"+qs({task:$("task").value,root_id:$("root").value}));tree=d.tree;$("rootStatus").textContent=d.root.status+" · "+d.root.request_id;$("tree").replaceChildren();let node=tree.root&&tree.root.node_id||"root";$("tree").appendChild(poolNode({node_id:node,edges:tree.edges||[]},[]));if(tree.edges&&tree.edges[0])select(tree.edges[0])}catch(e){$("error").textContent=e.message}}
+async function select(e){chosen=e;document.querySelectorAll(".edge").forEach(x=>x.classList.toggle("selected",x.dataset.id===e.candidate_id));let q={task:$("task").value,root_id:$("root").value,edge_id:e.candidate_id};try{let d=await get("/api/edge?"+qs(q)),o=d.option||{},l=d.local_result||{},f=d.fixed_result||{};$("title").textContent=q.task+" · "+e.candidate_id;$("path").textContent="真实边："+e.edge_path;
+let vals=[["Tree / root",d.root.root_id],["请求来源",d.root.request_id],["方法 / subtype",(o.source_method||"")+" / "+(o.subtype||"")],["操作类型",o.operation_type],["父上下文",o.parent_context_id],["局部",String(l.control_steps??"—")+" steps · "+(l.termination_reason||"")],["局部事件",l.local_event_reached],["固定续跑",(f&&f.status||l.Y_fixed&&l.Y_fixed.status||"—")+" · "+(f&&(f.actual_steps??f.control_steps)||0)+" steps"]];
+$("summary").replaceChildren(...vals.flatMap(([k,v])=>{let a=document.createElement("b"),b=document.createElement("span");a.textContent=k;b.textContent=v==null?"—":v;return[a,b]}));
+$("option").textContent=JSON.stringify(o,null,2);$("result").textContent=JSON.stringify({edge:e,local_result:l,fixed_result:f},null,2);
+if(d.video_url){$("video").src=d.video_url;$("videoNote").textContent="完整审阅视频："+d.video}else{$("video").removeAttribute("src");$("videoNote").textContent="没有审阅视频路径"}
+$("arrays").innerHTML="<a class='link' target='_blank' href='"+esc(d.local_url)+"'>下载 local NPZ</a> <a class='link' target='_blank' href='"+esc(d.fixed_url)+"'>下载 fixed NPZ</a>";
+$("episodes").textContent=d.episode_map.length?"LeRobot 映射："+JSON.stringify(d.episode_map):"LeRobot episode 映射将在导出完成后显示。";$("transition").textContent="选择转移后显示执行前状态、真实动作和实测后状态。"
+}catch(err){$("error").textContent=err.message}}
+async function readTransition(){if(!chosen)return;try{$("transition").textContent=JSON.stringify(await get("/api/transition?"+qs({task:$("task").value,root_id:$("root").value,edge_id:chosen.candidate_id,segment:$("segment").value,index:$("index").value})),null,2)}catch(e){$("transition").textContent=e.message}}
+$("task").onchange=()=>fillRoots("");$("root").onchange=showTree;$("method").onchange=showTree;$("refresh").onclick=()=>reload(true);$("read").onclick=readTransition;reload(false);
+</script></body></html>

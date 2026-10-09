@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "checks": {
+    "src/cfact/adapters/__init__.py": true,
+    "src/cfact/adapters/action_codec.py": true,
+    "src/cfact/adapters/events.py": true,
+    "src/cfact/adapters/frames.py": true,
+    "src/cfact/adapters/interfaces.py": true,
+    "src/cfact/adapters/lerobot.py": true,
+    "src/cfact/adapters/robocasa.py": true,
+    "src/cfact/collection/runtime.py": true,
+    "src/cfact/collection/worker.py": true,
+    "src/cfact/execution/__init__.py": true,
+    "src/cfact/execution/binding.py": true,
+    "src/cfact/execution/connector.py": true,
+    "src/cfact/execution/events.py": true,
+    "src/cfact/execution/history.py": true,
+    "src/cfact/execution/kinematics.py": true,
+    "src/cfact/execution/options.py": true,
+    "src/cfact/execution/snapshot.py": true,
+    "src/cfact/generation/__init__.py": true,
+    "src/cfact/generation/context.py": true,
+    "src/cfact/generation/options.py": true,
+    "src/cfact/generation/primitives.py": true,
+    "src/cfact/generation/segments.py": true,
+    "src/cfact/resources/collection.json": true,
+    "src/cfact/resources/tasks.json": true,
+    "src/cfact/sources/prepare.py": true
+  },
+  "scope": "Exact-byte comparison against the designated input freeze; packaging wrappers and export layout are separate"
+}

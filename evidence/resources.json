@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "requested_workers": 1,
+  "per_scene_admission_mib": 2160,
+  "reserve_per_gpu_mib": 10240,
+  "device_worker_counts": {
+    "0": 1
+  },
+  "gpu_observation": [
+    {
+      "index": 0,
+      "uuid": "GPU-a0fe1514-1745-026c-35e6-41091ff00860",
+      "used_mib": 54510,
+      "total_mib": 97887,
+      "free_mib": 43377
+    },
+    {
+      "index": 1,
+      "uuid": "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015",
+      "used_mib": 25731,
+      "total_mib": 97887,
+      "free_mib": 72156
+    }
+  ],
+  "insufficient_devices": [],
+  "ram_observation_mib": {
+    "MemAvailable": 106413,
+    "SwapFree": 2
+  },
+  "required_available_ram_mib": 24781,
+  "ram_per_scene_admission_mib": 4301,
+  "ram_reserve_mib": 20480,
+  "ram_basis": "initial host acceptance estimate with 1.2 margin; measure and configure on a new host",
+  "ram_short": false,
+  "disk_free_bytes": 353797902336,
+  "failures": [],
+  "thermal": [
+    {
+      "index": 0,
+      "temperature_c": 83,
+      "utilization_percent": 95
+    }
+  ],
+  "gpu_processes": [
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 423474, 812",
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 423604, 812",
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 3381200, 13840",
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 3381793, 16630",
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 1520568, 12992",
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860, 2279668, 7866",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015, 841018, 13994",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015, 3213064, 812",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015, 1657902, 812",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015, 3572866, 1980",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015, 1764221, 2115"
+  ],
+  "other_process_policy": "memory accounted at admission; existing processes are never stopped"
+}
