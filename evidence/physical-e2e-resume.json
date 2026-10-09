@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "run_id": "c066cb390beb",
+  "run_directory_unchanged": true,
+  "completed_root_files_checked": 212,
+  "completed_root_files_changed": [
+    "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_5429088f05b4/edges/o_01_d74653a77550/media.json",
+    "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_5429088f05b4/edges/o_00_d8209227cf15/media.json",
+    "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_00_0613b928905e/media.json",
+    "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_03_a97e17c38630/media.json",
+    "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_01_fb8c84e1baff/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_02_24e007154ec7/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_00_64309635d47a/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_01_9250514ba568/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_00_d52d1e73daef/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_01_0d7a3d0d8196/media.json",
+    "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_02_9b627b782a4d/media.json"
+  ],
+  "roots_before_pause": 2,
+  "roots_after_resume": 3,
+  "newly_executed_task": "TurnOnSinkFaucet",
+  "roots": [
+    {
+      "task": "PickPlaceCounterToCabinet",
+      "status": "PHYSICS_COMPLETE",
+      "physical_edges": 5,
+      "decision_depth": 2,
+      "control_steps": 839
+    },
+    {
+      "task": "OpenDrawer",
+      "status": "PHYSICS_COMPLETE",
+      "physical_edges": 6,
+      "decision_depth": 2,
+      "control_steps": 602
+    },
+    {
+      "task": "TurnOnSinkFaucet",
+      "status": "PHYSICS_COMPLETE",
+      "physical_edges": 8,
+      "decision_depth": 2,
+      "control_steps": 302
+    }
+  ],
+  "unexpected_changes": [],
+  "media_completion_updates": [
+    {
+      "path": "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_5429088f05b4/edges/o_01_d74653a77550/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_5429088f05b4/edges/o_00_d8209227cf15/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_00_0613b928905e/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_03_a97e17c38630/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/PickPlaceCounterToCabinet/PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9/nodes/n_root/edges/o_01_fb8c84e1baff/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_02_24e007154ec7/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_00_64309635d47a/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_41a985403357/edges/o_01_9250514ba568/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_00_d52d1e73daef/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_01_0d7a3d0d8196/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    },
+    {
+      "path": "runtime/collection/_work/collection/data/formal/OpenDrawer/OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe/nodes/n_root/edges/o_02_9b627b782a4d/media.json",
+      "only_pending_to_complete_and_ffprobe_added": true
+    }
+  ],
+  "unchanged_physical_and_other_files": 201,
+  "scope": "Completed roots were not re-executed. Their pending review media was encoded after resume; normalization exactly matches pre-resume metadata SHA."
+}

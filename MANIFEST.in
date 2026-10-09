@@ -1,4 +1,6 @@
 include README.md LICENSE THIRD_PARTY_NOTICES.md CITATION.cff provenance.json
+include TEST_RESULTS.json RELEASE_CHECK.json HANDOFF.md
+recursive-include evidence *.json
 recursive-include configs *.yaml
 recursive-include requirements *.txt
 recursive-include scripts *.py

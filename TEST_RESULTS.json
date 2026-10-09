@@ -1,0 +1,98 @@
+{
+  "schema": "cfact.test-results.v1",
+  "status": "T0_T5_PASS",
+  "tested_development_commit": "2c6086b9911c056b3f445962bdea9a4ba03b4a95",
+  "run": "output/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__20261009T154332Z__c066cb390beb",
+  "tests": {
+    "T0": {
+      "status": "PASS",
+      "evidence": [
+        "evidence/frozen-source-after.json",
+        "evidence/readonly-inputs.json",
+        "evidence/scientific-equivalence.json"
+      ]
+    },
+    "T1": {
+      "status": "PASS",
+      "cpu_tests": {
+        "passed": 178,
+        "skipped": 15,
+        "exit_code": 0
+      },
+      "simulation_contracts": {
+        "passed": 193,
+        "skipped": 1,
+        "exit_code": 0
+      },
+      "official_api_synthetic_fixture": {
+        "passed": 1,
+        "episodes": 3,
+        "rows": 9,
+        "independent_tree_rows": 5,
+        "exit_code": 0,
+        "counts_as_physical_generation": false
+      },
+      "evidence": [
+        "evidence/independent-installs.json"
+      ],
+      "post_tag_installation_report": "dist/tag-verification.json"
+    },
+    "T2": {
+      "status": "PASS",
+      "public_tasks_downloaded": 3,
+      "raw_demos_imported": 9,
+      "prepared_demos": 9,
+      "same_initial_state_and_snapshot_replay_checks": "PASS",
+      "recorded_trajectory_byte_equivalence": false,
+      "evidence": [
+        "evidence/source-replay.json"
+      ],
+      "public_source_generated_nonempty_tree": true,
+      "offline_corruption_rejection": "PASS"
+    },
+    "T3": {
+      "status": "PASS",
+      "fixed_roots": 3,
+      "physical_edges": 19,
+      "actual_recursive_roots": 3,
+      "maximum_decision_depth": 2,
+      "command_exit_codes": [
+        0,
+        0
+      ],
+      "evidence": "evidence/physical-e2e-resume.json"
+    },
+    "T4": {
+      "status": "PASS",
+      "official_reader": "LeRobotDataset 0.4.0",
+      "task_datasets": 3,
+      "independent_tree_datasets": 3,
+      "episodes": 29,
+      "all_rows_checked": 1415,
+      "decoded_review_videos": 38,
+      "leaf_lineage_mp4": 16,
+      "extra_full_lineage_bytes": 9646255,
+      "zero_edge_roots_observed": 0,
+      "resume": "PASS",
+      "command_exit_codes": {
+        "export": 0,
+        "verify": 0,
+        "completed_resume": 0
+      },
+      "evidence": [
+        "evidence/output-verification.json",
+        "evidence/physical-e2e-resume.json",
+        "evidence/completed-resume.json"
+      ]
+    },
+    "T5": {
+      "status": "PASS",
+      "evidence": "evidence/readme-blind.json",
+      "physical_edges": 6,
+      "official_episodes": 9,
+      "official_rows": 486,
+      "full_lineage_mp4": 5,
+      "public_remote_clone_tested": false
+    }
+  }
+}

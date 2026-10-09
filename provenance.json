@@ -1,6 +1,6 @@
 {
   "schema": "cfact.provenance.v1",
-  "status": "IN_PROGRESS_NOT_FROZEN",
+  "status": "FROZEN_ENGINEERING_EXTRACTION",
   "source_content_sha256": "7f58d15b12889c8fd275429d539c23d2ea05dd2c7317005dd8b6ab3170398d6f",
   "source_identity": "user-designated Faucet role-binding candidate snapshot",
   "source_inventory_algorithm": "SHA256 of sorted compact JSON relative-path to file-SHA256 mapping",
@@ -277,5 +277,21 @@
     "source_inventory_file_count": 141,
     "other_input_files": 299962,
     "all_historical_hashes_match": true
-  }
+  },
+  "build": {
+    "version": "0.7.1.dev0",
+    "tag": "v0.7.1.dev0",
+    "package_code_sha256": "2b9b7366063835c40d37159f0baf1a807a4cf53b1108642b32d3205c1e3f3dd7",
+    "package_hash_algorithm": "cfact.collection.snapshot.implementation_digest: relative src/cfact paths, NUL, bytes, NUL, sorted; py/json/html excluding caches",
+    "scientific_core_exact_files": 25,
+    "source_commit_used_for_physical_run": "2c6086b9911c056b3f445962bdea9a4ba03b4a95",
+    "git_commit_resolution": "git rev-parse v0.7.1.dev0^{commit}",
+    "post_tag_report": "dist/tag-verification.json"
+  },
+  "engineering_changes": [
+    "Independent packaging, version metadata, clean profile names and dependency bootstraps",
+    "Official public download receipts, cache verification and optional local HDF5 import",
+    "Resource-checked prepare/replay auditing and immutable run lifecycle CLI",
+    "Task-grouped official LeRobot v3 exports, per-tree indices and datasets, full lineage media and verification"
+  ]
 }

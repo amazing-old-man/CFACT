@@ -1,0 +1,10 @@
+{
+  "sampling_interval_s": 5,
+  "tasks": {
+    "OpenDrawer": {
+      "sample_count": 35,
+      "peak_rss_kib": 5212928,
+      "peak_gpu_mib": 1922
+    }
+  }
+}

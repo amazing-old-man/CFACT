@@ -1,0 +1,540 @@
+{
+  "checks": [
+    {
+      "check": "python",
+      "detail": "Python 3.10 required, current: 3.10.12",
+      "status": "PASS"
+    },
+    {
+      "check": "runtime_lock",
+      "detail": "Runtime lock must match packaged runtime.json",
+      "status": "PASS"
+    },
+    {
+      "check": "source:robocasa",
+      "detail": {
+        "path": "/mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/__init__.py",
+        "revision": "0c81ff9c39b771afc330349cbbe50be9776a74fa"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "source:robosuite",
+      "detail": {
+        "path": "/mnt/ssd2/yanghc/CFACT/.runtime/sources/robosuite/robosuite/__init__.py",
+        "revision": "5ce6643f3092639d08f7b0f90ed1c6a84f50552c"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "source:mimicgen",
+      "detail": {
+        "path": "/mnt/ssd2/yanghc/CFACT/.runtime/sources/mimicgen/mimicgen/__init__.py",
+        "revision": "b89c3b5e02927ceb8599401cc01551a8da21fbf8"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "source:robomimic",
+      "detail": {
+        "path": "/mnt/ssd2/yanghc/CFACT/.runtime/sources/robomimic/robomimic/__init__.py",
+        "revision": "271a76c2d55c8b0f94d3d589f26fcae0d47f64a1"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "package:numpy",
+      "detail": "numpy==2.2.5; installed 2.2.5",
+      "status": "PASS"
+    },
+    {
+      "check": "package:mujoco",
+      "detail": "mujoco==3.3.1; installed 3.3.1",
+      "status": "PASS"
+    },
+    {
+      "check": "package:numba",
+      "detail": "numba==0.61.2; installed 0.61.2",
+      "status": "PASS"
+    },
+    {
+      "check": "package:scipy",
+      "detail": "scipy==1.15.3; installed 1.15.3",
+      "status": "PASS"
+    },
+    {
+      "check": "package:gymnasium",
+      "detail": "gymnasium==0.29.1; installed 0.29.1",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:textures",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/textures",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:generative_textures",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/generative_textures",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objaverse",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/objaverse",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:aigen",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/aigen_objs",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_blenders",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/blenders",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_cabinets",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/cabinets",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_coffee_machines",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/coffee_machines",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_dishwashers",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/dishwashers",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_electric_kettles",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/electric_kettles",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_fridges",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/fridges",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_handles",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/handles",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_hoods",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/hoods",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_microwaves",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/microwaves",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_ovens",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/ovens",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_sinks",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/sinks",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_stand_mixers",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/stand_mixers",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_stoves",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/stoves",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_stovetops",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/stovetops",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_toaster_ovens",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/toaster_ovens",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_toasters",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/toasters",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:fixtures_windows",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/fixtures/windows",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_aluminum_foil",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/aluminum_foil",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_basket",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/basket",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_blender_jug",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/blender_jug",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_cheese_grater",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/cheese_grater",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_chicken_drumstick",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/chicken_drumstick",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_cinnamon",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/cinnamon",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_colander",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/colander",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_cookie_dough_ball",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/cookie_dough_ball",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_cream_cheese_stick",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/cream_cheese_stick",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_digital_scale",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/digital_scale",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_dish_brush",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/dish_brush",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_dish_rack",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/dish_rack",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_flour_bag",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/flour_bag",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_flower_vase",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/flower_vase",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_fruit_bowl",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/fruit_bowl",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_glass_cup",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/glass_cup",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_honey_bottle",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/honey_bottle",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_hotdog_bun",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/hotdog_bun",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_ice_cube",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/ice_cube",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_ice_cube_tray",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/ice_cube_tray",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_jar",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/jar",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_juice",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/juice",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_kebab_skewer",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/kebab_skewer",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_kettle",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/kettle",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_knife_block",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/knife_block",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_lemon_wedge",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/lemon_wedge",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_lettuce",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/lettuce",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_marshmallow",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/marshmallow",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_mayonnaise",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/mayonnaise",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_measuring_cup",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/measuring_cup",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_mug_tree",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/mug_tree",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_mustard",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/mustard",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_oil_and_vinegar_bottle",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/oil_and_vinegar_bottle",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_oven_tray",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/oven_tray",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pancake",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pancake",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_paper_towel_holder",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/paper_towel_holder",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_paprika",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/paprika",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_peeler",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/peeler",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pickle_slice",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pickle_slice",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pitcher",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pitcher",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pizza",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pizza",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pizza_cutter",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pizza_cutter",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_placemat",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/placemat",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_plant",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/plant",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_pot",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/pot",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_reamer",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/reamer",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_salt_and_pepper_shaker",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/salt_and_pepper_shaker",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_sandwich_bread",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/sandwich_bread",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_saucepan",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/saucepan",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_shrimp",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/shrimp",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_soap_dispenser",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/soap_dispenser",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_spray",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/spray",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_stool",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/stool",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_strainer",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/strainer",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_straw",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/straw",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_sugar_cube",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/sugar_cube",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_syrup_bottle",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/syrup_bottle",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tiered_basket",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tiered_basket",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tiered_shelf",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tiered_shelf",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tomato_slice",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tomato_slice",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tongs",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tongs",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tray",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tray",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_tupperware",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/tupperware",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_turkey_slice",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/turkey_slice",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_turmeric",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/turmeric",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_utensil_rack",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/utensil_rack",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_utensil_set",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/utensil_set",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_whisk",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/whisk",
+      "status": "PASS"
+    },
+    {
+      "check": "assets:objects_wooden_spoon",
+      "detail": "Asset directory: /mnt/ssd2/yanghc/CFACT/.runtime/sources/robocasa/robocasa/models/assets/objects/lightwheel/wooden_spoon",
+      "status": "PASS"
+    },
+    {
+      "check": "ffmpeg",
+      "detail": "/usr/bin/ffmpeg",
+      "status": "PASS"
+    },
+    {
+      "check": "nvidia_gpu",
+      "detail": "0, NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 38547 MiB\n1, NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 56357 MiB",
+      "status": "PASS"
+    },
+    {
+      "check": "egl_render",
+      "detail": "EGL 32x32 RGB render passed",
+      "status": "PASS"
+    }
+  ],
+  "python": "/mnt/ssd2/yanghc/CFACT/.runtime/venv/bin/python",
+  "runtime_root": "/mnt/ssd2/yanghc/CFACT/.runtime",
+  "scope": "Asset presence and optional EGL; use quickstart to validate actual task replay.",
+  "status": "PASS"
+}

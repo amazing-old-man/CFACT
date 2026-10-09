@@ -21,3 +21,14 @@ change those terms.
 The installer uses clean pinned source checkouts. Historical external runtime
 patches are not silently applied to new installations. CFACT's compatibility
 adapters are explicit modules within this repository.
+
+The exact public snapshots used by this acceptance run declare CC-BY-4.0 in their
+upstream dataset cards (retrieved by the official client; see `evidence/data-terms.json`):
+
+- [NVIDIA kitchen demonstrations](https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Manipulation-Kitchen-Demos/blob/522e4ffa3bb9d9729f79b241c65fc9e589f2659c/README.md)
+- [NVIDIA kitchen MJCF assets](https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF/blob/420a04af939c34873e6839a586b70844baf28aab/README.md)
+- [RoboCasa assets](https://huggingface.co/datasets/robocasa/robocasa-assets/blob/1b92c3d02ca4354984fec961357db0bff7b32166/README.md)
+
+Preserve upstream attribution and applicable asset-specific notices when sharing
+those inputs or derived media. This source release includes neither downloaded
+assets/data nor generated media, and its MIT license does not replace their terms.

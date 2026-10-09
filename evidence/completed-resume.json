@@ -1,0 +1,32 @@
+{
+  "run_id": "c066cb390beb",
+  "run": "/mnt/ssd2/yanghc/CFACT/output/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__20261009T154332Z__c066cb390beb",
+  "requested_roots": 3,
+  "completed_root_records": 3,
+  "outcomes": [
+    {
+      "task": "OpenDrawer",
+      "root_id": "OpenDrawer__0969056892c729503bdfe3ac__b43c0c7aedfe",
+      "status": "PHYSICS_COMPLETE",
+      "edges": 6
+    },
+    {
+      "task": "PickPlaceCounterToCabinet",
+      "root_id": "PickPlaceCounterToCabinet__f8a169ae0bff178718671dde__f46ebda7e0c9",
+      "status": "PHYSICS_COMPLETE",
+      "edges": 5
+    },
+    {
+      "task": "TurnOnSinkFaucet",
+      "root_id": "TurnOnSinkFaucet__fb848f7e348b3dc785cef445__accdb9136cd2",
+      "status": "PHYSICS_COMPLETE",
+      "edges": 8
+    }
+  ],
+  "export": "NOT_RUN",
+  "state": {
+    "exit_code": 0,
+    "status": "COLLECTED"
+  },
+  "resume": "COMPLETE_NO_PHYSICS_REPEATED"
+}

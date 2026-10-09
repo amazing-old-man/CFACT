@@ -1,0 +1,377 @@
+{
+  "decoded_review_videos": 38,
+  "full_lineage_extra_disk_bytes": 9646255,
+  "leaf_lineages": 16,
+  "measured_transitions": 1415,
+  "media_mode": "full",
+  "official": {
+    "all_rows_checked": 1415,
+    "datasets": 3,
+    "episodes": 29,
+    "reader": "LeRobotDataset",
+    "status": "PASS",
+    "version": "0.4.0"
+  },
+  "physical_edges": 19,
+  "status": "PASS",
+  "trees": [
+    {
+      "edges": 6,
+      "independent_tree_readback": {
+        "all_rows_checked": 486,
+        "datasets": 1,
+        "episodes": 9,
+        "reader": "LeRobotDataset",
+        "status": "PASS",
+        "version": "0.4.0"
+      },
+      "nodes": 7,
+      "outcomes": [
+        {
+          "actions": 11,
+          "edge_id": "edge_c3f197ca8d94e478947e6220",
+          "official_success_ever": true,
+          "official_success_first_state": 11,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_c3f197ca8d94e478947e6220",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 11,
+          "edge_id": "edge_d79f4f7cb4c3f8b340a95ed1",
+          "official_success_ever": true,
+          "official_success_first_state": 11,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_d79f4f7cb4c3f8b340a95ed1",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 14,
+          "edge_id": "edge_40a02e7cd4d45ad5b0fa7bb0",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 21,
+          "edge_id": "edge_40a02e7cd4d45ad5b0fa7bb0",
+          "official_success_ever": true,
+          "official_success_first_state": 21,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 53,
+          "edge_id": "edge_73e463e4a1830573d4caea02",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 150,
+          "edge_id": "edge_73e463e4a1830573d4caea02",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 52,
+          "edge_id": "edge_c5fc05e1705b78aa97a7547a",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 150,
+          "edge_id": "edge_c5fc05e1705b78aa97a7547a",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 24,
+          "edge_id": "edge_15f7912bbde70e1c03c17a72",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_15f7912bbde70e1c03c17a72",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "fixed_continuation"
+        }
+      ],
+      "recursive_parents": 1,
+      "root_id": "root_2722302424499ff35d5d1795",
+      "status": "PHYSICS_COMPLETE",
+      "task": "OpenDrawer"
+    },
+    {
+      "edges": 5,
+      "independent_tree_readback": {
+        "all_rows_checked": 738,
+        "datasets": 1,
+        "episodes": 10,
+        "reader": "LeRobotDataset",
+        "status": "PASS",
+        "version": "0.4.0"
+      },
+      "nodes": 6,
+      "outcomes": [
+        {
+          "actions": 67,
+          "edge_id": "edge_e607d9e4124fa11ee215cbb2",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 45,
+          "edge_id": "edge_e607d9e4124fa11ee215cbb2",
+          "official_success_ever": true,
+          "official_success_first_state": 45,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 68,
+          "edge_id": "edge_8911bc4d6b0d0609865b4d0f",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 45,
+          "edge_id": "edge_8911bc4d6b0d0609865b4d0f",
+          "official_success_ever": true,
+          "official_success_first_state": 45,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 47,
+          "edge_id": "edge_2032142d2d0dbb1752c96748",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 121,
+          "edge_id": "edge_2032142d2d0dbb1752c96748",
+          "official_success_ever": true,
+          "official_success_first_state": 121,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 47,
+          "edge_id": "edge_bb6cc2b671a7065cdd1acde5",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 121,
+          "edge_id": "edge_bb6cc2b671a7065cdd1acde5",
+          "official_success_ever": true,
+          "official_success_first_state": 121,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 58,
+          "edge_id": "edge_6b7d698fc125f3b3ed7cc3c8",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 119,
+          "edge_id": "edge_6b7d698fc125f3b3ed7cc3c8",
+          "official_success_ever": true,
+          "official_success_first_state": 119,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        }
+      ],
+      "recursive_parents": 1,
+      "root_id": "root_93a173b2f1015e1b8080689c",
+      "status": "PHYSICS_COMPLETE",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "edges": 8,
+      "independent_tree_readback": {
+        "all_rows_checked": 191,
+        "datasets": 1,
+        "episodes": 10,
+        "reader": "LeRobotDataset",
+        "status": "PASS",
+        "version": "0.4.0"
+      },
+      "nodes": 9,
+      "outcomes": [
+        {
+          "actions": 1,
+          "edge_id": "edge_7a961585f57340e5a3182640",
+          "official_success_ever": true,
+          "official_success_first_state": 1,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_7a961585f57340e5a3182640",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 1,
+          "edge_id": "edge_89cd79bb338d96c9cf46e4c9",
+          "official_success_ever": true,
+          "official_success_first_state": 1,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_89cd79bb338d96c9cf46e4c9",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 1,
+          "edge_id": "edge_049de9f93fc7fd11bfdfd407",
+          "official_success_ever": true,
+          "official_success_first_state": 1,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_049de9f93fc7fd11bfdfd407",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 1,
+          "edge_id": "edge_e88d23e971d4f04d4ecdc55e",
+          "official_success_ever": true,
+          "official_success_first_state": 1,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_e88d23e971d4f04d4ecdc55e",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 20,
+          "edge_id": "edge_9eb1f34a9a177f519b255d4c",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 1,
+          "edge_id": "edge_9eb1f34a9a177f519b255d4c",
+          "official_success_ever": true,
+          "official_success_first_state": 1,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 20,
+          "edge_id": "edge_3e1dbda30dfdc5d501a4e253",
+          "official_success_ever": true,
+          "official_success_first_state": 20,
+          "official_success_last": true,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_3e1dbda30dfdc5d501a4e253",
+          "official_success_ever": true,
+          "official_success_first_state": 0,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 49,
+          "edge_id": "edge_158e60cbc9a2280899c0303e",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 0,
+          "edge_id": "edge_158e60cbc9a2280899c0303e",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "fixed_continuation"
+        },
+        {
+          "actions": 24,
+          "edge_id": "edge_14d34850c533c2c850672bfc",
+          "official_success_ever": false,
+          "official_success_first_state": null,
+          "official_success_last": false,
+          "segment": "local"
+        },
+        {
+          "actions": 73,
+          "edge_id": "edge_14d34850c533c2c850672bfc",
+          "official_success_ever": true,
+          "official_success_first_state": 73,
+          "official_success_last": true,
+          "segment": "fixed_continuation"
+        }
+      ],
+      "recursive_parents": 1,
+      "root_id": "root_91e95529ae8b899ce89bf4ad",
+      "status": "PHYSICS_COMPLETE",
+      "task": "TurnOnSinkFaucet"
+    }
+  ]
+}

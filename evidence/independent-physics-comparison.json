@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "scope": "Independent environments, same public root and seed; local traces paired by decision layer and generator, not path-derived IDs",
+  "equal_array_count": 30,
+  "different_arrays": [],
+  "candidate_sets_equal": true
+}

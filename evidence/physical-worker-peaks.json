@@ -1,0 +1,22 @@
+{
+  "sampling_interval_s": 5,
+  "tasks": {
+    "OpenDrawer": {
+      "sample_count": 14,
+      "peak_rss_kib": 5418924,
+      "peak_gpu_mib": null,
+      "gpu_measurement_note": "Initial compute-apps sampler omitted EGL graphics. Use independent OpenDrawer measurement in readme-physical-peaks.json; no zero-VRAM claim."
+    },
+    "PickPlaceCounterToCabinet": {
+      "sample_count": 34,
+      "peak_rss_kib": 3821572,
+      "peak_gpu_mib": 675
+    },
+    "TurnOnSinkFaucet": {
+      "sample_count": 38,
+      "peak_rss_kib": 6462376,
+      "peak_gpu_mib": 1892
+    }
+  },
+  "memory_scope": "Per-process VmHWM sampled during collection; VRAM includes graphics after sampler correction"
+}

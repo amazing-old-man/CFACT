@@ -1,8 +1,9 @@
 # CFACT
 
-**状态：验收进行中，尚未冻结，不是开源复现 READY。** 本仓库没有公开远程
-地址。下文物理 quickstart 的最终验收结果以 `TEST_RESULTS.json` 为准；该文件
-尚未生成时，不能把安装或合成夹具测试当作真实物理验收通过。
+**状态：本地 T0–T5 已通过，LOCAL_RELEASE_READY；没有公共 Git 地址，未推送。**
+冻结工程提取版本为 `0.7.1.dev0`，tag 为 `v0.7.1.dev0`。测试依据见
+`TEST_RESULTS.json`、`RELEASE_CHECK.json` 和 `evidence/`；生成输出不提交 Git。
+
 
 CFACT 从可回放的 RoboCasa Source 示范构建真实物理反事实动作树。在同一个
 parent snapshot 上分别执行候选动作，保存实际 local child，再执行 fixed
@@ -19,7 +20,7 @@ continuation；递归仅从合格的实际 child 展开。Source 是录制输入
 
 候选编译、控制器坐标解释、parent 恢复、local 160 步、fixed 150 步、官方
 success、实际 child 与 frontier 顺序来自指定冻结输入。包版本
-`0.7.1.dev0` 表示独立提取开发版，**不表示此前候选已是正式 0.7.1 release**。
+`0.7.1.dev0` 保留独立提取版本标识，**不表示此前候选曾是正式 0.7.1 release**。
 `provenance.json` 记录来源内容 SHA256：
 `7f58d15b12889c8fd275429d539c23d2ea05dd2c7317005dd8b6ab3170398d6f`。
 
@@ -83,7 +84,7 @@ cfact doctor --runtime-root .runtime --render --gpu 0 --output .cache/doctor.jso
 资产压缩包约 10.2 GiB，另需解压空间、两个 venv 和输出空间。三个本轮
 Source tar 合计约 240 MiB。资源取决于场景和视频数量，不能把本机参数当作
 所有机器的最低配置。本机约 188 GiB RAM、RTX PRO 6000 Blackwell 96 GiB
-显存；验收配置保留 20 GiB RAM、每 worker 8192 MiB 预算（首轮 Source 回放最高峰值约 5677 MiB）、GPU 10 GiB
+显存；验收配置保留 20 GiB RAM、每 worker 8192 MiB 预算（首轮 Source 回放物理采集最高峰值约 6311 MiB）、GPU 10 GiB
 余量、磁盘 50 GiB 余量及 85°C 上限。应根据新主机实测峰值至少加 1.2 倍
 余量调整 YAML，不能为了跑通而绕过保护。生成前和 worker 调度均检查资源；
 其他用户的进程不被终止。
@@ -164,7 +165,7 @@ cfact validate-source --source .cache/sources/OpenDrawer.hdf5 --task OpenDrawer 
 | RoboCasa 来源 | 导入格式 | 必需信息 | 已实测范围 |
 | --- | --- | --- | --- |
 | NVIDIA 官方快照 `522e4ff…` | LeRobot v2.1 tar/目录 → raw HDF5 | 上表 replay extras、Parquet action、controller、XML | 三个指定 task 下载与前三 demo 导入已通过；物理结果见验收表 |
-| 相同 schema 的本地 RoboCasa 数据 | raw HDF5 | `data/env_args`、每 demo actions/states/model_file/ep_meta | schema 检查；不能代替公开来源验收 |
+| 相同 schema 的本地 RoboCasa 数据 | raw HDF5 | `data/env_args`、每 demo actions/states/model_file/ep_meta | 公开 raw HDF5 独立复制导入、SHA 一致及 schema 检查；不能代替公开来源验收 |
 | 普通训练 LeRobot（无 extras） | 不支持 | 缺少状态、XML 或环境元数据 | 明确拒绝，不补造 |
 | 任意源 LeRobot v3 | 未声明支持导入 | 必须按 episode offset 解析，不能按文件名猜 | 当前默认 Source 是上述 v2.1；目标导出才是 v3 |
 
@@ -358,4 +359,43 @@ GitHub/Hugging Face 推送。引用请用 `CITATION.cff` 并附确切 commit、t
 CPU 契约测试、固定仿真依赖测试和官方 API 合成夹具测试与真实物理 E2E
 分别报告。合成夹具视频不计作物理数据。T0–T5 全部实证通过、许可/扫描无
 阻塞之后才可以创建 release tag；本地完整复现成功但无公开地址时只能称
-`LOCAL_RELEASE_READY`。当前尚未完成这些门槛，不能声称 READY。
+`LOCAL_RELEASE_READY`。本地门槛已通过；公共远程 clone 尚未验证，不称 PUBLIC_RELEASE_READY。
+
+
+## 8. 实际验收结果与交接入口
+
+| 验收 | 结果 | 证据 |
+| --- | --- | --- |
+| T0 原输入只读 | PASS：冻结 141 文件、原输入 299,962 条目不变；25 个科学核心文件逐字节一致 | `evidence/readonly-inputs.json`、`scientific-equivalence.json` |
+| T1 工程独立性 | PASS：独立 clone/wheel 178 passed、15 skipped；固定仿真依赖 193 passed、1 skipped；wheel/sdist 从 `/tmp` 隔离导入退出 0 | `evidence/independent-installs.json` |
+| T2 公开 Source | PASS：三个公开 tar、9 demo 导入及 preparation；三 root 初态恢复/动作重复性通过；缓存损坏明确拒绝 | `evidence/source-replay.json` |
+| T3 有限真实物理 | PASS：三个固定 root 共 19 edge，三棵树均实际递归到第二层 | `evidence/physical-e2e-resume.json` |
+| T4 实际读取 | PASS：3 任务数据集、3 独立单树数据集；29 episode / 1,415 动作行；38 review 视频全部解码，16 完整 lineage MP4 | `evidence/output-verification.json` |
+| T5 README-only | PASS：新 clone、新 venv/依赖源码，仅复用公开下载缓存；6 edge、9 episode / 486 行、5 完整 lineage；全流程退出 0 | `evidence/readme-blind.json` |
+
+三个代表任务分别为：
+
+| Task | 真实 edge | 目标 LeRobot episode | 实际动作行 |
+| --- | ---: | ---: | ---: |
+| OpenDrawer | 6 | 9 | 486 |
+| PickPlaceCounterToCabinet | 5 | 10 | 738 |
+| TurnOnSinkFaucet | 8 | 10 | 191 |
+
+三任务验收目录为
+`output/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__20261009T154332Z__c066cb390beb/`。
+它是本机验收证据，未随源码分发；新机器必须执行前文 Quickstart 产生自己的 run。
+16 个完整谱系视频比共享片段额外占用 **9,646,255 字节**。暂停后恢复只执行
+剩余 Faucet root；此前 201 个物理及其他文件 hash 完全不变，11 个媒体元数据
+仅由 PENDING 转为 COMPLETE 并增加 ffprobe 结果。完整 run 再 resume 返回
+`COMPLETE_NO_PHYSICS_REPEATED`。
+
+Source 回放的精确断言是原始初态恢复及同 snapshot 独立动作重复性，不是
+录制轨迹逐位复现：公开包不含全部控制器内部状态，首个状态间隔造成固定
+0.05 s 时钟差，逐步状态差保存在报告中；没有补造任何缺失动作或状态。
+本轮 CPU/EGL、三个 task 的有限验证不能推广为所有场景、GPU、20 个 task
+全部支持。没有零 edge 的物理 root 出现在本轮三任务结果中；零 edge 状态
+保留逻辑另有结构测试。
+
+第二个执行者只需从本 README 第 1 节开始。`HANDOFF.md` 提供本次具体证据
+位置；它不补充 README 缺失的运行步骤。tag 后的独立安装/读取报告放在
+`dist/tag-verification.json`，构建包及其 SHA256 位于 `dist/`。

@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "command_exit_code": 1,
+  "reason": "Cached source identity or SHA256 differs",
+  "canonical_download_unchanged": true
+}

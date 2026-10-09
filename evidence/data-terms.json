@@ -1,0 +1,41 @@
+{
+  "repositories": [
+    {
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Kitchen-Demos",
+      "revision": "522e4ffa3bb9d9729f79b241c65fc9e589f2659c",
+      "declared_terms": {
+        "license": "cc-by-4.0"
+      },
+      "card_url": "https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Manipulation-Kitchen-Demos/blob/522e4ffa3bb9d9729f79b241c65fc9e589f2659c/README.md",
+      "license_files": [],
+      "license_references": [
+        "license: cc-by-4.0"
+      ]
+    },
+    {
+      "repo_id": "nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF",
+      "revision": "420a04af939c34873e6839a586b70844baf28aab",
+      "declared_terms": {
+        "license": "cc-by-4.0"
+      },
+      "card_url": "https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-Manipulation-Objects-Kitchen-MJCF/blob/420a04af939c34873e6839a586b70844baf28aab/README.md",
+      "license_files": [],
+      "license_references": [
+        "license: cc-by-4.0"
+      ]
+    },
+    {
+      "repo_id": "robocasa/robocasa-assets",
+      "revision": "1b92c3d02ca4354984fec961357db0bff7b32166",
+      "declared_terms": {
+        "license": "cc-by-4.0"
+      },
+      "card_url": "https://huggingface.co/datasets/robocasa/robocasa-assets/blob/1b92c3d02ca4354984fec961357db0bff7b32166/README.md",
+      "license_files": [],
+      "license_references": [
+        "license: cc-by-4.0"
+      ]
+    }
+  ],
+  "redistributed_data_or_assets": false
+}

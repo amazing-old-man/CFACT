@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "scope": "Actual byte SHA256 for all inventoried files; symbolic link targets recorded without following links",
+  "inputs": [
+    {
+      "input": "prior_release",
+      "files": 176,
+      "regular_file_bytes": 2436999,
+      "symlinks": 0,
+      "before_inventory_sha256": "5e88af49bb5b9761c3e4d1dd57d3c000dc46f1df2a9025a6439cfb3552233fb5",
+      "after_inventory_sha256": "5e88af49bb5b9761c3e4d1dd57d3c000dc46f1df2a9025a6439cfb3552233fb5",
+      "byte_identity_unchanged": true,
+      "historical_inventory_differences": 0
+    },
+    {
+      "input": "prior_smoke",
+      "files": 299593,
+      "regular_file_bytes": 54390552269,
+      "symlinks": 3179,
+      "before_inventory_sha256": "38973f49868a01cfa2ff24fe989e3670392d70642dbcda6ddcd6b9b3e0588a04",
+      "after_inventory_sha256": "38973f49868a01cfa2ff24fe989e3670392d70642dbcda6ddcd6b9b3e0588a04",
+      "byte_identity_unchanged": true,
+      "historical_inventory_differences": 0
+    },
+    {
+      "input": "prior_richness_inputs",
+      "files": 66,
+      "regular_file_bytes": 65328961,
+      "symlinks": 0,
+      "before_inventory_sha256": "09e5f4c3b38f4cbcba3795453e6e2eca1d48ec11bd30d79f99644daf23fcdd89",
+      "after_inventory_sha256": "09e5f4c3b38f4cbcba3795453e6e2eca1d48ec11bd30d79f99644daf23fcdd89",
+      "byte_identity_unchanged": true,
+      "historical_inventory_differences": 0
+    },
+    {
+      "input": "prior_outcome_inputs",
+      "files": 127,
+      "regular_file_bytes": 35951083,
+      "symlinks": 0,
+      "before_inventory_sha256": "1e63ee41b0ee3442d4b8c8edb9eb5f9cb7231e4365ec9e68af06fa920a44f852",
+      "after_inventory_sha256": "1e63ee41b0ee3442d4b8c8edb9eb5f9cb7231e4365ec9e68af06fa920a44f852",
+      "byte_identity_unchanged": true,
+      "historical_inventory_differences": 0
+    }
+  ]
+}

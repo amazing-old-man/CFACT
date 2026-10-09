@@ -1,0 +1,164 @@
+{
+  "status": "PASS",
+  "guide": "README.md at 871acda",
+  "source_code_same_as_representative_run": true,
+  "new_dependency_checkouts_and_venvs": true,
+  "cached_downloads_only": true,
+  "run": ".cache/readme-blind/CFACT-checkout/output/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__20261009T155608Z__b4b9eb27cdbf",
+  "command_exit_codes": {
+    "local_clone": 0,
+    "bootstrap_sim": 0,
+    "bootstrap_export": 0,
+    "download_assets": 0,
+    "doctor_render": 0,
+    "download": 0,
+    "download_offline": 0,
+    "import_source": 0,
+    "validate_schema": 0,
+    "validate_replay": 0,
+    "prepare": 0,
+    "generate": 0,
+    "status": 0,
+    "export_full_by_tree": 0,
+    "verify": 0,
+    "resume": 0,
+    "official_task_reader_example": 0,
+    "official_tree_reader_example": 0
+  },
+  "verification": {
+    "decoded_review_videos": 12,
+    "full_lineage_extra_disk_bytes": 2735980,
+    "leaf_lineages": 5,
+    "measured_transitions": 486,
+    "media_mode": "full",
+    "official": {
+      "all_rows_checked": 486,
+      "datasets": 1,
+      "episodes": 9,
+      "reader": "LeRobotDataset",
+      "status": "PASS",
+      "version": "0.4.0"
+    },
+    "physical_edges": 6,
+    "status": "PASS",
+    "trees": [
+      {
+        "edges": 6,
+        "independent_tree_readback": {
+          "all_rows_checked": 486,
+          "datasets": 1,
+          "episodes": 9,
+          "reader": "LeRobotDataset",
+          "status": "PASS",
+          "version": "0.4.0"
+        },
+        "nodes": 7,
+        "outcomes": [
+          {
+            "actions": 11,
+            "edge_id": "edge_846c4316e759adee44bc62d7",
+            "official_success_ever": true,
+            "official_success_first_state": 11,
+            "official_success_last": true,
+            "segment": "local"
+          },
+          {
+            "actions": 0,
+            "edge_id": "edge_846c4316e759adee44bc62d7",
+            "official_success_ever": true,
+            "official_success_first_state": 0,
+            "official_success_last": true,
+            "segment": "fixed_continuation"
+          },
+          {
+            "actions": 11,
+            "edge_id": "edge_49202bfdebdee327ffdd5cc9",
+            "official_success_ever": true,
+            "official_success_first_state": 11,
+            "official_success_last": true,
+            "segment": "local"
+          },
+          {
+            "actions": 0,
+            "edge_id": "edge_49202bfdebdee327ffdd5cc9",
+            "official_success_ever": true,
+            "official_success_first_state": 0,
+            "official_success_last": true,
+            "segment": "fixed_continuation"
+          },
+          {
+            "actions": 14,
+            "edge_id": "edge_f25a1300403d068108f6dfea",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "local"
+          },
+          {
+            "actions": 21,
+            "edge_id": "edge_f25a1300403d068108f6dfea",
+            "official_success_ever": true,
+            "official_success_first_state": 21,
+            "official_success_last": true,
+            "segment": "fixed_continuation"
+          },
+          {
+            "actions": 53,
+            "edge_id": "edge_f69121678d531eaf6eb28455",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "local"
+          },
+          {
+            "actions": 150,
+            "edge_id": "edge_f69121678d531eaf6eb28455",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "fixed_continuation"
+          },
+          {
+            "actions": 52,
+            "edge_id": "edge_dc04274c51bc95850c27af63",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "local"
+          },
+          {
+            "actions": 150,
+            "edge_id": "edge_dc04274c51bc95850c27af63",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "fixed_continuation"
+          },
+          {
+            "actions": 24,
+            "edge_id": "edge_15f7912bbde70e1c03c17a72",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "local"
+          },
+          {
+            "actions": 0,
+            "edge_id": "edge_15f7912bbde70e1c03c17a72",
+            "official_success_ever": false,
+            "official_success_first_state": null,
+            "official_success_last": false,
+            "segment": "fixed_continuation"
+          }
+        ],
+        "recursive_parents": 1,
+        "root_id": "root_2722302424499ff35d5d1795",
+        "status": "PHYSICS_COMPLETE",
+        "task": "OpenDrawer"
+      }
+    ]
+  },
+  "public_git_clone_tested": false,
+  "remote_url": "UNPUBLISHED",
+  "identical_package_code_sha256": "2b9b7366063835c40d37159f0baf1a807a4cf53b1108642b32d3205c1e3f3dd7"
+}

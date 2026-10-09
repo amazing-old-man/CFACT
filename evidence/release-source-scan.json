@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "tracked_files_scanned": 174,
+  "issues": [],
+  "scope": "Tracked release source, docs and evidence; ignored runtime/data are not distributed",
+  "final_additions_checked": [
+    "FREEZE.json",
+    "evidence/source-freeze.json",
+    "evidence/release-source-scan.json"
+  ]
+}

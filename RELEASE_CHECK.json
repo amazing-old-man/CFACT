@@ -1,0 +1,18 @@
+{
+  "classification": "LOCAL_RELEASE_READY",
+  "frozen_version": "0.7.1.dev0",
+  "tag": "v0.7.1.dev0",
+  "remote_published": false,
+  "t0_t5": "PASS",
+  "scientific_semantics_changed": false,
+  "source_provenance": "provenance.json",
+  "tests": "TEST_RESULTS.json",
+  "post_tag_installation_report": "dist/tag-verification.json",
+  "artifact_checksums": "dist/SHA256SUMS",
+  "limitations": [
+    "No public Git clone verification",
+    "Recorded Source trajectory is not byte-exact; initial restore and snapshot repeatability are exact",
+    "No claim of all 20 tasks or CPU software rendering",
+    "Blender lid free-body grasp unsupported"
+  ]
+}

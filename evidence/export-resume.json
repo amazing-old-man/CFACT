@@ -1,0 +1,23 @@
+{
+  "by_tree_exports": true,
+  "edges": 19,
+  "episode_tree_map": "mappings/episode_tree_map.parquet",
+  "episodes": 29,
+  "file_integrity": "mappings/file_integrity.json",
+  "frames": 1415,
+  "full_media": true,
+  "input_fingerprint": "5767c10e6862c7667a9f880cf8586b5e9895ec70bfb908973ce15b8a66a41679",
+  "lerobot_version": "0.4.0",
+  "lineage_paths": "mappings/lineage_paths.jsonl",
+  "official_readback": "reports/official_readback.json",
+  "publisher_sha256": "2b9b7366063835c40d37159f0baf1a807a4cf53b1108642b32d3205c1e3f3dd7",
+  "roots": 3,
+  "schema": "cfact.dual-view.v1",
+  "status": "COMPLETE",
+  "terminal_observation_map": "mappings/terminal_observation_map.parquet",
+  "trees": [
+    "trees/OpenDrawer/root_2722302424499ff35d5d1795/tree.json",
+    "trees/PickPlaceCounterToCabinet/root_93a173b2f1015e1b8080689c/tree.json",
+    "trees/TurnOnSinkFaucet/root_91e95529ae8b899ce89bf4ad/tree.json"
+  ]
+}
