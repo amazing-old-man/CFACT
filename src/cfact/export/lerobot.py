@@ -908,8 +908,8 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         "| `observation.fixture_joint_mask` | bool, Jf | fixture joint 有效维掩码 |\n"
         "| `observation.object_to_gripper_transform` | float32, 4×4 | 夹爪坐标系到对象的相对变换；平移 m |\n"
         "| `observation.sim_time_s` | float32, 1 | 模拟器时间，秒 |\n"
-        "| `observation.images.robot0_agentview_left/right` | video, 180×320×3 RGB | 两个分开的真实 simulator camera 视图；双线性半尺寸下采样，JPEG q80 暂存 |\n"
-        "| `observation.images.robot0_eye_in_hand` | video, 180×320×3 RGB | 真实腕部 camera 视图；双线性半尺寸下采样，JPEG q80 暂存 |\n"
+        f"| `observation.images.robot0_agentview_left/right` | video, {height}×{width}×3 RGB | 两个分开的真实 simulator camera 视图；按采集 receipt，JPEG q80 暂存 |\n"
+        f"| `observation.images.robot0_eye_in_hand` | video, {height}×{width}×3 RGB | 真实腕部 camera 视图；按采集 receipt，JPEG q80 暂存 |\n"
         "| `action` / `action.raw_planned` | float32, 12 | `action` 是 env.step 收到的命令；planned 是原始提案值。前6维为 base frame 归一化末端位置/轴角增量，第7维夹爪，第8–11维固定底盘命令通道，第12维控制器模式 -1 |\n"
         "| `action.controller_target_pose` | float32, 4×4 | 控制器目标末端姿态；不是实测状态 |\n"
         "| `label.local_event_reached` | bool, 1 | 与 action 对齐的局部事件边界标签；不是 observation |\n\n"
@@ -931,8 +931,8 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         "fps": int(reader.meta.fps),
         "camera_features": [f"{VIDEO_PREFIX}{camera}" for camera in CAMERAS],
         "camera_feature_resolution_hw": [height, width],
-        "camera_observation_provenance": "native_simulator_camera_bilinear_downsampled_to_jpeg_q80",
-        "review_video_resolution": [640, 360],
+        "camera_observation_provenance": media["camera_observation_provenance"],
+        "review_video_resolution": media["resolution"],
         "video_encoder": selected_vcodec,
         "h264_b_frames": 0 if selected_vcodec == "h264" else None,
         "storage_admission_before_export": initial_storage,
@@ -958,7 +958,7 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
         "LeRobot Dataset v3.0 export of measured physical counterfactual transitions from RoboCasa365.",
         "Each LeRobot episode is one uninterrupted local or fixed-continuation segment; no episode crosses a branch or segment boundary.",
         "Rows contain execution-time measurements s[t] and the command actually sent a[t]. The measured s[K] endpoint is referenced by the terminal observation map.",
-        "The three image features are separate true simulator camera views, bilinearly downsampled to 320x180 and staged as JPEG q80; 640x360 review panels are excluded from training images.",
+        f"The three image features are separate true simulator camera views at {width}x{height}, staged as JPEG q80; resolution/transforms follow the acquisition receipt; review panels are excluded from training images.",
         "Task success and event outcomes are kept as tree labels or explicitly named label features, not observation fields.",
         "Per-episode tree lineage is in `indices/episode_tree_map.parquet`; terminal s[K] references are in `indices/terminal_observation_map.parquet`.",
         "All requested source roots and their export counts are in `indices/requests.parquet`.",

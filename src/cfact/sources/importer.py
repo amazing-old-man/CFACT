@@ -20,10 +20,19 @@ def import_source(
     task: str,
     max_episodes: int | None = None,
     extract_to: Path | None = None,
+    demos: list[str] | None = None,
 ) -> dict:
     source, output = source.expanduser().resolve(), output.expanduser().resolve()
     if max_episodes is not None and max_episodes < 1:
         raise ValueError("max_episodes must be positive")
+    indices = None
+    if demos is not None:
+        import re
+        if not demos or any(re.fullmatch(r"demo_(0|[1-9][0-9]*)", demo) is None for demo in demos):
+            raise ValueError("explicit Source demos must use demo_N")
+        if len(set(demos)) != len(demos) or max_episodes is not None:
+            raise ValueError("unique explicit demos and --max-episodes are mutually exclusive")
+        indices = sorted(int(demo[5:]) for demo in demos)
     if output.exists() or output.with_suffix(output.suffix + ".import.json").exists():
         raise FileExistsError(output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -32,6 +41,8 @@ def import_source(
     try:
         archive_hash = None
         if source.is_file() and h5py.is_hdf5(source):
+            if demos is not None:
+                raise ValueError("explicit import demos require an official LeRobot bundle; use prepare for HDF5 subsets")
             from cfact.sources.validation import validate_raw
             validation = validate_raw(source, task)
             temporary = output.with_suffix(output.suffix + ".partial")
@@ -50,7 +61,7 @@ def import_source(
         if source.is_file():
             archive_hash = sha256_file(source)
             extracted = extract_to or output.parent / (output.stem + ".source")
-            extract_tar(source, extracted)
+            extract_tar(source, extracted, episode_indices=indices)
             directory = extracted
         elif source.is_dir():
             if extract_to is not None:
@@ -58,7 +69,7 @@ def import_source(
             directory = source
         else:
             raise FileNotFoundError(source)
-        inspection = inspect_lerobot_dataset(directory, expected_task=task)
+        inspection = inspect_lerobot_dataset(directory, expected_task=task, episode_indices=indices)
         selected = inspection.episodes[:max_episodes] if max_episodes else inspection.episodes
         consumed = [inspection.root / "meta" / name for name in ["info.json", "modality.json"]]
         consumed.append(inspection.root / "extras/dataset_meta.json")
@@ -74,7 +85,8 @@ def import_source(
                 ]
             )
         hashes = {str(p.relative_to(inspection.root)): sha256_file(p) for p in consumed}
-        result = import_raw_replay_hdf5(inspection, output, max_episodes=max_episodes)
+        result = import_raw_replay_hdf5(inspection, output, max_episodes=max_episodes,
+                                       preserve_episode_indices=demos is not None)
         # Detect mutation during import rather than recording misleading provenance.
         for path, digest in hashes.items():
             if sha256_file(inspection.root / path) != digest:
@@ -82,10 +94,11 @@ def import_source(
         package_digest = archive_hash
         package_kind = "downloaded_archive"
         if package_digest is None:
+            complete_inspection = inspect_lerobot_dataset(directory, expected_task=task)
             # A directory input has no tar hash; hash the complete replay bundle,
             # independently of --max-episodes so root identity is stable across subsets.
             bundle = dict(hashes)
-            for episode in inspection.episodes:
+            for episode in complete_inspection.episodes:
                 for path in (
                     episode.parquet_path,
                     episode.states_path,
@@ -123,7 +136,8 @@ def import_source(
                     if camera in videos:
                         raise ValueError(f"Duplicate source camera video: {camera}")
                     videos[camera] = {"path": str(video.resolve()), "sha256": sha256_file(video)}
-                dataset[f"data/demo_{index}"].attrs["cfact_source_videos"] = json.dumps(
+                demo_index = episode.index if demos is not None else index
+                dataset[f"data/demo_{demo_index}"].attrs["cfact_source_videos"] = json.dumps(
                     videos, sort_keys=True
                 )
 
@@ -137,6 +151,8 @@ def import_source(
                 "source_files_sha256": hashes,
                 "output": str(output),
                 "output_sha256": sha256_file(output),
+                "demo_episode_mapping": {f"demo_{episode.index if demos is not None else index}":
+                                         f"episode_{episode.index:06d}" for index, episode in enumerate(selected)},
             }
         )
         atomic_json(output.with_suffix(output.suffix + ".import.json"), result)
@@ -153,13 +169,14 @@ def main():
     parser.add_argument("--output", type=Path, required=True, help="New raw replay HDF5")
     parser.add_argument("--task", choices=SUPPORTED_TASK_NAMES, required=True)
     parser.add_argument("--max-episodes", type=int)
+    parser.add_argument("--demo", action="append", help="Explicit official episode demo_N; preserves its original index")
     parser.add_argument(
         "--extract-to", type=Path, help="New directory; defaults beside output HDF5"
     )
     args = parser.parse_args()
     print(
         json.dumps(
-            import_source(args.source, args.output, args.task, args.max_episodes, args.extract_to),
+            import_source(args.source, args.output, args.task, args.max_episodes, args.extract_to, args.demo),
             indent=2,
         )
     )

@@ -50,7 +50,12 @@ def _jobs(manifest: dict[str, Any], split: str, config: dict[str, Any]) -> list[
 def _snapshot(run: Path, config: Path, source_manifest: Path) -> None:
     source = source_root()
     freeze = None
-    if (source / "FREEZE.json").exists():
+    if json.loads(config.read_text()).get("source_mode") == "development":
+        from cfact.runtime.freeze import inventory, fingerprint
+        current = inventory(source)
+        freeze = {"status": "DEVELOPMENT_SNAPSHOT", "release": "0.7.2.dev0",
+                  "content_sha256": fingerprint(current), "files": current}
+    elif (source / "FREEZE.json").exists():
         from cfact.runtime.freeze import verify
 
         freeze = verify(source)
@@ -67,7 +72,9 @@ def _snapshot(run: Path, config: Path, source_manifest: Path) -> None:
     archive_source(source, archive_path, config, source_manifest)
     runtime = run / "source_runtime"
     unpack_source(archive_path, runtime)
-    if freeze:
+    if freeze and freeze["status"] == "DEVELOPMENT_SNAPSHOT":
+        atomic_json(snapshot / "DEVELOPMENT_FREEZE.json", freeze)
+    elif freeze:
         shutil.copy2(source / "FREEZE.json", snapshot / "FREEZE.json")
     expected = source_digest(source)
     if source_digest(runtime) != expected:
@@ -479,6 +486,14 @@ def _storage_admission(run: Path, config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _next_dispatch_index(pending: list[dict], active_jobs: list[dict], task_limit: int | None) -> int | None:
+    """Keep source order while allowing independently capped task queues to progress."""
+    for index, job in enumerate(pending):
+        if task_limit is None or sum(row["task"] == job["task"] for row in active_jobs) < task_limit:
+            return index
+    return None
+
+
 def _run_batch(
     *,
     run: Path,
@@ -490,6 +505,7 @@ def _run_batch(
     resume: bool,
 ) -> list[dict[str, Any]]:
     config_payload = json.loads(config.read_text())
+    task_limit = config_payload.get("scheduling", {}).get("max_active_roots_per_task")
     pending = []
     for job in jobs:
         completed = _result_paths(run, job)
@@ -526,6 +542,9 @@ def _run_batch(
             })
             break
         while pending and len(active) < workers and not pause_file.exists():
+            dispatch_index = _next_dispatch_index(pending, [item[1] for item in active.values()], task_limit)
+            if dispatch_index is None:
+                break
             worker_slot = launched % workers
             gpu = devices[worker_slot % len(devices)]
             dispatch_gate = _dispatch_resource_admission(
@@ -548,7 +567,7 @@ def _run_batch(
                 raise RuntimeError(
                     "source changed after run freeze; refusing mixed-version workers"
                 )
-            job = dict(pending.pop(0))
+            job = dict(pending.pop(dispatch_index))
             observed_gpu = next((row for row in _gpu_status() if row["index"] == gpu), None)
             job["physical_gpu_index"] = gpu
             job["physical_gpu_uuid"] = observed_gpu["uuid"] if observed_gpu else "UNKNOWN"
@@ -612,6 +631,7 @@ def _run_batch(
             run / "runtime" / "workers.json",
             {
                 "requested_workers": workers,
+                "max_active_roots_per_task": task_limit,
                 "active_workers": len(active),
                 "peak_simultaneous_workers": peak_active,
                 "ready_scene_instances": ready_scenes,

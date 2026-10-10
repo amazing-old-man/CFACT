@@ -974,7 +974,8 @@ def _save_clean_observation(env: Any, trace: MeasuredTrace, node: Path) -> None:
     depth_missing = []
     sim = env.env.sim
     for camera in QuadReviewWriter.CAMERAS:
-        width = height = 256
+        step_ledger = ledger(env)
+        width, height = step_ledger.width, step_ledger.height
         rgb_frames.append(
             np.asarray(
                 sim.render(height=height, width=width, camera_name=camera)[::-1], dtype=np.uint8
@@ -1373,6 +1374,7 @@ def _expand_child_pool(
                 fps=cfg["video"]["fps"],
                 cell_width=cfg["video"]["cell_width"],
                 cell_height=cfg["video"]["cell_height"],
+                feature_scale=cfg["video"].get("feature_scale", 1.0),
             )
             positions = option.intended_object_path[:, :3, 3]
             gripper_values = option.gripper_actions[:, 0]
@@ -1808,6 +1810,7 @@ def _expand_release_pool(
                 fps=cfg["video"]["fps"],
                 cell_width=cfg["video"]["cell_width"],
                 cell_height=cfg["video"]["cell_height"],
+                feature_scale=cfg["video"].get("feature_scale", 1.0),
             )
             gripper_index = len(
                 interface.target_pose_to_action(target_pose=np.asarray(before.eef_pose))
@@ -2155,7 +2158,8 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         return json.loads(completed_roots[0].read_text())
     task = target_task(args.task)
     seed = stable_seed(cfg["run_seed"], args.task, args.root_id, "root_initialization")
-    env = _create_env(root["env_meta"], seed, "robot0_agentview_left", args.gpu)
+    env = _create_env(root["env_meta"], seed, "robot0_agentview_left", args.gpu,
+                      width=cfg["video"]["cell_width"], height=cfg["video"]["cell_height"])
     root_lock = None
     alive = (
         args.run.resolve()
@@ -2725,6 +2729,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     fps=cfg["video"]["fps"],
                     cell_width=cfg["video"]["cell_width"],
                     cell_height=cfg["video"]["cell_height"],
+                feature_scale=cfg["video"].get("feature_scale", 1.0),
                 )
                 object_path = option.intended_object_path
                 if object_path is None or len(object_path) < 2:

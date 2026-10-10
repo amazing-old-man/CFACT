@@ -18,7 +18,7 @@ def member_path(root: Path, name: str) -> Path:
     return result
 
 
-def extract_tar(source: Path, destination: Path) -> None:
+def extract_tar(source: Path, destination: Path, *, episode_indices: list[int] | None = None) -> None:
     """Publish a new extracted directory; preserve incomplete attempts for diagnosis."""
     destination = destination.resolve()
     partial = destination.with_name(destination.name + ".partial")
@@ -31,6 +31,13 @@ def extract_tar(source: Path, destination: Path) -> None:
             member_path(partial, item.name)
             if not (item.isfile() or item.isdir()):
                 raise ValueError(f"Links and special files are unsupported: {item.name}")
+        if episode_indices is not None:
+            episodes = {f"episode_{index:06d}" for index in episode_indices}
+            def selected(item):
+                parts = PurePosixPath(item.name).parts
+                return ("meta" in parts or item.name.endswith("extras/dataset_meta.json")
+                        or any(PurePosixPath(part).stem in episodes for part in parts))
+            members = [item for item in members if selected(item)]
         required = sum(item.size for item in members if item.isfile())
         if required + 1024**3 > shutil.disk_usage(destination.parent).free:
             raise OSError(f"Insufficient disk space to extract {required} bytes")

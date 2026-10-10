@@ -39,11 +39,13 @@
       "robot0_agentview_right",
       "robot0_eye_in_hand"
     ],
-    "cell_height": 360,
-    "cell_width": 640,
+    "cell_height": 224,
+    "cell_width": 224,
     "codec": "libx264",
     "fps": 20,
-    "review_only": true
+    "review_only": true,
+    "feature_scale": 1.0,
+    "camera_schema": "cfact.native-rgb224.v1"
   },
   "contact_guard": {
     "mode": "off",
@@ -53,7 +55,7 @@
     "mode": "off",
     "reason": "candidate physics is measured during execution; no universal collision-proof gate"
   },
-  "generator_revision": "cfact-0.7.0",
+  "generator_revision": "cfact-0.7.2.dev0-native224",
   "resource": {
     "requested_scene_workers": 1,
     "ffmpeg_workers": 1,
@@ -70,5 +72,6 @@
     "schema": "cfact.dual-view.v1",
     "output_root": "outputs/CFACT-20",
     "export_python": null
-  }
+  },
+  "source_mode": "development"
 }

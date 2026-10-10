@@ -45,12 +45,14 @@ def parameters(config: dict, workers: int, export_python: str | None) -> dict:
     profile["target_workers"] = workers
     result["engineering_profile"] = profile
     result["run_seed"] = config["seed"]
+    result["video"].update(config.get("camera", {}))
     result["tree_limits"]["maximum_decision_depth"] = config.get("maximum_decision_depth", 2)
     if config.get("max_control_steps") is not None:
         result["execution"]["max_env_steps_per_root"] = config["max_control_steps"]
         result["execution"]["max_task_path_steps"] = config["max_control_steps"]
     result["resource"].update(config["resource"])
     result["resource"]["requested_scene_workers"] = workers
+    result["scheduling"] = {"max_active_roots_per_task": config.get("max_active_roots_per_task")}
     result["storage"].update({"auto_publish": False, "flat_trees": True, "export_python": export_python})
     from cfact.collection.config import validate_config
     validate_config(result)
@@ -161,9 +163,10 @@ def generate(args) -> dict:
         return {"status": "DRY_RUN", "physics_started": False, "workers": workers,
                 "root_count": sum(len(x["roots"]) for x in config["tasks"]), "config": config,
                 "resources": admission(Path.cwd(), devices, workers, params["resource"])}
+    prepared_dir = args.prepared_dir or Path(config.get("source_dir", ".cache")) / "prepared"
     task_rows, source_rows, datasets = [], [], set()
     for row in config["tasks"]:
-        path = (args.prepared_dir / (row["task"] + ".hdf5")).resolve()
+        path = (prepared_dir / (row["task"] + ".hdf5")).resolve()
         identity = validate_prepared_identity(path, required_episodes=row["roots"] + row.get("donors", []))
         with h5py.File(path, "r") as dataset:
             provenance = json.loads(dataset["data"].attrs.get("cfact_source_provenance", "{}"))
@@ -181,7 +184,10 @@ def generate(args) -> dict:
         raise ValueError("Source dataset name has no safe slug")
     created = datetime.now(timezone.utc)
     run_id = uuid.uuid4().hex[:12]
-    run = root / "output" / f"{slug}__{created:%Y%m%dT%H%M%SZ}__{run_id}"
+    output_base = root / "output" / config.get("output_subdir", "")
+    if not output_base.resolve().is_relative_to((root / "output").resolve()):
+        raise ValueError("OUTPUT_SUBDIR_OUTSIDE_OUTPUT")
+    run = output_base / f"{slug}__{created:%Y%m%dT%H%M%SZ}__{run_id}"
     run.mkdir(parents=True, exist_ok=False)
     (run / "runtime").mkdir()
     (run / "reports").mkdir()
@@ -197,6 +203,8 @@ def generate(args) -> dict:
     manifest = {"schema": "cfact.run.v1", "run_id": run_id, "created_utc": created.isoformat(),
                 "source_dataset": config["source_dataset"], "requested_roots": sum(len(x["roots"]) for x in task_rows),
                 "tasks": task_rows, "seed": config["seed"], "workers": workers, "gpu_devices": devices,
+                "camera_contract": params["video"], "config_sha256": digest_json(params),
+                "git_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"])),
                 "code_sha256": implementation_digest(), "git_commit": revision.stdout.strip() if revision.returncode == 0 else "UNCOMMITTED",
                 "dependencies": {d.metadata["Name"]: d.version for d in distributions() if d.metadata["Name"]},
                 "immutable_files": {name: sha256_file(run / name) for name in immutable}}
@@ -211,7 +219,8 @@ def main():
     sub = parser.add_subparsers(dest="action", required=True)
     gen = sub.add_parser("generate")
     gen.add_argument("--config", type=Path, required=True)
-    gen.add_argument("--prepared-dir", type=Path, default=Path(".cache/prepared"))
+    gen.add_argument("--prepared-dir", type=Path,
+                     help="Prepared inputs; defaults to config source_dir/prepared, or legacy .cache/prepared")
     gen.add_argument("--workers", type=int)
     gen.add_argument("--gpu-devices", default="0")
     gen.add_argument("--export-python")

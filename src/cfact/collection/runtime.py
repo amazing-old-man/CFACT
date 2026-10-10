@@ -54,7 +54,8 @@ def _load_root(dataset: Path, root_id: str) -> dict[str, Any]:
 
 
 def _create_env(
-    env_meta: dict[str, Any], seed: int, camera: str, render_gpu_device_id: int = 0
+    env_meta: dict[str, Any], seed: int, camera: str, render_gpu_device_id: int = 0,
+    *, width: int = 224, height: int = 224
 ) -> Any:
     wrapper = robocasa_env_wrapper_class()
     kwargs = dict(env_meta["env_kwargs"])
@@ -75,8 +76,8 @@ def _create_env(
     return wrapper.create_for_data_processing(
         env_name=env_meta["env_name"],
         camera_names=[camera],
-        camera_height=84,
-        camera_width=84,
+        camera_height=height,
+        camera_width=width,
         reward_shaping=False,
         **kwargs,
     )

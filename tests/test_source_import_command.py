@@ -4,6 +4,9 @@ import h5py
 import numpy as np
 import pandas as pd
 import pytest
+import json
+import shutil
+from pathlib import Path
 from cfact.sources.archives import extract_tar
 from cfact.sources.importer import import_source
 from test_lerobot_input import _fixture
@@ -76,3 +79,27 @@ def test_prepared_subset_copies_only_selected_demos_without_touching_raw(tmp_pat
         assert file["data/demo_2"].attrs["original_episode_index"] == 2
     with pytest.raises(FileExistsError):
         _copy_subset(raw, output, 1)
+
+
+def test_explicit_sparse_source_identity_and_archive_extraction(tmp_path):
+    source = _fixture(tmp_path / "original")
+    parquet = source / "data/chunk-000/episode_000000.parquet"
+    pd.DataFrame({"action": [np.arange(12), np.arange(12) + 1],
+                  "next.reward": [0., 1.], "next.done": [False, True]}).to_parquet(parquet)
+    for index in (7, 19):
+        shutil.copytree(source / "extras/episode_000000", source / f"extras/episode_{index:06d}")
+        shutil.copyfile(parquet, parquet.with_name(f"episode_{index:06d}.parquet"))
+    (source / "meta/episodes.jsonl").write_text("\n".join(json.dumps({"episode_index": i}) for i in (0, 7, 19)))
+    archive = tmp_path / "official.tar"
+    with tarfile.open(archive, "w") as tar:
+        tar.add(source, arcname="lerobot")
+    report = import_source(archive, tmp_path / "sparse.hdf5", "OpenDrawer", demos=["demo_19", "demo_7"])
+    with h5py.File(report["output"]) as dataset:
+        assert set(dataset["data"]) == {"demo_7", "demo_19"}
+        assert dataset["data/demo_19"].attrs["lerobot_episode_index"] == 19
+    assert report["demo_episode_mapping"] == {"demo_7": "episode_000007", "demo_19": "episode_000019"}
+    assert not (Path(report["source_root"]) / "extras/episode_000000").exists()
+    with pytest.raises(ValueError, match="missing or duplicated"):
+        import_source(source, tmp_path / "missing.hdf5", "OpenDrawer", demos=["demo_3"])
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        import_source(source, tmp_path / "duplicate.hdf5", "OpenDrawer", demos=["demo_7", "demo_7"])

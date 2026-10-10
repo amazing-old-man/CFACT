@@ -5,6 +5,10 @@ import math
 
 
 def validate_config(config: dict) -> None:
+    task_limit = config.get("scheduling", {}).get("max_active_roots_per_task")
+    if task_limit is not None and (type(task_limit) is not int or task_limit < 1):
+        raise ValueError("scheduling.max_active_roots_per_task must be a positive integer or null")
+
     def integer(section: str, key: str, minimum: int) -> int:
         value = config[section][key]
         if type(value) is not int or value < minimum:
@@ -37,6 +41,12 @@ def validate_config(config: dict) -> None:
     fps = integer("video", "fps", 1)
     if fps != config["execution"]["control_hz"]:
         raise ValueError("video.fps must equal execution.control_hz; export never resamples")
+    integer("video", "cell_width", 1)
+    integer("video", "cell_height", 1)
+    if config["video"].get("camera_schema") == "cfact.native-rgb224.v1" and (
+            config["video"]["cell_width"] != 224 or config["video"]["cell_height"] != 224 or
+            config["video"].get("feature_scale") != 1.0):
+        raise ValueError("NATIVE_RGB224_CAMERA_CONTRACT")
     cameras = config["video"]["cameras"]
     if not cameras or len(cameras) != len(set(cameras)):
         raise ValueError("video.cameras must contain unique camera names")

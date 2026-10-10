@@ -27,9 +27,11 @@ class QuadReviewWriter:
         method: str,
         intent: str,
         fps: int = 20,
-        cell_width: int = 640,
-        cell_height: int = 360,
+        cell_width: int = 224,
+        cell_height: int = 224,
+        feature_scale: float = 1.0,
     ) -> None:
+        self.feature_scale = feature_scale
         self.path = path
         self.deferred = os.environ.get("CFACT_DEFER_VIDEO_ENCODING") == "1"
         self.frames_dir = path.with_suffix(".frames") if self.deferred else None
@@ -79,8 +81,8 @@ class QuadReviewWriter:
             if self.frames_dir is not None:
                 clean_dir = self.frames_dir / "clean_cameras" / camera
                 clean_dir.mkdir(parents=True, exist_ok=True)
-                compact_size = (max(1, self.cell_width // 2), max(1, self.cell_height // 2))
-                compact_image = camera_image.resize(compact_size, Image.Resampling.BILINEAR)
+                compact_size = (round(self.cell_width * self.feature_scale), round(self.cell_height * self.feature_scale))
+                compact_image = camera_image if compact_size == camera_image.size else camera_image.resize(compact_size, Image.Resampling.BILINEAR)
                 clean_path = clean_dir / f"{len(self.times):06d}.jpg"
                 compact_image.save(clean_path, "JPEG", quality=80, optimize=False)
                 self.clean_camera_frame_paths[camera].append(
@@ -140,13 +142,15 @@ class QuadReviewWriter:
             "camera_extrinsics_per_frame": self.camera_extrinsics_per_frame,
             "frame_phase": self.phases,
             "clean_camera_frame_paths": self.clean_camera_frame_paths,
-            "clean_camera_frame_encoding": "jpeg_q80_bilinear_half_resolution",
+            "clean_camera_frame_encoding": "jpeg_q80_native" if self.feature_scale == 1 else "jpeg_q80_explicit_scale",
             "camera_render_resolution": [self.cell_width, self.cell_height],
             "camera_feature_resolution": [
-                max(1, self.cell_width // 2),
-                max(1, self.cell_height // 2),
+                round(self.cell_width * self.feature_scale),
+                round(self.cell_height * self.feature_scale),
             ],
-            "camera_observation_provenance": "native_simulator_camera_bilinear_downsampled_to_jpeg_q80",
+            "camera_observation_provenance": "native_simulator_camera_rgb_jpeg_q80" if self.feature_scale == 1 else "native_simulator_camera_explicit_scaled_jpeg_q80",
+            "rgb_color_order": "RGB", "vertical_flip": True,
+            "feature_scale": self.feature_scale, "crop": None,
             "render_source": "executed_physics_state",
             "fps": self.fps,
             "resolution": [self.cell_width, self.cell_height],

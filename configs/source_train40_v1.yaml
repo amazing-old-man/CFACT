@@ -1,0 +1,73 @@
+schema: cfact.run.v1
+source_dataset: PhysicalAI-Robotics-Manipulation-Kitchen-Demos
+seed: 20260922
+workers: 1
+maximum_decision_depth: 2
+media: full
+resource:
+  admission_ram_reserve_mib: 20480
+  admission_ram_mib_per_scene: 8192
+  ram_basis: 8192 MiB 保守预算；本轮实测后复核。
+  admission_gpu_reserve_mib: 10240
+  admission_gpu_mib_per_scene: 2160
+  minimum_host_free_gib: 50
+  maximum_output_gb: 100
+  maximum_gpu_temperature_c: 85
+tasks:
+- task: OpenDrawer
+  roots:
+  - demo_8
+  - demo_53
+  - demo_16
+  - demo_19
+  - demo_73
+  - demo_15
+  - demo_82
+  - demo_12
+  - demo_43
+  - demo_56
+  - demo_70
+  - demo_98
+  - demo_14
+  - demo_93
+  - demo_32
+  - demo_57
+  - demo_54
+  - demo_27
+  - demo_91
+  - demo_96
+  donors:
+  - demo_25
+  - demo_41
+- task: CoffeeServeMug
+  roots:
+  - demo_105
+  - demo_32
+  - demo_87
+  - demo_57
+  - demo_33
+  - demo_55
+  - demo_89
+  - demo_62
+  - demo_10
+  - demo_9
+  - demo_14
+  - demo_47
+  - demo_72
+  - demo_50
+  - demo_69
+  - demo_90
+  - demo_66
+  - demo_43
+  - demo_42
+  - demo_86
+  donors:
+  - demo_102
+  - demo_106
+purpose: formal_40root_after_explicit_user_approval
+camera:
+  cell_width: 224
+  cell_height: 224
+  feature_scale: 1.0
+  camera_schema: cfact.native-rgb224.v1
+source_dir: source/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__522e4ffa__train40_v1

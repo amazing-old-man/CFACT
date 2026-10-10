@@ -165,6 +165,7 @@ def inspect_lerobot_dataset(
     source: Path,
     *,
     expected_task: str | None = None,
+    episode_indices: list[int] | None = None,
 ) -> LeRobotInspection:
     """Validate replay-critical structure without loading videos or parquet bodies."""
 
@@ -195,6 +196,8 @@ def inspect_lerobot_dataset(
         if match is None:
             raise ValueError(f"invalid episode directory name: {directory.name}")
         index = int(match.group(1))
+        if episode_indices is not None and index not in episode_indices:
+            continue
         basename = f"episode_{index:06d}"
         parquet = list((root / "data").glob(f"*/{basename}.parquet"))
         if len(parquet) != 1:
@@ -230,10 +233,18 @@ def inspect_lerobot_dataset(
             )
         )
     if not episodes:
+        if episode_indices is not None:
+            raise ValueError("requested Source episodes missing or duplicated")
         raise ValueError("dataset contains no replay episodes")
     actual_indices = {episode.index for episode in episodes}
     metadata_indices = _episode_metadata_indices(root / "meta" / "episodes.jsonl")
-    if metadata_indices is not None and metadata_indices != actual_indices:
+    if episode_indices is not None:
+        requested = set(episode_indices)
+        if len(requested) != len(episode_indices) or requested != actual_indices:
+            raise ValueError("requested Source episodes missing or duplicated")
+        if metadata_indices is not None and not requested.issubset(metadata_indices):
+            raise ValueError("requested Source episodes absent from metadata")
+    elif metadata_indices is not None and metadata_indices != actual_indices:
         raise ValueError("meta/episodes.jsonl does not match replay extras")
     if len(actual_indices) != len(episodes):
         raise ValueError("duplicate episode indices")
@@ -290,6 +301,7 @@ def import_raw_replay_hdf5(
     *,
     max_episodes: int | None = None,
     progress_guard: Callable[[], None] | None = None,
+    preserve_episode_indices: bool = False,
 ) -> dict[str, Any]:
     """Create a new raw replay HDF5; never overwrite an existing destination."""
 
@@ -342,7 +354,8 @@ def import_raw_replay_hdf5(
                 with gzip.open(episode.model_xml_path, "rt", encoding="utf-8") as stream:
                     model_xml = stream.read()
                 episode_meta = _read_json(episode.episode_meta_path)
-                group = data.create_group(f"demo_{output_index}")
+                demo_index = episode.index if preserve_episode_indices else output_index
+                group = data.create_group(f"demo_{demo_index}")
                 group.create_dataset("actions", data=actions, compression="gzip")
                 group.create_dataset("states", data=states, compression="gzip")
                 group.create_dataset("source_next_reward", data=source_rewards, compression="gzip")
@@ -350,6 +363,7 @@ def import_raw_replay_hdf5(
                 group.attrs["model_file"] = model_xml
                 group.attrs["ep_meta"] = json.dumps(episode_meta, sort_keys=True)
                 group.attrs["lerobot_episode_index"] = episode.index
+                group.attrs["original_episode_id"] = f"episode_{episode.index:06d}"
                 group.attrs["source_terminal_reward"] = float(source_rewards[-1])
                 group.attrs["source_terminal_done"] = bool(source_dones[-1])
                 source_successful_episodes += int(bool(np.any(source_rewards > 0)))

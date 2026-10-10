@@ -399,3 +399,60 @@ Source 回放的精确断言是原始初态恢复及同 snapshot 独立动作重
 第二个执行者只需从本 README 第 1 节开始。`HANDOFF.md` 提供本次具体证据
 位置；它不补充 README 缺失的运行步骤。tag 后的独立安装/读取报告放在
 `dist/tag-verification.json`，构建包及其 SHA256 位于 `dist/`。
+
+## Native224 development configuration (0.7.2.dev0)
+
+Current development sources default all three named RGB cameras to native
+224×224 capture, full-resolution clean JPEG staging and matching history/node
+NPZ. `configs/pre_scale_native224.yaml` is the bounded two-development-root
+configuration; Reference/G0/G1/G2, physics clocks and recursion are unchanged.
+`source_mode=development` captures a content-addressed development snapshot
+without rewriting the historical `FREEZE.json` or `v0.7.1.dev0` tag. The installed
+venv package metadata may still report 0.7.1.dev0; the actual run binds the new
+`generator_revision`, base Git commit, dirty flag, code hash and camera/config
+receipt. All previous release evidence above remains historical.
+
+The actual bounded run is in
+`output/pre_scale_checks/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__20261010T154822Z__151db2e62f2c/`.
+Generation, full-media by-task/by-tree export and verification passed. Original
+Source MP4 files are 256×256; old CF raw history is 360×640 and its prior model
+transform yields 224×398. Neither old file family was rewritten or relabeled.
+See `docs/native224_development.md` for the reusable contract and commands.
+
+## 9. 本轮双任务 20+20 Source 的保存和读取路径
+
+本轮新增数据统一放在项目 `source/`，正式生成结果仍写入 `output/`。
+固定官方快照为 `nvidia/PhysicalAI-Robotics-Manipulation-Kitchen-Demos` 的
+`522e4ffa3bb9d9729f79b241c65fc9e589f2659c`，仅使用 OpenDrawer、CoffeeServeMug
+的 pretrain/human Source。此目录被 Git 忽略，Source 身份和成员清单则版本化
+保存在 `configs/source_train40_v1.json`，不能把大文件提交进 Git。
+
+```text
+source/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__522e4ffa__train40_v1/
+  archives/<task>.tar, <task>.tar.download.json   # 官方归档及 revision/SHA 收据
+  extracted/<task>/lerobot/                     # 选中 episode 的官方元数据和视频
+  raw/<task>.hdf5, <task>.hdf5.import.json       # 指定 demo 导入，不重新编号
+  prepared/<task>.hdf5                          # 当前 preparer 身份匹配的注释
+  initial_staging/, initial_prepared/            # 路径调整前本轮首次准备，保留诊断
+```
+
+`configs/source_train40_v1.yaml` 的 `source_dir` 指向上述目录。`generate` 未提供
+`--prepared-dir` 时读取 `source_dir/prepared`；显式 `--prepared-dir` 优先。
+没有 `source_dir` 的历史配置仍使用其原有 `.cache/prepared` 默认值，以上历史
+验收流程和旧输出不改写。新 importer 支持重复 `--demo demo_N`，只提取指定
+episode，并保留 `demo_N ↔ episode_N` 身份；不得与 `--max-episodes` 混用。
+
+只读检查示例（不启动正式生成）：
+
+```bash
+source .runtime/activate.sh
+python scripts/verify_source_requests.py --manifest configs/source_train40_v1.json
+python -m cfact generate --config configs/source_train40_v1.yaml \
+  --workers 1 --gpu-devices 0 --dry-run
+```
+
+40 个 root 是冻结请求，不保证 40 棵非空树。正式生成必须等待用户下一次明确
+批准；本轮最多对 4 个事先固定的开发 root 做 32-edge Smoke，严禁模型训练。
+本轮最终验收和从独立 checkout 开始的步骤见 `docs/source40_reproduction.md`
+以及 `output/preparation_40root__20261010T164033Z/HANDOFF.md`。文件中的最终状态
+决定是否满足冻结门槛，不能把 dry-run 或旧 native224 证据算作新 Smoke。
