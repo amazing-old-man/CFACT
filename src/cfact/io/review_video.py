@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from cfact.io.video import FFmpegRGBWriter
+from cfact.execution.observation import observe
 
 
 class QuadReviewWriter:
@@ -46,6 +47,7 @@ class QuadReviewWriter:
         self.candidate, self.method, self.intent = candidate, method, intent
         self.cell_width, self.cell_height, self.fps = cell_width, cell_height, fps
         self.times: list[float] = []
+        self.capture_metadata: list[dict[str, Any]] = []
         self.phases: list[str] = []
         self.calibration: dict[str, Any] = {}
         self.camera_extrinsics_per_frame: dict[str, list[dict[str, Any]]] = {
@@ -59,7 +61,8 @@ class QuadReviewWriter:
             self.font = ImageFont.load_default()
 
     def append(self, env: Any, sim_time: float, phase: str) -> None:
-        sim = env.env.sim
+        observation = observe(env)
+        sim = observation.sim
         initial_time = float(sim.data.time)
         if abs(initial_time - sim_time) > 1e-8:
             raise ValueError("camera frame and recorded physics time differ")
@@ -67,7 +70,7 @@ class QuadReviewWriter:
         for index, camera in enumerate(self.CAMERAS):
             try:
                 frame = np.asarray(
-                    sim.render(height=self.cell_height, width=self.cell_width, camera_name=camera)[
+                    observation.render(height=self.cell_height, width=self.cell_width, camera_name=camera)[
                         ::-1
                     ]
                 )
@@ -129,6 +132,7 @@ class QuadReviewWriter:
         else:
             self.writer.append_data(np.asarray(review_panel, dtype=np.uint8))
         self.times.append(sim_time)
+        self.capture_metadata.append(observation.metadata)
         self.phases.append(phase)
 
     def close(self) -> dict[str, Any]:
@@ -141,6 +145,7 @@ class QuadReviewWriter:
             "frame_sim_time_s": self.times,
             "camera_extrinsics_per_frame": self.camera_extrinsics_per_frame,
             "frame_phase": self.phases,
+            "observation_captures": self.capture_metadata,
             "clean_camera_frame_paths": self.clean_camera_frame_paths,
             "clean_camera_frame_encoding": "jpeg_q80_native" if self.feature_scale == 1 else "jpeg_q80_explicit_scale",
             "camera_render_resolution": [self.cell_width, self.cell_height],

@@ -55,7 +55,7 @@
     "mode": "off",
     "reason": "candidate physics is measured during execution; no universal collision-proof gate"
   },
-  "generator_revision": "cfact-0.7.2.dev0-native224",
+  "generator_revision": "cfact-0.7.3.dev0-native224-rgb-sync",
   "resource": {
     "requested_scene_workers": 1,
     "ffmpeg_workers": 1,

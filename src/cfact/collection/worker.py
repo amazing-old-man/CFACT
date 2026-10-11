@@ -41,6 +41,7 @@ from cfact.execution.binding import (
     source_joint_task_goal,
 )
 from cfact.execution.history import ControlStepLedger, ledger
+from cfact.execution.observation import observe
 from cfact.storage.schema import make_child_context
 from cfact.generation.context import OperationContext
 from cfact.generation.options import compile_candidate_plan
@@ -972,17 +973,18 @@ def _save_clean_observation(env: Any, trace: MeasuredTrace, node: Path) -> None:
     rgb_frames = []
     depth_frames = []
     depth_missing = []
-    sim = env.env.sim
+    observation = observe(env)
+    sim = observation.sim
     for camera in QuadReviewWriter.CAMERAS:
         step_ledger = ledger(env)
         width, height = step_ledger.width, step_ledger.height
         rgb_frames.append(
             np.asarray(
-                sim.render(height=height, width=width, camera_name=camera)[::-1], dtype=np.uint8
+                observation.render(height=height, width=width, camera_name=camera)[::-1], dtype=np.uint8
             )
         )
         try:
-            rendered = sim.render(height=height, width=width, camera_name=camera, depth=True)
+            rendered = observation.render(height=height, width=width, camera_name=camera, depth=True)
             depth = np.asarray(rendered[1] if isinstance(rendered, tuple) else rendered)
             if depth.shape != (height, width):
                 raise ValueError(f"depth_shape_{depth.shape}")
@@ -1010,12 +1012,14 @@ def _save_clean_observation(env: Any, trace: MeasuredTrace, node: Path) -> None:
             }
         )
     data["rgb"] = np.stack(rgb_frames)
+    data.update(observation.archive_values())
     if not depth_missing:
         data["depth"] = np.stack(depth_frames)
     np.savez_compressed(node / "observation.npz", **data)
     atomic_json(
         node / "cameras.json",
         {
+            "observation_capture": observation.metadata,
             "cameras": camera_rows,
             "depth_missing": depth_missing,
             "rgb_color_order": "RGB",

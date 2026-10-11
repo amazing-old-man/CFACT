@@ -179,8 +179,18 @@ class MeasuredTrace:
     transition_reasons: list[str] = field(default_factory=list)
     local_event_flags: list[bool] = field(default_factory=list)
     robot_contacts_json: list[str] = field(default_factory=list)
+    observation_object_poses: list[np.ndarray] = field(default_factory=list)
+    observation_fixture_poses: list[np.ndarray] = field(default_factory=list)
+    observation_eef_poses: list[np.ndarray] = field(default_factory=list)
+    observation_metadata: list[dict] = field(default_factory=list)
+    _capture_failed: bool = field(default=False, init=False, repr=False)
 
     def capture(self, env: Any, interface: Any) -> None:
+        if self._capture_failed:
+            raise ValueError("failed_observation_capture")
+        # Any exception poisons this rollout: partially appended labels must
+        # never be serialized or made apparently complete by a later capture.
+        self._capture_failed = True
         sim = env.env.sim
         info = interface.get_datagen_info()
         objects = info.object_poses
@@ -189,6 +199,19 @@ class MeasuredTrace:
         obj = np.asarray(objects[self.object_ref], dtype=float).copy()
         fixture = np.asarray(objects[self.fixture_ref], dtype=float).copy()
         eef = np.asarray(info.eef_pose, dtype=float).copy()
+        # Keep execution caches for the existing detectors / candidate policy.
+        # Only serialized observation labels use the refreshed current state.
+        from cfact.execution.observation import observation_poses
+        current = observation_poses(env, interface)
+        if current is not None:
+            poses, current_eef, metadata = current
+            current_obj = np.array(poses[self.object_ref], copy=True)
+            current_fixture = np.array(poses[self.fixture_ref], copy=True)
+            current_eef = np.array(current_eef, copy=True)
+            if any(p.shape != (4, 4) or not np.isfinite(p).all()
+                   for p in (current_obj, current_fixture, current_eef)):
+                raise ValueError("observation_invalid_current_pose")
+            current_metadata = metadata
         if obj.shape != (4, 4) or fixture.shape != (4, 4) or eef.shape != (4, 4):
             raise ValueError("measured pose has invalid shape")
         robot = env.env.robots[0]
@@ -278,6 +301,12 @@ class MeasuredTrace:
                         }
                     )
             self.robot_contacts_json.append(json.dumps(contacts, sort_keys=True))
+        if current is not None:
+            self.observation_object_poses.append(current_obj)
+            self.observation_fixture_poses.append(current_fixture)
+            self.observation_eef_poses.append(current_eef)
+            self.observation_metadata.append(current_metadata)
+        self._capture_failed = False
 
     def after_step(
         self,
@@ -308,8 +337,19 @@ class MeasuredTrace:
             raise AssertionError("K actions must have K+1 measured frames")
 
     def arrays(self) -> dict[str, np.ndarray]:
+        if self._capture_failed:
+            raise ValueError("failed_observation_capture")
         times = np.asarray(self.sim_time)
-        objects = np.asarray(self.object_poses)
+        refreshed = bool(self.observation_metadata)
+        if refreshed and any(len(rows) != len(times) for rows in (
+            self.observation_metadata, self.observation_object_poses,
+            self.observation_fixture_poses, self.observation_eef_poses,
+        )):
+            raise ValueError("incomplete_current_observation_labels")
+        objects = np.asarray(self.observation_object_poses if refreshed else self.object_poses)
+        eef = np.asarray(self.observation_eef_poses if refreshed else self.actual_eef_pose)
+        fixtures = np.asarray(self.observation_fixture_poses if refreshed else self.fixture_poses)
+        relation = np.linalg.inv(eef) @ objects if refreshed else np.asarray(self.object_to_gripper_transform)
         velocity = np.full((len(times), 3), np.nan, dtype=float)
         if len(times) > 1:
             dt = np.diff(times)
@@ -335,13 +375,17 @@ class MeasuredTrace:
             "robot_qvel_units": np.asarray(self.robot_qvel_units),
             "robot_qpos": np.asarray(self.robot_qpos),
             "robot_qvel": np.asarray(self.robot_qvel),
-            "actual_eef_pose": np.asarray(self.actual_eef_pose),
+            "actual_eef_pose": eef,
             "object_poses": objects[:, None],
             "object_velocities": velocity[:, None],
-            "fixture_poses": np.asarray(self.fixture_poses),
+            "fixture_poses": fixtures,
             "relevant_fixture_qpos": np.asarray(self.fixture_qpos),
             "relevant_fixture_qvel": np.asarray(self.fixture_qvel),
-            "object_to_gripper_transform": np.asarray(self.object_to_gripper_transform),
+            "object_to_gripper_transform": relation,
+            "observation_capture_json": np.asarray([json.dumps(row, sort_keys=True) for row in self.observation_metadata]),
+            "execution_cache_object_poses": np.asarray(self.object_poses),
+            "execution_cache_fixture_poses": np.asarray(self.fixture_poses),
+            "execution_cache_eef_poses": np.asarray(self.actual_eef_pose),
             "task_success": np.asarray(self.task_success, dtype=bool),
             "subtask_signals_json": np.asarray(
                 [json.dumps(row, sort_keys=True) for row in self.subtask_signals]

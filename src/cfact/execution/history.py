@@ -7,6 +7,7 @@ import json
 import numpy as np
 from cfact.io.serialization import atomic_json
 from cfact.io.review_video import QuadReviewWriter
+from cfact.execution.observation import observe, array_sha
 
 
 class ControlStepLedger:
@@ -30,30 +31,55 @@ class ControlStepLedger:
         self.segment, self.phase, self._fresh = segment, phase, True
 
     def capture(self, action=None):
-        sim = self.env.env.sim
+        observation = observe(self.env)
+        sim = observation.sim
         sequence = len(self.rows)
         path = self.directory / f"frame_{sequence:07d}.npz"
         images = np.stack(
             [
                 np.asarray(
-                    sim.render(height=self.height, width=self.width, camera_name=camera)[::-1],
+                    observation.render(height=self.height, width=self.width, camera_name=camera)[::-1],
                     dtype=np.uint8,
                 )
                 for camera in QuadReviewWriter.CAMERAS
             ]
         )
-        state = np.asarray(sim.get_state().flatten()).copy()
+        state = observation.state
         values = {"sim_state": state, "sim_time_s": np.asarray(float(sim.data.time)), "rgb": images}
+        values.update(observation.archive_values())
+        model = getattr(getattr(sim, "model", None), "_model", None)
+        if model is not None:
+            source = self.env.env.sim
+            if not hasattr(source, "_cfact_observation_model_sha"):
+                import hashlib
+                xml = source.model.get_xml()
+                sha = hashlib.sha256(xml.encode()).hexdigest()
+                (self.directory / f"model_{sha}.xml").write_text(xml)
+                source._cfact_observation_model_sha = sha
+            observation.metadata["model_xml_sha256"] = source._cfact_observation_model_sha
+            if not hasattr(source, "_cfact_observation_model_binary_sha"):
+                # XML decimal serialization is not a lossless MjModel archive.
+                import mujoco
+                binary = np.empty(mujoco.mj_sizeModel(model), dtype=np.uint8)
+                mujoco.mj_saveModel(model, buffer=binary)
+                binary_sha = array_sha(binary)
+                (self.directory / f"model_{binary_sha}.mjb").write_bytes(binary.tobytes())
+                source._cfact_observation_model_binary_sha = binary_sha
+            observation.metadata["model_binary_sha256"] = source._cfact_observation_model_binary_sha
         if action is not None:
             values["action_from_previous"] = np.asarray(action).copy()
         np.savez_compressed(path, **values)
         row = {
+            **observation.metadata,
             "frame": path.name,
             "segment": self.segment,
             "phase": self.phase,
             "sim_time_s": float(sim.data.time),
             "control_step_total": self.control_steps,
             "has_action_from_previous": action is not None,
+            "image_sha256": [array_sha(frame) for frame in images],
+            "action_time_before_s": getattr(self, "_action_time_before", None) if action is not None else None,
+            "action_time_after_s": float(sim.data.time) if action is not None else None,
         }
         self.rows.append(row)
         with (self.directory / "frames.jsonl").open("a") as stream:
@@ -64,6 +90,7 @@ class ControlStepLedger:
             self.capture()
             self._fresh = False
         before = float(self.env.env.sim.data.time)
+        self._action_time_before = before
         try:
             result = self._original(action)
         except BaseException:
