@@ -242,7 +242,9 @@ def _case_seed(
 
 
 def _card(option: Any) -> dict[str, Any]:
+    from cfact.generation.effect_intents import intent_for_option
     return {
+        "effect_intent": intent_for_option(option, option.parent_context_id.split("__")[0]).record() if option.operation_context else None,
         "candidate_id": option.candidate_id,
         "generator_revision": option.generator_revision,
         "source_method": option.source_method,
@@ -283,7 +285,18 @@ def _restore(env: Any, initial: dict[str, Any], state: Any) -> None:
     started = time.monotonic()
     if not isinstance(state, dict):
         raise ValueError("new_collection_requires_complete_parent_snapshot")
-    restore_snapshot(env, state, initial=initial)
+    restore_receipt = restore_snapshot(env, state, initial=initial)
+    if getattr(env,"_cfact_v2_task",None):
+        from cfact.execution.snapshot import snapshot_differences
+        actual=capture_snapshot(env)
+        differences=snapshot_differences(state,actual)
+        receipt={"status":"PASS" if not differences else "FAIL",
+            "sim_time_s":actual["sim_time_s"],"state_sha256":array_digest(actual["states"]),
+            "complete_value_state_differences":differences,"restore":restore_receipt}
+        if ledger(env):
+            with (ledger(env).directory / "complete_restore_receipts.jsonl").open("a") as stream:
+                stream.write(json.dumps(receipt,sort_keys=True)+"\n")
+        if differences:raise ValueError("complete_parent_restore_value_state_mismatch")
     if ledger(env) is not None:
         ledger(env).restore_wall_seconds += time.monotonic() - started
 
@@ -297,6 +310,24 @@ def _save_actual_child(
     save_snapshot(edge_dir / "child_snapshot.json", snapshot)
     np.savez_compressed(edge_dir / "child_context.npz", sim_state=state)
     source_cursor = dict(local.get("source_cursor", {}))
+    anchor = None
+    if getattr(env, "_cfact_v2_task", None):
+        from cfact.generation.task_adapters import TaskEffectAdapter
+        adapter = TaskEffectAdapter(target_task(env._cfact_v2_task), option.operation_context.joint_binding)
+        anchor = adapter.classify_stage(trace.arrays(), source_cursor=source_cursor["next_action_index"],
+            local_event=local["local_event_reached"], release=option.subtype == "release_and_retreat")
+        atomic_json(edge_dir / "observed_effect.json", anchor.evidence)
+        atomic_json(edge_dir / "event_anchor.json", anchor.record())
+        commands=np.asarray(trace.commanded_actions)
+        actual_eef=np.asarray(trace.arrays()["actual_eef_pose"])
+        targets=np.asarray(trace.controller_target_poses)
+        atomic_json(edge_dir / "effect_realization.json", {
+            "intent_is_ground_truth":False,
+            "requested_tool_translation_m":float(np.linalg.norm(option.poses[:,:3,3]-option.operation_context.current_eef_pose[:3,3],axis=1).max()),
+            "issued_action_count":len(commands),"issued_action_sha256":array_digest(commands),
+            "commanded_tool_translation_m":float(np.linalg.norm(targets[:,:3,3]-actual_eef[0,:3,3],axis=1).max()) if len(targets) else None,
+            "achieved_tool_translation_m":float(np.linalg.norm(actual_eef[:,:3,3]-actual_eef[0,:3,3],axis=1).max()),
+            "observed_task_effect":anchor.evidence})
     fixture_pose, object_pose, eef_pose = child_geometry(trace)
     context = dataclasses.replace(
         option.operation_context,
@@ -304,6 +335,7 @@ def _save_actual_child(
         current_object_pose=object_pose,
         current_eef_pose=eef_pose,
         source_cursor=int(source_cursor["next_action_index"]),
+        stage=anchor.stage.value if anchor else option.operation_context.stage,
     )
     context_record = context.record()
     parent_record = json.loads((edge_dir.parent.parent / "context.json").read_text())
@@ -2206,6 +2238,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
             task.adapter_interface or task.mimicgen_interface, "robosuite", env.env
         )
         install_action_codec(interface)
+        env._cfact_v2_task = args.task
         env._cfact_step_ledger = ControlStepLedger(
             env,
             args.run.resolve() / "history" / args.split / args.task / args.root_id,

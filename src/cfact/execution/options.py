@@ -183,6 +183,7 @@ class MeasuredTrace:
     observation_fixture_poses: list[np.ndarray] = field(default_factory=list)
     observation_eef_poses: list[np.ndarray] = field(default_factory=list)
     observation_metadata: list[dict] = field(default_factory=list)
+    fixture_activation_json: list[str] = field(default_factory=list)
     _capture_failed: bool = field(default=False, init=False, repr=False)
 
     def capture(self, env: Any, interface: Any) -> None:
@@ -306,6 +307,8 @@ class MeasuredTrace:
             self.observation_fixture_poses.append(current_fixture)
             self.observation_eef_poses.append(current_eef)
             self.observation_metadata.append(current_metadata)
+        from cfact.generation.task_adapters import activation_state
+        self.fixture_activation_json.append(json.dumps(activation_state(env), sort_keys=True))
         self._capture_failed = False
 
     def after_step(
@@ -392,6 +395,7 @@ class MeasuredTrace:
             ),
             "local_event_flags": np.asarray(self.local_event_flags, dtype=bool),
             "robot_contacts_json": np.asarray(self.robot_contacts_json),
+            "fixture_activation_json": np.asarray(self.fixture_activation_json),
         }
 
 
