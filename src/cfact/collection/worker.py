@@ -315,7 +315,7 @@ def _save_actual_child(
         from cfact.generation.task_adapters import TaskEffectAdapter
         adapter = TaskEffectAdapter(target_task(env._cfact_v2_task), option.operation_context.joint_binding)
         anchor = adapter.classify_stage(trace.arrays(), source_cursor=source_cursor["next_action_index"],
-            local_event=local["local_event_reached"], release=option.subtype == "release_and_retreat")
+            local_event=local["local_event_reached"], release=option.subtype == "release_and_retreat", local_goal=option.goal_binding)
         atomic_json(edge_dir / "observed_effect.json", anchor.evidence)
         atomic_json(edge_dir / "event_anchor.json", anchor.record())
         commands=np.asarray(trace.commanded_actions)

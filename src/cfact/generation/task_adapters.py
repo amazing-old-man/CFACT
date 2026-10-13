@@ -74,9 +74,29 @@ class TaskEffectAdapter:
                   "task_contact":contact,"closed_gripper":bool(len(actions) and actions[-1,actions.shape[1]-6]>0)},
                 "activation":activation,"physical_progress_above_floor":progress,
                 "official_success":bool(arrays["task_success"][-1])}
-    def classify_stage(self, arrays, *, source_cursor, local_event=False, release=False, event_signal=None):
-        return classify_stage(self.observe_effect(arrays,event_signal=event_signal),
-                              source_cursor=source_cursor,local_event=local_event,release=release)
+    def classify_stage(self, arrays, *, source_cursor, local_event=False, release=False,
+                       event_signal=None, local_goal=None):
+        effect=self.observe_effect(arrays,event_signal=event_signal)
+        actions=np.asarray(arrays["commanded_actions"])
+        opening=bool(len(actions) and np.any(actions[:,actions.shape[1]-6]<0))
+        # A proposal subtype is insufficient evidence for an executed opening.
+        observed_release=bool(release and opening)
+        goal=local_goal or {}
+        bounded_support=goal.get("kind") in {"fixture_region_object_goal","coffee_receptacle_object_goal"}
+        distance=None;stable=False
+        poses=np.asarray(arrays["object_poses"])[:,0,:3,3]
+        if bounded_support and "target_pose_world" in goal:
+            distance=float(np.linalg.norm(poses[-1]-np.asarray(goal["target_pose_world"])[:3,3]))
+            if len(poses)>=4:
+                dt=np.diff(np.asarray(arrays["sim_time"])[-4:])
+                stable=bool(np.max(np.linalg.norm(np.diff(poses[-4:],axis=0),axis=1)/dt)<=.05)
+        ready=bool(local_event and bounded_support and distance is not None and distance<=.03 and stable and effect["held_verified"])
+        effect["place_ready_checks"]={"bounded_support_goal":bounded_support,
+            "measured_object_goal_distance_m":distance,"measured_object_speed_stable":stable,
+            "verified":ready,"physical_support_after_release":"NOT_ASSERTED"}
+        effect["actual_opening_command_seen"]=opening
+        return classify_stage(effect,source_cursor=source_cursor,local_event=local_event,
+                              release=observed_release,verified_place_ready=ready)
     def can_expand_child(self, anchor):
         return anchor.allowed_continuation is not None
     def task_effect_distance(self, a, b):

@@ -28,7 +28,7 @@ class EventAnchor:
                 "label_origin": "measured_local_child_before_fixed_tail"}
 
 def classify_stage(effect, *, source_cursor, local_event=False, release=False,
-                   verified_recovery=False):
+                   verified_recovery=False, verified_place_ready=False):
     """A horizon stop alone is neither a failure nor a recoverable miss."""
     S=OperationStage
     stage=S.APPROACH; continuation="bounded_current_geometry_source_reanchor"
@@ -42,12 +42,12 @@ def classify_stage(effect, *, source_cursor, local_event=False, release=False,
         reason="release_endpoint_requires_new_verified_stage"
     elif effect["family"]=="held_object_placement":
         if effect["held_verified"]:
-            stage=S.PLACE_READY if local_event else S.HELD_TRANSPORT
-            continuation="recorded_release_suffix" if local_event else "bounded_current_geometry_source_reanchor"
+            stage=S.PLACE_READY if verified_place_ready else S.HELD_TRANSPORT
+            continuation="recorded_release_suffix" if verified_place_ready else "bounded_current_geometry_source_reanchor"
         elif verified_recovery:
             stage=S.RECOVERABLE_MISS; continuation="verified_geometric_reapproach"
         else:
-            stage=S.TERMINAL_UNRECOVERABLE; continuation=None
+            stage=S.UNSUPPORTED; continuation=None
             reason="NO_VERIFIED_HELD_OR_RECOVERY_CONTINUATION"
     elif effect["activation"] is True:
         stage=S.PARTIAL_TASK_EFFECT

@@ -71,5 +71,13 @@ def test_no_verified_held_child_is_never_called_recoverable():
     a=physical_arrays();a['subtask_signals_json']=np.array(['{}']*5)
     adapter=TaskEffectAdapter(target_task('CoffeeServeMug'))
     anchor=adapter.classify_stage(a,source_cursor=40)
-    assert anchor.stage==OperationStage.TERMINAL_UNRECOVERABLE
+    assert anchor.stage==OperationStage.UNSUPPORTED
     assert anchor.allowed_continuation is None
+
+
+def test_proposed_release_or_unbound_local_goal_does_not_create_observed_stage():
+    a=physical_arrays();adapter=TaskEffectAdapter(target_task('CoffeeServeMug'))
+    anchor=adapter.classify_stage(a,source_cursor=40,local_event=True,release=True)
+    assert anchor.stage==OperationStage.HELD_TRANSPORT
+    assert not anchor.evidence['actual_opening_command_seen']
+    assert not anchor.evidence['place_ready_checks']['verified']
