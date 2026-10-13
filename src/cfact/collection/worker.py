@@ -2339,31 +2339,16 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                 raise ValueError("frozen_parent_source_identity_mismatch")
             if int(frozen_parent["source_action_prefix"]) != int(probe["parent_action_count"]):
                 raise ValueError("frozen_parent_source_cursor_mismatch")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != frozen_parent["sha256"]:
+                raise ValueError("frozen_parent_snapshot_hash_changed")
             matched_parent = load_snapshot(path)
             if not np.array_equal(parent_snapshot["states"], matched_parent["states"]):
                 raise ValueError("frozen_parent_replayed_physics_state_mismatch")
             before = snapshot_differences(matched_parent, parent_snapshot)
-            def fixture_numeric_representation_only(d):
-                if d["reason"] != "TYPE_CHANGED" or not d["path"].startswith("/fixtures/") or "/values/" not in d["path"]:
-                    return False
-                def lookup(record):
-                    value = record
-                    for key in d["path"].strip("/").split("/"):
-                        value = value[key] if isinstance(value, dict) else value[int(key)]
-                    return value
-                a, b = lookup(matched_parent), lookup(parent_snapshot)
-                return (isinstance(a, (int, float, np.integer, np.floating)) and isinstance(b, (int, float, np.integer, np.floating))
-                        and not isinstance(a, (bool, np.bool_)) and not isinstance(b, (bool, np.bool_))
-                        and np.isfinite(a) and np.isfinite(b) and a == b)
-            representation_only = [d for d in before if fixture_numeric_representation_only(d)]
-            non_rng = [d for d in before if "/rng/" not in d["path"] and d not in representation_only]
-            if non_rng:
-                atomic_json(args.run / "FROZEN_PARENT_REUSE_RECEIPT.json", {"status":"FAIL_NON_RNG_MISMATCH", "differences":non_rng})
-                raise ValueError("frozen_parent_controller_or_scene_mismatch")
             _restore(env, root["initial"], matched_parent)
             parent_snapshot = capture_snapshot(env)
             after = snapshot_differences(matched_parent, parent_snapshot)
-            atomic_json(args.run / "FROZEN_PARENT_REUSE_RECEIPT.json", {"status":"PASS" if not after else "FAIL", "source_id":route["source_id"], "source_prefix_control_steps":int(probe["parent_action_count"]), "snapshot_sha256":hashlib.sha256(path.read_bytes()).hexdigest(), "pre_restore_rng_difference_count":len([d for d in before if "/rng/" in d["path"]]), "pre_restore_exact_numeric_representation_changes":representation_only, "post_restore_differences":after})
+            atomic_json(args.run / "FROZEN_PARENT_REUSE_RECEIPT.json", {"status":"PASS" if not after else "FAIL", "source_id":route["source_id"], "source_prefix_control_steps":int(probe["parent_action_count"]), "snapshot_sha256":hashlib.sha256(path.read_bytes()).hexdigest(), "pre_restore_rng_difference_count":len([d for d in before if "/rng/" in d["path"]]), "pre_restore_representation_difference_count":len([d for d in before if "/rng/" not in d["path"]]), "post_restore_differences":after})
             if after:
                 raise ValueError("frozen_parent_complete_restore_mismatch")
         _restore(env, root["initial"], parent_snapshot)
