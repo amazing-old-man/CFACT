@@ -548,6 +548,36 @@ def _articulation_geometry(
     }
 
 
+def _g0_amplitude(cfg, env, args, source, info, contract, binding, task_goal, node):
+    if cfg.get("method",{}).get("g0_scale_policy") != "source_geometry_v1":
+        return 0.003
+    from cfact.generation.g0_scale import source_geometry_scale
+    allowance=0.03
+    evidence={"source":"current_parent_geometry","collision_safety":"NOT_GLOBALLY_CERTIFIED"}
+    if binding:
+        geometry=_articulation_geometry(env,binding,task_goal)
+        remaining=abs(geometry["target_q"]-geometry["current_q"])
+        if geometry["joint_type"]=="slide":allowance=min(allowance,.1*remaining)
+        else:
+            offset=np.asarray(info.eef_pose)[:3,3]-geometry["anchor_world"]
+            axis=geometry["axis_world"];radius=float(np.linalg.norm(offset-axis*np.dot(offset,axis)))
+            allowance=min(allowance,.1*radius*remaining)
+            evidence["measured_joint_tool_radius_m"]=radius
+        evidence.update(joint_name=geometry["joint_name"],joint_type=geometry["joint_type"],remaining_q=remaining)
+    elif contract.holding_object:
+        try:
+            _,bbox=_support_geometry(env,args.task)
+            size=np.ptp(bbox,axis=0)
+            allowance=min(allowance,.5*float(min(size[:2])))
+            evidence["actual_object_footprint_local_m"]=size[:2].tolist()
+        except (AttributeError,KeyError,ValueError) as error:
+            evidence["object_footprint_unavailable"]=str(error)
+            allowance=min(allowance,0.003)
+    record=source_geometry_scale(source.source_poses,geometry_allowance_m=allowance)
+    atomic_json(node / "g0_scale.json", {**record,"geometry_evidence":evidence})
+    return record["requested_amplitude_m"]
+
+
 def _option_has_event_geometry(
     option: Any, primitive_family: str, minimum_translation_m: float
 ) -> bool:
@@ -1222,6 +1252,7 @@ def _expand_child_pool(
     )
     atomic_json(node / "context.json", node_context)
     raw, donor_audit = build_object_effect_options(
+        g0_amplitude_m=_g0_amplitude(cfg,env,args,source,info,contract,operation_context.joint_binding,operation_context.task_goal,node),
         root=source,
         donors=suffix_donors,
         operation_context=operation_context,
@@ -2566,6 +2597,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         )
         atomic_json(node / "context.json", root_context)
         options, donor_audit = build_object_effect_options(
+            g0_amplitude_m=_g0_amplitude(cfg,env,args,segment,parent,contract,joint_binding,task_goal,node),
             root=segment,
             operation_context=operation_context,
             donors=donors,
