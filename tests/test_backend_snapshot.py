@@ -84,3 +84,29 @@ def test_snapshot_rejects_different_model_without_physics_step():
     snapshot["model_sha256"] = "another-model"
     with pytest.raises(ValueError, match="snapshot_model_identity_mismatch"):
         restore_snapshot(env, snapshot)
+
+
+def test_snapshot_preserves_real_nullable_torque_buffer_through_reset(tmp_path):
+    # Hybrid robot torque buffers can contain None in object arrays. Raw object
+    # array bytes are process addresses; JSON values must preserve the entries.
+    from cfact.execution.snapshot import _is_value
+    env = fake_env()
+    env.env.robots[0].recent_torques = SimpleNamespace(
+        dim=3, last=np.array([None, None, None], dtype=object),
+        current=np.array([None, 0.2, None], dtype=object),
+    )
+    before = capture_snapshot(env)
+    assert _is_value(env.env.robots[0].recent_torques.current)
+    save_snapshot(tmp_path / "nullable.json", before)
+    loaded = load_snapshot(tmp_path / "nullable.json")
+    buffer = env.env.robots[0].recent_torques
+    buffer.last = np.zeros(3)
+    buffer.current = np.zeros(3)
+    restore_snapshot(env, loaded)
+    after = capture_snapshot(env)
+    for name in ("last", "current"):
+        actual = after["robots"][0]["buffers"]["recent_torques"][name]
+        expected = before["robots"][0]["buffers"]["recent_torques"][name]
+        assert actual.dtype == np.dtype(object)
+        np.testing.assert_array_equal(actual, expected)
+    assert not _is_value(np.array([SimpleNamespace(value=1)], dtype=object))

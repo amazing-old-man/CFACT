@@ -26,7 +26,9 @@ def _is_value(value: Any) -> bool:
     if value is None or isinstance(value, (str, int, float, bool, np.generic)):
         return True
     if isinstance(value, np.ndarray):
-        return value.dtype.kind in "biufcSU"
+        return value.dtype.kind in "biufcSU" or (
+            value.dtype.kind == "O" and all(_is_value(item) for item in value.flat)
+        )
     if isinstance(value, (list, tuple)):
         return all(_is_value(item) for item in value)
     if isinstance(value, dict):
@@ -200,6 +202,10 @@ def restore_snapshot(env: Any, snapshot: dict[str, Any], initial: dict | None = 
 
 def _pack(value: Any) -> Any:
     if isinstance(value, np.ndarray):
+        if value.dtype.kind == "O":
+            if not _is_value(value):
+                raise TypeError("snapshot_opaque_object_array_not_supported")
+            return {"__object_array__": [_pack(item) for item in value.flat], "shape": value.shape}
         return {"__array__": base64.b64encode(value.tobytes()).decode(), "dtype": value.dtype.str, "shape": value.shape}
     if isinstance(value, np.generic):
         return value.item()
@@ -217,6 +223,11 @@ def _unpack(value: Any) -> Any:
         return [_unpack(item) for item in value]
     if not isinstance(value, dict):
         return value
+    if "__object_array__" in value:
+        entries = [_unpack(item) for item in value["__object_array__"]]
+        result = np.empty(len(entries), dtype=object)
+        result[:] = entries
+        return result.reshape(value["shape"])
     if "__array__" in value:
         return np.frombuffer(base64.b64decode(value["__array__"]), dtype=value["dtype"]).reshape(value["shape"]).copy()
     if "__tuple__" in value:
