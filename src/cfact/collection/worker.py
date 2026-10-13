@@ -26,6 +26,7 @@ from cfact.paths import workspace_root
 
 from cfact.collection.runtime import _build_trajectory, _create_env, _load_root, _probe_parent
 from cfact.adapters.action_codec import install_action_codec
+from cfact.execution.current import current_info, child_geometry
 from cfact.execution.snapshot import (
     capture_snapshot,
     restore_snapshot,
@@ -296,11 +297,12 @@ def _save_actual_child(
     save_snapshot(edge_dir / "child_snapshot.json", snapshot)
     np.savez_compressed(edge_dir / "child_context.npz", sim_state=state)
     source_cursor = dict(local.get("source_cursor", {}))
+    fixture_pose, object_pose, eef_pose = child_geometry(trace)
     context = dataclasses.replace(
         option.operation_context,
-        current_fixture_pose=np.asarray(trace.fixture_poses[-1]),
-        current_object_pose=np.asarray(trace.object_poses[-1]),
-        current_eef_pose=np.asarray(trace.actual_eef_pose[-1]),
+        current_fixture_pose=fixture_pose,
+        current_object_pose=object_pose,
+        current_eef_pose=eef_pose,
         source_cursor=int(source_cursor["next_action_index"]),
     )
     context_record = context.record()
@@ -407,7 +409,7 @@ def _probe_held_parent(
     )
     for step, action in enumerate(actions):
         env.step(action)
-        info = interface.get_datagen_info()
+        info = current_info(env, interface)
         if bool(info.subtask_term_signals.get(contact_signal, False)):
             contact_seen = True
         if not contact_seen:
@@ -1084,7 +1086,7 @@ def _expand_child_pool(
     child_snapshot = load_snapshot(ancestor_edge / "child_snapshot.json")
     child_state = np.asarray(child_snapshot["states"])
     _restore(env, root["initial"], child_snapshot)
-    info = interface.get_datagen_info()
+    info = current_info(env, interface)
     if bool(env.is_success()["task"]):
         raise ValueError("successful_child_not_eligible")
     node_id = (
@@ -1338,7 +1340,7 @@ def _expand_child_pool(
                 cfg, args.task, args.root_id, node_id, option.candidate_id, "physical_execution"
             )
             _restore(env, root["initial"], child_snapshot)
-            before = interface.get_datagen_info()
+            before = current_info(env, interface)
             trajectory, connection, executable_poses, executable_grips = _execution_trajectory(
                 WaypointSequence, WaypointTrajectory, np.asarray(before.eef_pose), option, cfg
             )
@@ -1591,7 +1593,7 @@ def _expand_release_pool(
     parent_snapshot = load_snapshot(ancestor_edge / "child_snapshot.json")
     state = np.asarray(parent_snapshot["states"])
     _restore(env, root["initial"], parent_snapshot)
-    info = interface.get_datagen_info()
+    info = current_info(env, interface)
     if bool(env.is_success()["task"]):
         raise ValueError("successful_child_not_eligible")
     ancestor_result = json.loads((ancestor_edge / "local_result.json").read_text())
@@ -1774,7 +1776,7 @@ def _expand_release_pool(
                 cfg, args.task, args.root_id, node_id, option.candidate_id, "physical_execution"
             )
             _restore(env, root["initial"], parent_snapshot)
-            before = interface.get_datagen_info()
+            before = current_info(env, interface)
             trajectory, connection, executable_poses, executable_grips = _execution_trajectory(
                 WaypointSequence, WaypointTrajectory, np.asarray(before.eef_pose), option, cfg
             )
@@ -2263,7 +2265,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         state = probe.pop("parent_state")
         parent_snapshot = capture_snapshot(env)
         _restore(env, root["initial"], parent_snapshot)
-        parent = interface.get_datagen_info()
+        parent = current_info(env, interface)
         object_ref = row["event_object_ref"]
         fixture_ref = row["operation_object_ref"]
         joint_binding = {}
@@ -2696,7 +2698,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     cfg, args.task, args.root_id, node_id, option.candidate_id, "physical_execution"
                 )
                 _restore(env, root["initial"], parent_snapshot)
-                before = interface.get_datagen_info()
+                before = current_info(env, interface)
                 trajectory, connection, executable_poses, executable_grips = _execution_trajectory(
                     WaypointSequence, WaypointTrajectory, np.asarray(before.eef_pose), option, cfg
                 )
