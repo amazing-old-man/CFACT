@@ -2328,6 +2328,31 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
             )
         state = probe.pop("parent_state")
         parent_snapshot = capture_snapshot(env)
+        frozen_parent = cfg.get("source_parent_snapshot")
+        if frozen_parent:
+            # Explicit matched-baseline input; the Source prefix is still paid.
+            from cfact.execution.snapshot import snapshot_differences
+            path = Path(frozen_parent["path"]).resolve()
+            if not path.is_relative_to(Path(cfg["storage"]["allowed_write_root"]).resolve()):
+                raise ValueError("frozen_parent_snapshot_outside_allowed_root")
+            if frozen_parent["source_id"] != route["source_id"]:
+                raise ValueError("frozen_parent_source_identity_mismatch")
+            if int(frozen_parent["source_action_prefix"]) != int(probe["parent_action_count"]):
+                raise ValueError("frozen_parent_source_cursor_mismatch")
+            matched_parent = load_snapshot(path)
+            if not np.array_equal(parent_snapshot["states"], matched_parent["states"]):
+                raise ValueError("frozen_parent_replayed_physics_state_mismatch")
+            before = snapshot_differences(matched_parent, parent_snapshot)
+            non_rng = [d for d in before if "/rng/" not in d["path"]]
+            if non_rng:
+                atomic_json(args.run / "FROZEN_PARENT_REUSE_RECEIPT.json", {"status":"FAIL_NON_RNG_MISMATCH", "differences":non_rng})
+                raise ValueError("frozen_parent_controller_or_scene_mismatch")
+            _restore(env, root["initial"], matched_parent)
+            parent_snapshot = capture_snapshot(env)
+            after = snapshot_differences(matched_parent, parent_snapshot)
+            atomic_json(args.run / "FROZEN_PARENT_REUSE_RECEIPT.json", {"status":"PASS" if not after else "FAIL", "source_id":route["source_id"], "source_prefix_control_steps":int(probe["parent_action_count"]), "snapshot_sha256":hashlib.sha256(path.read_bytes()).hexdigest(), "pre_restore_rng_difference_count":len(before), "post_restore_differences":after})
+            if after:
+                raise ValueError("frozen_parent_complete_restore_mismatch")
         _restore(env, root["initial"], parent_snapshot)
         parent = current_info(env, interface)
         object_ref = row["event_object_ref"]
