@@ -2347,7 +2347,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                 if d["reason"] != "TYPE_CHANGED" or not d["path"].startswith("/fixtures/") or "/values/" not in d["path"]:
                     return False
                 def lookup(record):
-                    value = record["value_state"]
+                    value = record
                     for key in d["path"].strip("/").split("/"):
                         value = value[key] if isinstance(value, dict) else value[int(key)]
                     return value
