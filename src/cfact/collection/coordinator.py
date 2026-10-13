@@ -899,37 +899,15 @@ def _export_lineages(run: Path) -> dict[str, Any]:
     for task, tree_path in by_task.items():
         tree = json.loads(tree_path.read_text())
         root_edges = [row for row in tree.get("edges", []) if row.get("edge_path")]
-        children = tree.get("child_pools", [])
-        thirds = tree.get("third_pools", [])
-        selected = []
-        for first in root_edges:
-            chain = [first]
-            child = next(
-                (
-                    pool
-                    for pool in children
-                    if pool.get("parent_edge") == first["edge_path"] and pool.get("edges")
-                ),
-                None,
-            )
-            if child:
-                second = next((row for row in child["edges"] if row.get("edge_path")), None)
-                if second:
-                    chain.append(second)
-                    third = next(
-                        (
-                            pool
-                            for pool in thirds
-                            if pool.get("parent_edge") == second["edge_path"] and pool.get("edges")
-                        ),
-                        None,
-                    )
-                    if third:
-                        last = next((row for row in third["edges"] if row.get("edge_path")), None)
-                        if last:
-                            chain.append(last)
-            if len(chain) > len(selected):
-                selected = chain
+        pools=tree.get("child_pools", [])+tree.get("third_pools", [])
+        by_parent={p.get("parent_edge"):p for p in pools}
+        def longest(edge, seen):
+            path=edge["edge_path"]
+            if path in seen: raise ValueError("lineage_cycle")
+            children=[e for e in by_parent.get(path,{}).get("edges",[]) if e.get("edge_path") and e.get("status")=="PHYSICS_COMPLETE"]
+            tails=[longest(e,seen|{path}) for e in children]
+            return [edge]+max(tails,key=len,default=[])
+        selected=max([longest(e,set()) for e in root_edges if e.get("status")=="PHYSICS_COMPLETE"],key=len,default=[])
         clips = []
         for edge in selected:
             media_path = run / edge["edge_path"] / "media.json"

@@ -245,3 +245,23 @@ def save_snapshot(path: Path, snapshot: dict[str, Any]) -> None:
 
 def load_snapshot(path: Path) -> dict[str, Any]:
     return _unpack(json.loads(Path(path).read_text()))
+
+
+def snapshot_differences(expected, actual, path=""):
+    """Full value-state comparison; do not silently drop missing fields."""
+    if type(expected) is not type(actual):
+        return [{"path":path,"reason":"TYPE_CHANGED"}]
+    if isinstance(expected,dict):
+        result=[]
+        if set(expected)!=set(actual):result.append({"path":path,"reason":"KEY_SET_CHANGED"})
+        for key in set(expected)&set(actual):
+            result.extend(snapshot_differences(expected[key],actual[key],path+"/"+str(key)))
+        return result
+    if isinstance(expected,(list,tuple)):
+        if len(expected)!=len(actual):return [{"path":path,"reason":"LENGTH_CHANGED"}]
+        return [row for i,(x,y) in enumerate(zip(expected,actual)) for row in snapshot_differences(x,y,path+"/"+str(i))]
+    if isinstance(expected,np.ndarray):
+        if expected.dtype!=actual.dtype or expected.shape!=actual.shape or not np.array_equal(expected,actual):
+            return [{"path":path,"reason":"ARRAY_CHANGED"}]
+    elif expected!=actual:return [{"path":path,"reason":"VALUE_CHANGED"}]
+    return []

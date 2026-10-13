@@ -24,8 +24,8 @@ def validate_config(config: dict) -> None:
     # Coverage selection always considers one candidate per nonempty family.
     # Setting max_selected_g0=0 is not an implemented way to disable G0.
     depth = integer("tree_limits", "maximum_decision_depth", 1)
-    if depth > 3:
-        raise ValueError("maximum_decision_depth above 3 is not implemented")
+    if depth > (8 if config.get("method", {}).get("task_effect_v2") else 3):
+        raise ValueError("maximum_decision_depth exceeds implemented bounded policy")
     for key in ("second_depth_pools", "third_depth_pools"):
         integer("tree_limits", key, 0)
     integer("tree_limits", "candidate_pools_per_root", 1)
