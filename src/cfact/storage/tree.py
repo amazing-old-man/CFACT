@@ -427,6 +427,9 @@ def publish_tree(root_path: Path, run: Path, output: Path, config: dict, scope: 
                 else:
                     copy_file(p, output / edge_base / filename)
         media = read(old / "media.json", {})
+        if (old / "execution.npz").exists() and history is not None:
+            from cfact.storage.ledger_media import clean_media_from_ledger
+            media = clean_media_from_ledger(run,old,media,history)
         from cfact.storage.media import validate_media
 
         if (old / "execution.npz").exists():
