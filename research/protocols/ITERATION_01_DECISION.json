@@ -1,0 +1,62 @@
+{
+  "status": "REVERT_REQUIRED",
+  "reason": "No strict gain in the preregistered per-root non-root effect bins / charged step on any fixed development root.",
+  "rows": [
+    {
+      "task": "CoffeeServeMug",
+      "primary_gain": -0.0014784850850425003,
+      "charged_control_steps_baseline": 549,
+      "charged_control_steps_new": 462,
+      "root_effective_pairs_baseline": 5,
+      "root_effective_pairs_new": 5,
+      "nonroot_effective_pairs_baseline": 2,
+      "nonroot_effective_pairs_new": 1
+    },
+    {
+      "task": "OpenBlenderLid",
+      "primary_gain": 0.0,
+      "charged_control_steps_baseline": 65,
+      "charged_control_steps_new": 65,
+      "root_effective_pairs_baseline": 0,
+      "root_effective_pairs_new": 0,
+      "nonroot_effective_pairs_baseline": 0,
+      "nonroot_effective_pairs_new": 0
+    },
+    {
+      "task": "OpenDrawer",
+      "primary_gain": 0.0,
+      "charged_control_steps_baseline": 462,
+      "charged_control_steps_new": 462,
+      "root_effective_pairs_baseline": 3,
+      "root_effective_pairs_new": 3,
+      "nonroot_effective_pairs_baseline": 2,
+      "nonroot_effective_pairs_new": 2
+    },
+    {
+      "task": "OpenOven",
+      "primary_gain": -0.00028358012024589947,
+      "charged_control_steps_baseline": 689,
+      "charged_control_steps_new": 737,
+      "root_effective_pairs_baseline": 5,
+      "root_effective_pairs_new": 5,
+      "nonroot_effective_pairs_baseline": 5,
+      "nonroot_effective_pairs_new": 5
+    },
+    {
+      "task": "TurnOnMicrowave",
+      "primary_gain": 0.0,
+      "charged_control_steps_baseline": 203,
+      "charged_control_steps_new": 203,
+      "root_effective_pairs_baseline": 0,
+      "root_effective_pairs_new": 0,
+      "nonroot_effective_pairs_baseline": 0,
+      "nonroot_effective_pairs_new": 0
+    }
+  ],
+  "comparison_scope": "same_source_parent_seed_controller_camera_GPU_backend_and_1500_step_ceiling",
+  "method_commit": "997fefe1ebb6829f62871a06c2f968eff8b56f2a",
+  "baseline_commit": "f0b1378ab13e3f286d20cff42e75ca2f12ce4ca1",
+  "no_invariant_failures": true,
+  "calibration_pending": true,
+  "scientific_positive_claim": false
+}

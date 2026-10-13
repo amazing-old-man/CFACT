@@ -1,0 +1,46 @@
+{
+  "schema": "cfact.research_budget.v1",
+  "checked_at_utc": "2026-10-13T16:50:27.112668+00:00",
+  "artifact_root": "/mnt/ssd1/yanghc/CFACT_Research",
+  "maximum_new_bytes": 214748364800,
+  "minimum_free_bytes": 377930298163,
+  "minimum_free_inodes": 1000000,
+  "gpu_devices": [
+    0
+  ],
+  "maximum_gpu_temperature_c": 80,
+  "minimum_free_gpu_mib": 8192,
+  "maximum_scene_workers": 1,
+  "maximum_gpu_utilization_pct_before_dispatch": 80,
+  "minimum_available_ram_gib": 24,
+  "global_method_iterations": 3,
+  "local_adapter_fixes_per_family": 2,
+  "development": {
+    "maximum_total_control_steps": 80000,
+    "max_root_control_steps": 3000,
+    "max_root_wall_seconds": 900,
+    "max_stage_wall_seconds": 7200,
+    "maximum_gpu_hours": 2
+  },
+  "formal": {
+    "status": "NEEDS_SMOKE_THROUGHPUT_ESTIMATE",
+    "maximum_gpu_hours_ceiling": 12,
+    "maximum_wall_hours_ceiling": 24,
+    "maximum_total_control_steps_ceiling": 600000
+  },
+  "training": {
+    "status": "NOT_ADMITTED",
+    "maximum_gpu_hours_ceiling": 12,
+    "maximum_wall_hours_ceiling": 24
+  },
+  "rationale": "One low-load device, 200 GiB ceiling, reserve 10% full filesystem capacity, 80C protects shared server; formal not admitted until measured bytes/root and steps/s.",
+  "cpu_fallback": {
+    "render_backend": "OSMesa",
+    "maximum_scene_workers": 1,
+    "CUDA_VISIBLE_DEVICES": "",
+    "admission_requires_explicit_cpu_backend": true,
+    "same_disk_inode_ram_wall_protections": true,
+    "maximum_wall_seconds_per_root": 900,
+    "rationale": "Avoid occupied shared GPU with installed software OpenGL, while preserving physical engine/control/image schema. No GPU guard lowered."
+  }
+}

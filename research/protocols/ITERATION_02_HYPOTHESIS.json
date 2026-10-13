@@ -1,0 +1,13 @@
+{
+ "iteration": 2,
+ "base_commit": "0ad38a1",
+ "hypothesis": "Source motion distribution and measured joint/placement geometry can bound a larger G0 excursion that produces more task-effect sibling diversity than the fixed 3mm edit.",
+ "axis_changed": "G0 amplitude only; fixed family frontier and recorded release policy restored",
+ "primary_endpoint": "all effective local sibling pairs / all charged control steps",
+ "acceptance": "Strict gain on at least one frozen family root and aggregate yield no lower than the matching f0b1378 baseline; no state/lineage failures. Otherwise revert amplitude policy.",
+ "tasks": ["OpenDrawer","OpenOven","CoffeeServeMug","TurnOnMicrowave","OpenBlenderLid"],
+ "roots": ["demo_0"], "donors": ["demo_3","demo_4"], "seed": 20261014,
+ "control_step_ceiling": 1500, "wall_seconds_per_root": 900,
+ "physics_thresholds_unchanged": {"slide_m":0.005,"hinge_rad":0.05,"object_m":0.01,"activation":1},
+ "amplitude_policy": "min(30mm, 15% Source tool excursion, four times p90 Source tool step, measured geometry allowance); legacy 3mm retained for diagnostics, no future branch outcome used"
+}

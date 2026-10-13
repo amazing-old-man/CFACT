@@ -1,0 +1,35 @@
+{
+  "scope": "Baseline infrastructure correction; not a fourth method hypothesis",
+  "scientific_method_iterations": 3,
+  "accepted_generation_policy": "source_geometry_v1 G0 with existing fixed frontier",
+  "problem": "Fresh environment fixture RNGs are not equal across otherwise matching Source replay, and persisted numeric metadata differs in Python/NumPy representation",
+  "initial_repair_failures": [
+    "MATCHED_PARENT_FIXED: constructor metadata representation precheck rejected",
+    "MATCHED_PARENT_FINAL: numeric dictionary path parser error"
+  ],
+  "final_contract": [
+    "frozen master snapshot SHA must match",
+    "Source identity and cursor must match",
+    "actual Source prefix replay physics state must match",
+    "restore complete master snapshot",
+    "full value-state comparison after restore must have zero differences"
+  ],
+  "physical_receipt": "../02_baselines/MATCHED_PARENT_CPU/CFACT_EFFECT_SINGLE/run/FROZEN_PARENT_REUSE_RECEIPT.json",
+  "final_restore_status": "PASS",
+  "post_restore_difference_count": 0,
+  "physics_thresholds_changed": false,
+  "renderer": "explicit OSMesa CPU fallback; GPU0 hit 80C; wall costs reported separately",
+  "failed_runs_and_all_prefix_costs_retained": true,
+  "physical_receipts": {
+    "CFACT_EFFECT_SINGLE": "02_baselines/MATCHED_PARENT_CPU/CFACT_EFFECT_SINGLE/run/FROZEN_PARENT_REUSE_RECEIPT.json",
+    "CFACT_EFFECT_RECURSIVE": "02_baselines/MATCHED_PARENT_CPU/CFACT_EFFECT_RECURSIVE/run/FROZEN_PARENT_REUSE_RECEIPT.json"
+  },
+  "both_physical_runs": "PASS",
+  "complete_parent_comparison": "05_validation/BASELINE_SAME_PARENT_RECEIPT.json",
+  "full_parent_difference_counts": {
+    "CFACT_EFFECT_SINGLE": 0,
+    "CFACT_EFFECT_RECURSIVE": 0,
+    "GENERIC_CF_SINGLE": 0,
+    "GENERIC_CF_OFFDEMO": 0
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "status": "ACCEPT",
+  "iteration": 2,
+  "rows": [
+    {
+      "task": "CoffeeServeMug",
+      "primary_gain": 0.0019284437091626142,
+      "charged_steps_baseline": 549,
+      "charged_steps_method": 545,
+      "root_pairs_baseline": 5,
+      "root_pairs_method": 5,
+      "nonroot_pairs_baseline": 2,
+      "nonroot_pairs_method": 3,
+      "nonroot_bins_baseline": 2,
+      "nonroot_bins_method": 3,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenBlenderLid",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 65,
+      "charged_steps_method": 65,
+      "root_pairs_baseline": 0,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 0,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 0,
+      "nonroot_bins_method": 0,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenDrawer",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 462,
+      "charged_steps_method": 462,
+      "root_pairs_baseline": 3,
+      "root_pairs_method": 3,
+      "nonroot_pairs_baseline": 2,
+      "nonroot_pairs_method": 2,
+      "nonroot_bins_baseline": 2,
+      "nonroot_bins_method": 2,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenOven",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 689,
+      "charged_steps_method": 689,
+      "root_pairs_baseline": 5,
+      "root_pairs_method": 5,
+      "nonroot_pairs_baseline": 5,
+      "nonroot_pairs_method": 5,
+      "nonroot_bins_baseline": 3,
+      "nonroot_bins_method": 3,
+      "lineage_pass": true
+    },
+    {
+      "task": "TurnOnMicrowave",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 203,
+      "charged_steps_method": 201,
+      "root_pairs_baseline": 0,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 0,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 0,
+      "nonroot_bins_method": 0,
+      "lineage_pass": true
+    }
+  ],
+  "any_strict_primary_gain": true,
+  "aggregate_effective_pair_yield_baseline": 0.011178861788617886,
+  "aggregate_effective_pair_yield_method": 0.011722731906218144,
+  "aggregate_nondecrease": true,
+  "all_lineage_pass": true,
+  "statistical_claim": "Development version decision only; five independent tasks but one source root each, no formal confidence/significance claim",
+  "reason": "Preregistered strict gain plus aggregate nondecrease and integrity met",
+  "accepted_method_commit": "9c01770729bf62b533518cf6eb6b0c4cb38aaa67",
+  "final_method_configuration": {
+    "task_effect_v2": false,
+    "g0_scale_policy": "source_geometry_v1"
+  },
+  "aggregate_yield_relative_gain": 0.048651654156241175
+}

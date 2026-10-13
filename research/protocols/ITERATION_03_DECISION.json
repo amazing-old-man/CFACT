@@ -1,0 +1,80 @@
+{
+  "status": "REVERT_REQUIRED",
+  "iteration": 3,
+  "rows": [
+    {
+      "task": "CoffeeServeMug",
+      "primary_gain": 0.008369024762467385,
+      "charged_steps_baseline": 549,
+      "charged_steps_method": 333,
+      "root_pairs_baseline": 5,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 2,
+      "nonroot_pairs_method": 1,
+      "nonroot_bins_baseline": 2,
+      "nonroot_bins_method": 4,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenBlenderLid",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 65,
+      "charged_steps_method": 65,
+      "root_pairs_baseline": 0,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 0,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 0,
+      "nonroot_bins_method": 0,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenDrawer",
+      "primary_gain": -0.0018476147508405573,
+      "charged_steps_baseline": 462,
+      "charged_steps_method": 403,
+      "root_pairs_baseline": 3,
+      "root_pairs_method": 1,
+      "nonroot_pairs_baseline": 2,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 2,
+      "nonroot_bins_method": 1,
+      "lineage_pass": true
+    },
+    {
+      "task": "OpenOven",
+      "primary_gain": -0.001342088236837043,
+      "charged_steps_baseline": 689,
+      "charged_steps_method": 332,
+      "root_pairs_baseline": 5,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 5,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 3,
+      "nonroot_bins_method": 1,
+      "lineage_pass": true
+    },
+    {
+      "task": "TurnOnMicrowave",
+      "primary_gain": 0.0,
+      "charged_steps_baseline": 203,
+      "charged_steps_method": 135,
+      "root_pairs_baseline": 0,
+      "root_pairs_method": 0,
+      "nonroot_pairs_baseline": 0,
+      "nonroot_pairs_method": 0,
+      "nonroot_bins_baseline": 0,
+      "nonroot_bins_method": 0,
+      "lineage_pass": true
+    }
+  ],
+  "any_strict_primary_gain": true,
+  "aggregate_effective_pair_yield_baseline": 0.011178861788617886,
+  "aggregate_effective_pair_yield_method": 0.0015772870662460567,
+  "aggregate_nondecrease": false,
+  "all_lineage_pass": true,
+  "statistical_claim": "Development version decision only; five independent tasks but one source root each, no formal confidence/significance claim",
+  "reason": "One or more preregistered acceptance conditions failed",
+  "rollback_commit": "642564b660e6dac89a3f45ed11c79f5eddfd66a1",
+  "rollback_performed": true
+}

@@ -1,0 +1,17 @@
+{
+  "iteration": 1,
+  "status": "REGISTERED_BEFORE_V2_PHYSICS",
+  "base_commit": "f0b1378",
+  "hypothesis": "A bounded, stage-eligible frontier ranked by measured local task effects increases non-root physical effect bins per charged control step over fixed family priority on the same prechosen development roots.",
+  "primary_endpoint": "non_root_distinct_physical_effect_bins_per_total_control_step",
+  "acceptance": "No lineage/ABA/time failures; strict primary gain on at least one of the five fixed roots and no decrease in the aggregate valid physical sibling yield. Otherwise revert the method policy; retain prerequisite engineering fixes and all negative evidence.",
+  "development_tasks": ["OpenDrawer", "OpenOven", "CoffeeServeMug", "TurnOnMicrowave", "OpenBlenderLid"],
+  "roots": ["demo_0"],
+  "donors": ["demo_3", "demo_4"],
+  "seed": 20261014,
+  "per_root_control_steps": 1500,
+  "per_root_wall_seconds": 900,
+  "minimum_effect_floors": {"slide_m": 0.005, "hinge_rad": 0.05, "object_translation_m": 0.01, "activation_boolean": 1},
+  "calibration": "Floors are fixed here before new method physics, must exceed family same-action ABA noise to be admitted. Uncalibrated families cannot count toward coverage.",
+  "no_final_test_outcomes": true
+}

@@ -1,0 +1,33 @@
+{
+  "iteration": 3,
+  "base_commit": "5a20324",
+  "axis_changed": "General real-child frontier with verified stages and budgeted depth/pool allocation",
+  "tasks": [
+    "OpenDrawer",
+    "OpenOven",
+    "CoffeeServeMug",
+    "TurnOnMicrowave",
+    "OpenBlenderLid"
+  ],
+  "roots": [
+    "demo_0"
+  ],
+  "donors": [
+    "demo_3",
+    "demo_4"
+  ],
+  "seed": 20261014,
+  "maximum_candidates_per_root": 8,
+  "maximum_control_steps_per_root": 1500,
+  "maximum_decision_depth": 8,
+  "primary_endpoint": "nonroot distinct physical effect bins / all charged control steps",
+  "acceptance": "Strict gain on at least one frozen root and aggregate effective sibling yield no lower than matching f0b1378; all physical ancestry invariants pass. Otherwise revert.",
+  "thresholds": {
+    "slide_m": 0.005,
+    "hinge_rad": 0.05,
+    "object_m": 0.01,
+    "activation": 1
+  },
+  "g0_policy": "legacy_3mm",
+  "selection": "fixed family priority among measured eligible children; no fixed-tail outcome ranking"
+}
