@@ -40,7 +40,7 @@ def expand_frontier(initial, *, adapter, expand, maximum_depth, maximum_pools,
             if reason:
                 decisions.append({"edge":child.edge["edge_path"],"decision":"NOT_EXPANDED","reason":reason,"anchor":child.anchor.record()})
             else:legal.append(child)
-        picked=select_effect_frontier(legal,adapter,min(parents_per_level,maximum_pools-len(pools)))
+        picked=sorted(legal,key=lambda c: ({"G2":0,"G1":1,"Reference":2,"G0":3}.get(c.option.source_method,4),c.edge["edge_path"]))[:min(parents_per_level,maximum_pools-len(pools))]
         picked_paths={c.edge["edge_path"] for c in picked}
         for child in legal:
             if child.edge["edge_path"] not in picked_paths:
