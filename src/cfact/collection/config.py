@@ -61,6 +61,8 @@ def validate_config(config: dict) -> None:
             raise ValueError(f"resource.{key} must be a finite nonnegative number")
     if config["resource"]["maximum_output_gb"] == 0:
         raise ValueError("resource.maximum_output_gb must be positive")
+    if "minimum_free_inodes" in config["resource"]:
+        integer("resource", "minimum_free_inodes", 0)
     profile = config.get("engineering_profile")
     if profile is not None:
         for key in ("max_candidates_per_family", "max_children_per_parent",

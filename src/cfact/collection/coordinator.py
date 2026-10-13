@@ -449,19 +449,22 @@ def _tree_bytes(path: Path) -> int:
 def _storage_root(run: Path, config: dict[str, Any]) -> Path:
     # The plan and dataset may live on different disks. Keep source-manifest
     # resolution under release_root, but account for the actual saved dataset.
+    if config.get("storage", {}).get("quota_root"):
+        return Path(config["storage"]["quota_root"]).resolve()
     if config.get("storage", {}).get("schema") == "cfact.dual-view.v1":
         return run.resolve().parent.parent
-    return Path(config.get("release_root", run)).resolve()
+    return Path(config.get("storage", {}).get("quota_root", config.get("release_root", run))).resolve()
 
 
 def _storage_admission(run: Path, config: dict[str, Any]) -> dict[str, Any]:
     resource = config["resource"]
     release_root = _storage_root(run, config)
-    usage = shutil.disk_usage(release_root)
+    from cfact.storage.policy import target_filesystem
+    target = target_filesystem(release_root, resource)
     baseline_path = run / "runtime" / "storage_baseline.json"
     if baseline_path.is_file():
         baseline = json.loads(baseline_path.read_text())
-        delta_bytes = max(0, int(baseline["filesystem_free_bytes"]) - int(usage.free))
+        delta_bytes = max(0, int(baseline["filesystem_free_bytes"]) - int(target["filesystem_free_bytes"]))
         release_bytes = int(baseline.get("release_bytes", 0)) + delta_bytes
         run_bytes = delta_bytes
         spool_bytes = None  # the filesystem delta includes camera PNG and review panel spools
@@ -473,7 +476,7 @@ def _storage_admission(run: Path, config: dict[str, Any]) -> dict[str, Any]:
         accounting = "initial_release_and_run_tree_scan"
     maximum = int(resource["maximum_output_gb"] * 1_000_000_000)
     minimum_free = int(resource["minimum_host_free_gib"] * 1024**3)
-    ok = release_bytes <= maximum and usage.free >= minimum_free
+    ok = release_bytes <= maximum and target["status"] == "PASS"
     return {
         "status": "PASS" if ok else "STORAGE_GUARD_STOP",
         "release_bytes": release_bytes,
@@ -481,7 +484,8 @@ def _storage_admission(run: Path, config: dict[str, Any]) -> dict[str, Any]:
         "frame_spool_bytes": spool_bytes,
         "accounting": accounting,
         "maximum_release_bytes": maximum,
-        "filesystem_free_bytes": usage.free,
+        "target_filesystem": target,
+        "filesystem_free_bytes": target["filesystem_free_bytes"],
         "minimum_filesystem_free_bytes": minimum_free,
     }
 
@@ -1653,6 +1657,9 @@ def main() -> None:
                           "physics_started": False}, sort_keys=True))
         return
     output_root = Path(requested_config.get("output_root", str(PROJECT / "runs")))
+    if requested_config.get("storage", {}).get("allowed_write_root"):
+        from cfact.storage.policy import contained_path
+        output_root = contained_path(output_root, Path(requested_config["storage"]["allowed_write_root"]))
     release = output_root / args.run_label
     dual_view = requested_config.get("storage", {}).get("schema") == "cfact.dual-view.v1"
     run = release / "_work/collection" if dual_view else release

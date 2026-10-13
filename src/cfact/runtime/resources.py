@@ -28,6 +28,7 @@ def thermal_admission(devices: list[int], policy: dict) -> dict:
 
 def admission(directory: Path, devices: list[int], workers: int, policy: dict) -> dict:
     from cfact.collection.coordinator import _resource_admission
+    from cfact.storage.policy import target_filesystem
 
     report = _resource_admission(devices, workers, policy)
     failures = [] if report["status"] == "PASS" else ["RAM_OR_VRAM_RESERVE"]
@@ -35,6 +36,9 @@ def admission(directory: Path, devices: list[int], workers: int, policy: dict) -
     report["disk_free_bytes"] = usage.free
     if usage.free < policy["minimum_host_free_gib"] * 2**30:
         failures.append("DISK_RESERVE")
+    storage = target_filesystem(directory, policy)
+    failures.extend(storage["failures"])
+    report["storage"] = storage
     thermal = thermal_admission(devices, policy)
     failures.extend(thermal["failures"])
     processes = subprocess.run(["nvidia-smi", "--query-compute-apps=gpu_uuid,pid,used_memory",

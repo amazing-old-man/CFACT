@@ -272,11 +272,13 @@ def export(args: argparse.Namespace) -> dict[str, Any]:
             )
         else:
             used = sum(path.stat().st_size for path in release_root.rglob("*") if path.is_file())
+        from cfact.storage.policy import target_filesystem
+        target = target_filesystem(output, config["resource"])
         maximum = int(config["resource"]["maximum_output_gb"] * 1_000_000_000)
         minimum_free = int(config["resource"]["minimum_host_free_gib"] * 1024**3)
         return {
             "status": "PASS"
-            if used <= maximum and usage.free >= minimum_free
+            if used <= maximum and target["status"] == "PASS"
             else "STORAGE_GUARD_STOP",
             "release_bytes": used,
             "maximum_release_bytes": maximum,

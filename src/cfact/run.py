@@ -21,6 +21,7 @@ from cfact.io.serialization import atomic_json, RunLock
 from cfact.sources.manifest import build_plan, sha256_file, digest_json
 from cfact.sources.prepare import validate_prepared_identity
 from cfact.runtime.resources import admission
+from cfact.storage.policy import artifact_root, contained_path
 
 
 def load_config(path: Path) -> dict:
@@ -54,6 +55,9 @@ def parameters(config: dict, workers: int, export_python: str | None) -> dict:
     result["resource"]["requested_scene_workers"] = workers
     result["scheduling"] = {"max_active_roots_per_task": config.get("max_active_roots_per_task")}
     result["storage"].update({"auto_publish": False, "flat_trees": True, "export_python": export_python})
+    if config.get("artifact_root"):
+        result["storage"].update({key: config[key] for key in
+            ("artifact_root", "allowed_write_root", "quota_root") if key in config})
     from cfact.collection.config import validate_config
     validate_config(result)
     return result
@@ -78,6 +82,8 @@ def verify_manifest(run: Path) -> dict:
     payload = {k: v for k, v in manifest.items() if k != "manifest_sha256"}
     if digest_json(payload) != manifest["manifest_sha256"]:
         raise ValueError("Immutable run manifest changed")
+    if manifest.get("artifact_root"):
+        contained_path(run, Path(manifest["artifact_root"]))
     for name, expected in manifest["immutable_files"].items():
         if sha256_file(run / name) != expected:
             raise ValueError(f"Immutable run input changed: {name}")
@@ -158,11 +164,14 @@ def generate(args) -> dict:
     if not 1 <= workers <= 6 or not devices:
         raise ValueError("Use 1 to 6 workers with explicit available GPU devices")
     config = copy.deepcopy(config)
+    artifact = artifact_root(config, Path.cwd().resolve(), getattr(args, "artifact_root", None))
+    config["artifact_root"] = str(artifact)
     params = parameters(config, workers, args.export_python)
     if args.dry_run:
         return {"status": "DRY_RUN", "physics_started": False, "workers": workers,
                 "root_count": sum(len(x["roots"]) for x in config["tasks"]), "config": config,
-                "resources": admission(Path.cwd(), devices, workers, params["resource"])}
+                "artifact_root": str(artifact),
+                "resources": admission(next(p for p in (artifact, *artifact.parents) if p.exists()), devices, workers, params["resource"])}
     prepared_dir = args.prepared_dir or Path(config.get("source_dir", ".cache")) / "prepared"
     task_rows, source_rows, datasets = [], [], set()
     for row in config["tasks"]:
@@ -184,9 +193,7 @@ def generate(args) -> dict:
         raise ValueError("Source dataset name has no safe slug")
     created = datetime.now(timezone.utc)
     run_id = uuid.uuid4().hex[:12]
-    output_base = root / "output" / config.get("output_subdir", "")
-    if not output_base.resolve().is_relative_to((root / "output").resolve()):
-        raise ValueError("OUTPUT_SUBDIR_OUTSIDE_OUTPUT")
+    output_base = contained_path(artifact / config.get("output_subdir", ""), artifact)
     run = output_base / f"{slug}__{created:%Y%m%dT%H%M%SZ}__{run_id}"
     run.mkdir(parents=True, exist_ok=False)
     (run / "runtime").mkdir()
@@ -201,6 +208,7 @@ def generate(args) -> dict:
     from cfact.collection.snapshot import implementation_digest
     immutable = ["config.yaml", "source_manifest.json", "runtime/plan/config.json", "runtime/plan/source_manifest.json"]
     manifest = {"schema": "cfact.run.v1", "run_id": run_id, "created_utc": created.isoformat(),
+                "artifact_root": str(artifact), "allowed_write_root": config.get("allowed_write_root", str(artifact)),
                 "source_dataset": config["source_dataset"], "requested_roots": sum(len(x["roots"]) for x in task_rows),
                 "tasks": task_rows, "seed": config["seed"], "workers": workers, "gpu_devices": devices,
                 "camera_contract": params["video"], "config_sha256": digest_json(params),
@@ -221,6 +229,7 @@ def main():
     gen.add_argument("--config", type=Path, required=True)
     gen.add_argument("--prepared-dir", type=Path,
                      help="Prepared inputs; defaults to config source_dir/prepared, or legacy .cache/prepared")
+    gen.add_argument("--artifact-root", type=Path, help="Absolute output filesystem root; frozen in run identity")
     gen.add_argument("--workers", type=int)
     gen.add_argument("--gpu-devices", default="0")
     gen.add_argument("--export-python")

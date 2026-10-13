@@ -85,7 +85,9 @@ def _relative(path: Path, run: Path) -> str:
 def _check_storage(run: Path, cfg: dict[str, Any]) -> None:
     resource = cfg["resource"]
     total = sum(path.stat().st_size for path in run.rglob("*") if path.is_file())
-    free = shutil.disk_usage(run).free
+    from cfact.storage.policy import target_filesystem
+    storage = target_filesystem(run, resource)
+    free = storage["filesystem_free_bytes"]
     maximum = int(resource["maximum_output_gb"] * 1_000_000_000)
     minimum_free = int(resource["minimum_host_free_gib"] * 1024**3)
     record = {
@@ -94,7 +96,8 @@ def _check_storage(run: Path, cfg: dict[str, Any]) -> None:
         "maximum_run_and_spool_bytes": maximum,
         "filesystem_free_bytes": free,
         "minimum_filesystem_free_bytes": minimum_free,
-        "status": "PASS" if total <= maximum and free >= minimum_free else "STORAGE_GUARD_STOP",
+        "status": "PASS" if total <= maximum and storage["status"] == "PASS" else "STORAGE_GUARD_STOP",
+        "target_filesystem": storage,
     }
     atomic_json(run / "runtime" / "storage_admission.json", record)
     if record["status"] != "PASS":
@@ -2098,6 +2101,9 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
     from mimicgen.env_interfaces.base import make_interface
 
     cfg = json.loads(args.config.read_text())
+    if cfg.get("storage", {}).get("allowed_write_root"):
+        from cfact.storage.policy import contained_path
+        contained_path(args.run, Path(cfg["storage"]["allowed_write_root"]))
     row = next(x for x in cfg["tasks"] if x["task"] == args.task)
     split = json.loads(args.source_manifest.read_text())
     source_row = next(x for x in split["tasks"] if x["task"] == args.task)
