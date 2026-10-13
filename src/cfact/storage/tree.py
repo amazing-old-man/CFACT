@@ -453,6 +453,13 @@ def publish_tree(root_path: Path, run: Path, output: Path, config: dict, scope: 
             for k, v in media.items()
             if k not in ["frame_spool", "video", "clean_camera_frame_paths"]
         }
+        if media.get("ledger_reconstruction_receipt"):
+            receipt=read(Path(media["ledger_reconstruction_receipt"]))
+            for frame in receipt["frames"]:
+                frame["ledger_frame"]=str(history_rel / Path(frame["ledger_frame"]).name)
+            receipt_path=edge_base / "ledger_rgb_receipt.json"
+            write_json(output / receipt_path,receipt)
+            new_media["ledger_reconstruction_receipt"]=str(receipt_path)
         new_media.update(
             {
                 **review_record,
