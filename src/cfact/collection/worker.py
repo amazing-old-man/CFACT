@@ -2973,141 +2973,99 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     }
                 )
         _save_command_differences(node)
-        if cfg.get("method", {}).get("task_effect_v2"):
-            from cfact.generation.frontier import FrontierChild, expand_frontier
-            from cfact.generation.event_anchor import EventAnchor, OperationStage
-            from cfact.generation.task_adapters import TaskEffectAdapter
-            adapter = TaskEffectAdapter(task, joint_binding)
-            def measured_children(options, physical_edges, depth):
-                by_id = {o.candidate_id:o for o in options}
-                found=[]
-                for edge in physical_edges:
-                    if edge.get("status") != "PHYSICS_COMPLETE" or edge["candidate_id"] not in by_id:
-                        continue
-                    anchor_path=run / edge["edge_path"] / "event_anchor.json"
-                    rec=json.loads(anchor_path.read_text())
-                    anchor=EventAnchor(OperationStage(rec["stage"]),rec["sim_time_s"],rec["source_cursor"],rec["evidence"],rec["allowed_continuation"],rec.get("reason"))
-                    found.append(FrontierChild(by_id[edge["candidate_id"]], edge, anchor, depth))
-                return found
-            def expand_actual_child(child):
-                nonlocal charged_steps
-                common=dict(args=args,cfg=cfg,env=env,interface=interface,root=root,
-                    ancestor_option=child.option,ancestor_edge=run / child.edge["edge_path"],
-                    root_dir=root_dir,root_key=root_key,object_ref=object_ref,
-                    fixture_ref=fixture_ref,contract=contract,joint_spec=joint_spec,charged_steps=charged_steps)
-                if child.anchor.allowed_continuation=="recorded_release_suffix":
-                    pool,charged_steps,options=_expand_release_pool(**common)
-                else:
-                    pool,charged_steps,options=_expand_child_pool(**common,root_segment=segment,
-                        donors=donors,source_transform=pose_utils.transform_source_data_segment_using_object_pose)
-                return pool,measured_children(options,pool["edges"],child.decision_depth+1)
-            limit=cfg["tree_limits"]
-            pool_cap=min(limit["candidate_pools_per_root"]-1,
-                int(cfg.get("engineering_profile",{}).get("max_decision_parents_per_root",100000))-1)
-            child_pools, frontier_decisions = expand_frontier(measured_children(selected,edges,1),
-                adapter=adapter,expand=expand_actual_child,
-                maximum_depth=limit["maximum_decision_depth"],maximum_pools=max(0,pool_cap),
-                parents_per_level=min(limit["second_depth_pools"],
-                    int(cfg.get("engineering_profile",{}).get("max_children_per_parent",100000))),
-                remaining_budget=lambda:cfg["execution"]["max_env_steps_per_root"]-ledger(env).control_steps,
-                minimum_pool_steps=cfg["execution"]["local_timeout_steps"]+cfg["execution"]["continuation_steps"])
-            third_pools=[]
-            frontier_priority=[];child_frontier=[];third_frontier=[]
-            atomic_json(root_dir / "frontier_decisions.json", {"policy":"verified_stage_family_frontier", "decisions":frontier_decisions, "fixed_tail_outcomes_used":False})
-        else:
-            child_pools = []
-            third_candidates = []
-            frontier_priority = cfg["tree_limits"].get(
-                "frontier_family_priority", ["G2", "G1", "Reference", "G0"]
-            )
-            child_frontier = []
-            third_frontier = []
-            if (
-                cfg["tree_limits"]["maximum_decision_depth"] >= 2
-                and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
-                > 1
-            ):
-                # Round-robin by selected option order; no terminal outcome is used
-                # to select which genuine event children receive another pool.
-                eligible = [
-                    (option, edge)
-                    for option in selected
-                    for edge in edges
-                    if option.candidate_id == edge["candidate_id"]
-                    and edge.get("local_event") == "local_event_reached"
-                    and not json.loads((run / edge["edge_path"] / "local_result.json").read_text())[
-                        "official_success_at_child"
-                    ]
+        child_pools = []
+        third_candidates = []
+        frontier_priority = cfg["tree_limits"].get(
+            "frontier_family_priority", ["G2", "G1", "Reference", "G0"]
+        )
+        child_frontier = []
+        third_frontier = []
+        if (
+            cfg["tree_limits"]["maximum_decision_depth"] >= 2
+            and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
+            > 1
+        ):
+            # Round-robin by selected option order; no terminal outcome is used
+            # to select which genuine event children receive another pool.
+            eligible = [
+                (option, edge)
+                for option in selected
+                for edge in edges
+                if option.candidate_id == edge["candidate_id"]
+                and edge.get("local_event") == "local_event_reached"
+                and not json.loads((run / edge["edge_path"] / "local_result.json").read_text())[
+                    "official_success_at_child"
                 ]
-                child_frontier = select_child_frontier(
-                    eligible,
-                    family_priority=frontier_priority,
-                    maximum=min(
-                        cfg["tree_limits"]["second_depth_pools"],
-                        int(cfg.get("engineering_profile", {}).get("max_children_per_parent", 100000)),
-                    ),
+            ]
+            child_frontier = select_child_frontier(
+                eligible,
+                family_priority=frontier_priority,
+                maximum=min(
+                    cfg["tree_limits"]["second_depth_pools"],
+                    int(cfg.get("engineering_profile", {}).get("max_children_per_parent", 100000)),
+                ),
+            )
+            for ancestor_option, edge in child_frontier:
+                child_pool, charged_steps, child_options = _expand_child_pool(
+                    args=args,
+                    cfg=cfg,
+                    env=env,
+                    interface=interface,
+                    root=root,
+                    root_segment=segment,
+                    donors=donors,
+                    ancestor_option=ancestor_option,
+                    ancestor_edge=run / edge["edge_path"],
+                    root_dir=root_dir,
+                    root_key=root_key,
+                    object_ref=object_ref,
+                    fixture_ref=fixture_ref,
+                    contract=contract,
+                    joint_spec=joint_spec,
+                    charged_steps=charged_steps,
+                    source_transform=pose_utils.transform_source_data_segment_using_object_pose,
                 )
-                for ancestor_option, edge in child_frontier:
-                    child_pool, charged_steps, child_options = _expand_child_pool(
-                        args=args,
-                        cfg=cfg,
-                        env=env,
-                        interface=interface,
-                        root=root,
-                        root_segment=segment,
-                        donors=donors,
-                        ancestor_option=ancestor_option,
-                        ancestor_edge=run / edge["edge_path"],
-                        root_dir=root_dir,
-                        root_key=root_key,
-                        object_ref=object_ref,
-                        fixture_ref=fixture_ref,
-                        contract=contract,
-                        joint_spec=joint_spec,
-                        charged_steps=charged_steps,
-                        source_transform=pose_utils.transform_source_data_segment_using_object_pose,
+                child_pools.append(child_pool)
+                if contract.holding_object:
+                    third_candidates.extend(
+                        (option, candidate_edge)
+                        for option in child_options
+                        for candidate_edge in child_pool["edges"]
+                        if option.candidate_id == candidate_edge["candidate_id"]
+                        and candidate_edge.get("local_event") == "local_event_reached"
+                        and not json.loads(
+                            (run / candidate_edge["edge_path"] / "local_result.json").read_text()
+                        )["official_success_at_child"]
                     )
-                    child_pools.append(child_pool)
-                    if contract.holding_object:
-                        third_candidates.extend(
-                            (option, candidate_edge)
-                            for option in child_options
-                            for candidate_edge in child_pool["edges"]
-                            if option.candidate_id == candidate_edge["candidate_id"]
-                            and candidate_edge.get("local_event") == "local_event_reached"
-                            and not json.loads(
-                                (run / candidate_edge["edge_path"] / "local_result.json").read_text()
-                            )["official_success_at_child"]
-                        )
-            third_pools = []
-            if (
-                cfg["tree_limits"]["maximum_decision_depth"] >= 3
-                and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
-                > 2
-            ):
-                third_frontier = select_child_frontier(
-                    third_candidates,
-                    family_priority=frontier_priority,
-                    maximum=cfg["tree_limits"]["third_depth_pools"],
+        third_pools = []
+        if (
+            cfg["tree_limits"]["maximum_decision_depth"] >= 3
+            and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
+            > 2
+        ):
+            third_frontier = select_child_frontier(
+                third_candidates,
+                family_priority=frontier_priority,
+                maximum=cfg["tree_limits"]["third_depth_pools"],
+            )
+            for ancestor_option, edge in third_frontier:
+                third_pool, charged_steps = _expand_release_pool(
+                    args=args,
+                    cfg=cfg,
+                    env=env,
+                    interface=interface,
+                    root=root,
+                    ancestor_option=ancestor_option,
+                    ancestor_edge=run / edge["edge_path"],
+                    root_dir=root_dir,
+                    root_key=root_key,
+                    object_ref=object_ref,
+                    fixture_ref=fixture_ref,
+                    contract=contract,
+                    joint_spec=joint_spec,
+                    charged_steps=charged_steps,
                 )
-                for ancestor_option, edge in third_frontier:
-                    third_pool, charged_steps = _expand_release_pool(
-                        args=args,
-                        cfg=cfg,
-                        env=env,
-                        interface=interface,
-                        root=root,
-                        ancestor_option=ancestor_option,
-                        ancestor_edge=run / edge["edge_path"],
-                        root_dir=root_dir,
-                        root_key=root_key,
-                        object_ref=object_ref,
-                        fixture_ref=fixture_ref,
-                        contract=contract,
-                        joint_spec=joint_spec,
-                        charged_steps=charged_steps,
-                    )
-                    third_pools.append(third_pool)
+                third_pools.append(third_pool)
         all_edges = (
             edges
             + [edge for pool in child_pools for edge in pool["edges"]]
@@ -3133,14 +3091,12 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
             "restore_wall_seconds": ledger(env).restore_wall_seconds,
             "requested_max_decision_depth": cfg["tree_limits"]["maximum_decision_depth"],
             "frontier_selection": {
-                "policy": "verified_stage_family_frontier" if cfg.get("method", {}).get("task_effect_v2") else "fixed_family_priority",
-                "decisions": frontier_decisions if cfg.get("method", {}).get("task_effect_v2") else [],
                 "family_priority": frontier_priority,
                 "second_depth_parent_edges": [e["edge_path"] for _, e in child_frontier],
                 "third_depth_parent_edges": [e["edge_path"] for _, e in third_frontier],
                 "ranking_uses_terminal_outcomes": False,
             },
-            "observed_max_decision_depth": max([1] + [p.get("decision_depth", 2) for p in child_pools if p["edges"]]) if cfg.get("method", {}).get("task_effect_v2") else (
+            "observed_max_decision_depth": (
                 3
                 if any(x["edges"] for x in third_pools)
                 else (2 if any(x["edges"] for x in child_pools) else 1)
