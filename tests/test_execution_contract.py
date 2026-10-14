@@ -316,7 +316,7 @@ def test_saved_child_is_independent_before_tail_and_refreshes_context(tmp_path, 
     assert record["operation_context"]["task_goal"]["q_task"] == -0.4
     assert record["operation_context"]["current_object_pose"][0][3] == -0.1
     assert record["operation_context"]["source_cursor"] == 11
-    assert [r["frame"] for r in record["history_refs"]] == ["2", "3", "local_after"]
+    assert [r["frame"] for r in record["history_refs"]] == ["1", "2", "3", "local_after"]
     assert record["history_complete"]
 
 
