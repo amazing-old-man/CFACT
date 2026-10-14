@@ -537,6 +537,38 @@ def _probe_held_parent(
     raise RuntimeError("source replay never established measured held-object parent")
 
 
+def _probe_button_parent(env, interface, initial, actions, event_signal, lookback=5):
+    """Pick a saved real pre-activation state by a fixed source-event rule.
+
+    The detecting action is paid and archived, but is outside canonical ancestry.
+    No candidate outcome is inspected and no fixture state is changed.
+    """
+    from collections import deque
+    from cfact.generation.task_adapters import activation_state
+    env.reset_to(initial)
+    ring = deque(maxlen=lookback)
+    for step, action in enumerate(actions):
+        prior = activation_state(env)
+        if prior.get("status") != "MEASURED":
+            raise RuntimeError("ACTIVATION_STATE_UNMEASURED")
+        if prior["turned_on"]:
+            raise RuntimeError("SOURCE_INITIAL_BUTTON_ALREADY_ACTIVATED")
+        ring.append((step, capture_snapshot(env)))
+        env.step(action)
+        observed = activation_state(env)
+        if observed.get("turned_on"):
+            count, snapshot = ring[0]
+            _restore(env, initial, snapshot)
+            return {"event": {"event_name": event_signal, "rule": "fixed_5_action_pre_activation",
+                              "activation_action_index": step, "probe_control_steps": step+1},
+                    "parent_action_count": count,
+                    "first_success_step_before_parent": None,
+                    "parent_state": np.asarray(snapshot["states"]).copy(),
+                    "parent_signals": interface.get_subtask_term_signals(),
+                    "activation_before_parent": activation_state(env)}
+    raise RuntimeError("SOURCE_ACTIVATION_EVENT_NOT_OBSERVED")
+
+
 def _support_geometry(env: Any, task_name: str) -> tuple[list[dict[str, Any]], np.ndarray]:
     if task_name == "CoffeeServeMug":
         fixture = env.env.counter
@@ -2359,6 +2391,8 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                             args, cfg, root, route, dataset, source_group, error, attempt
                         )
                     raise
+            elif task.primitive_family == "button" and cfg.get("method", {}).get("recursive_goals_v2"):
+                probe = _probe_button_parent(env, interface, root["initial"], root["actions"], row["event_signal"])
             else:
                 probe = _probe_parent(
                     env,
@@ -2669,7 +2703,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
             {
                 "operation_context": operation_context.record(),
                 "snapshot": "parent_snapshot.json",
-                "history_refs": ledger(env).references(segment="source_prefix"),
+                "history_refs": [r for r in ledger(env).references(segment="source_prefix") if r["sim_time_s"] <= parent_snapshot["sim_time_s"] + 1e-9],
                 "history_complete": len(ledger(env).references(segment="source_prefix"))
                 >= 3,
                 "source_replay_history": str(ledger(env).directory),

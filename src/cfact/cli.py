@@ -10,6 +10,7 @@ import runpy
 import sys
 
 COMMANDS = {
+    "recursive": ("cfact.collection.round_runner", "Run a frozen recursive generation queue with server resource checks"),
     "download": ("cfact.sources.download", "Download or verify a fixed official Source archive"),
     "validate-source": ("cfact.sources.validation", "Validate authoritative replay fields and identity"),
     "manifest": ("cfact.collection.manifest_runner", "Prepare and run explicit resumable root jobs"),

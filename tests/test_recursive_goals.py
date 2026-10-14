@@ -45,3 +45,13 @@ def test_exhausted_incompatible_and_available_remain_distinct():
 def test_free_body_cannot_gain_fake_joint_or_continuation():
     assert propose_goals(target_task('OpenBlenderLid'),context())==[]
     assert propose_goals(target_task('OpenDrawer'),replace(context(),stage='TERMINAL_SUCCESS'))==[]
+
+def test_compiled_joint_goal_matches_existing_measured_outcome_contract():
+    from cfact.collection.worker import _goal_realization
+    ctx=context();goal=propose_goals(target_task('OpenDrawer'),ctx)[0]
+    option=compile_goal(goal,ctx,geometry=geom(),contact_verified=True)
+    trace=SimpleNamespace(fixture_joint_names=['drawer'],fixture_qpos=[[.1],[.14]],sim_time=[0.,.05],local_event_flags=[False],commanded_actions=np.zeros((1,12)))
+    fixed=SimpleNamespace(fixture_qpos=[[.14]],sim_time=[.05],commanded_actions=[])
+    result=_goal_realization(option,trace,fixed,1)
+    assert result['valid'] and result['target']==pytest.approx(.16)
+    assert result['local_end_error']==pytest.approx(.02)

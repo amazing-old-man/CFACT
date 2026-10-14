@@ -97,7 +97,7 @@ def compile_goal(goal, context, *, geometry=None, source=None, source_status="EX
         fixture_goal = {"joint": g["joint_name"], "desired_q": target,
                         "current_q": g["current_q"], "range": list(g["joint_range"])}
         binding.update(kind="articulation_local_subgoal", joint=g["joint_name"],
-                       q_task=context.task_goal["target_q"], joint_unit=goal.units)
+                       target_q=target, q_task=context.task_goal["target_q"], joint_unit=goal.units)
     elif context.holding_object:
         target = context.task_goal.get("target_pose_world")
         if target is not None:
