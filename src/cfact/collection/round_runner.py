@@ -94,6 +94,9 @@ def verify_queue(root, queue):
     freeze = read(queue["code_freeze"])
     if source_digest(Path(freeze["frozen_path"])) != freeze["code_sha256"]:
         raise ValueError("FROZEN_WORKER_CODE_CHANGED")
+    if queue.get("orchestrator_freeze"):
+        from cfact.collection.snapshot import implementation_digest
+        if read(queue["orchestrator_freeze"])["code_sha256"]!=implementation_digest():raise ValueError("FROZEN_ORCHESTRATOR_CODE_CHANGED")
     for key in ["config", "source_manifest"]:
         import hashlib
         path = Path(queue[key]); contained_path(path, root)
@@ -138,18 +141,19 @@ def live_costs(root,exclude_job=None):
 
 
 def run_fleet(root,queue_path,queue):
-    """Two fixed device lanes; every lane runs the same immutable physics code."""
+    """Fixed device lanes; at most two measured workers per physical GPU."""
     workers=int(queue["fleet_workers"])
-    if workers not in {1,2}:raise ValueError("ONLY_MEASURED_ONE_OR_TWO_WORKER_FLEET_SUPPORTED")
+    if workers not in {1,2,4}:raise ValueError("ONLY_MEASURED_ONE_TWO_OR_FOUR_WORKER_FLEET_SUPPORTED")
     verify_queue(root,queue)
-    if len(queue["verified_gpu_uuids"])<workers:raise ValueError("FLEET_REQUIRES_VERIFIED_PHYSICAL_GPU_MAPPING")
+    if len(set(queue["verified_gpu_uuids"]))<((workers+1)//2):raise ValueError("FLEET_REQUIRES_VERIFIED_PHYSICAL_GPU_MAPPING")
     state_path=root/"logs/SCHEDULER_STATUS.json"
     with RunLock(root/"logs/scheduler.lock"):
         children=[]
         try:
             for lane in range(workers):
                 child_queue={**queue,"fleet_workers":1,"jobs":queue["jobs"][lane::workers],
-                    "verified_gpu_uuids":[queue["verified_gpu_uuids"][lane]]}
+                    "verified_gpu_uuids":[queue["verified_gpu_uuids"][lane%len(queue["verified_gpu_uuids"])]],
+                    "gpu_slot":lane//len(queue["verified_gpu_uuids"]),"gpu_concurrency":((workers+len(queue["verified_gpu_uuids"])-1)//len(queue["verified_gpu_uuids"]))}
                 path=root/"config"/(queue_path.stem+f"_lane{lane}.json")
                 if path.exists() and read(path)!=child_queue:raise ValueError("FROZEN_LANE_QUEUE_CHANGED")
                 if not path.exists():atomic_json(path,child_queue)
@@ -217,15 +221,15 @@ def run_queue(root, queue_path):
                 inv=preflight(root); atomic_json(root/"logs/RESOURCE_CURRENT.json", inv)
                 hard=[]
                 if inv["free_disk_bytes"] < budget["reserve_bytes"]+queue.get("reserve_root_bytes", 2*2**30):hard.append("DISK_RESERVE")
-                if inv["available_ram_bytes"] < max(24*2**30, queue.get("peak_rss_bytes",8*2**30)*1.3):hard.append("RAM_RESERVE")
+                if inv["available_ram_bytes"] < 24*2**30+width*queue.get("peak_rss_bytes",8*2**30)*1.3:hard.append("RAM_RESERVE")
                 if inv["free_inodes"] < 1000000:hard.append("INODE_RESERVE")
                 if inv["scheduler"] == "SLURM_UNALLOCATED":hard.append("SCHEDULER_ALLOCATION_REQUIRED")
                 verified=queue.get("verified_gpu_uuids", [])
-                first=choose_gpu(inv, verified)
+                first=choose_gpu(inv, verified,measured_peak_mib=queue.get("peak_gpu_mib",2889)*queue.get("gpu_concurrency",1))
                 if first and not hard:
                     # Two separate checks; preserve task/root/seed while waiting.
                     time.sleep(15)
-                    second=preflight(root); picked=choose_gpu(second, verified)
+                    second=preflight(root); picked=choose_gpu(second, verified,measured_peak_mib=queue.get("peak_gpu_mib",2889)*queue.get("gpu_concurrency",1))
                     if picked and picked["uuid"] == first["uuid"]:device=picked;break
                 if not hard and queue.get("cpu_fallback_validated") and total["cpu_worker_seconds"]+1200 < budget["cpu_worker_hours"]*3600:
                     break
@@ -247,7 +251,9 @@ def run_queue(root, queue_path):
                 dest=run/name
                 if dest.exists() and dest.read_bytes() != Path(queue[key]).read_bytes():raise ValueError("RUN_INPUT_CHANGED")
                 if not dest.exists():dest.write_bytes(Path(queue[key]).read_bytes())
-            atomic_json(run/"run_manifest.json",dict(job=job,code_freeze=freeze,backend=backend,device=device))
+            from cfact.collection.snapshot import implementation_digest
+            atomic_json(run/"run_manifest.json",dict(job=job,code_freeze=freeze,backend=backend,device=device,
+                orchestrator_code_sha256=implementation_digest(),gpu_slot=queue.get("gpu_slot",0)))
             env=dict(os.environ, PYTHONPATH=freeze["frozen_path"]+"/src",CFACT_SOURCE_ROOT=freeze["frozen_path"],
                      MUJOCO_GL=backend,PYOPENGL_PLATFORM=backend,
                      CUDA_VISIBLE_DEVICES=device["uuid"] if device else "",CFACT_GPU_UUID=device["uuid"] if device else "CPU_ONLY")
@@ -258,7 +264,7 @@ def run_queue(root, queue_path):
                  "--split","development","--run",str(run),"--gpu",str(device["index"] if device else -1)]
             start=time.monotonic();peak=0;peak_gpu=0;reason=None;child=None;gpu_lock=None;last_disk=0;disk=0
             if device:
-                gpu_lock=RunLock(root/"logs"/(device["uuid"]+".lease"));gpu_lock.acquire()
+                gpu_lock=RunLock(root/"logs"/(device["uuid"]+f".slot{queue.get('gpu_slot',0)}.lease"));gpu_lock.acquire()
             try:
                 with (root/"logs"/(job["job_id"]+".log")).open("x") as log:
                     child=subprocess.Popen(cmd,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
