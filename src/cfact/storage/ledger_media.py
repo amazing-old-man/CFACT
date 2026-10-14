@@ -10,7 +10,7 @@ from cfact.storage.layout import inside
 
 IDENTITY_KEYS=('integration_state_sha256','state_sha256','scene_sha256','camera_config_sha256')
 
-def clean_media_from_ledger(run: Path, edge: Path, media: dict, history: Path) -> dict:
+def clean_media_from_ledger(run: Path, edge: Path, media: dict, history: Path, *, derived_root: Path | None = None) -> dict:
     paths=media.get('clean_camera_frame_paths',{})
     if paths and all(len(v)==len(media.get('frame_sim_time_s',[])) for v in paths.values()):return media
     # Only the documented direct-stream case is recoverable; partial spools are errors.
@@ -29,8 +29,11 @@ def clean_media_from_ledger(run: Path, edge: Path, media: dict, history: Path) -
         if key in index and index[key]['image_sha256']!=row['image_sha256']:
             raise ValueError('LEDGER_SAME_STATE_RGB_AMBIGUOUS')
         index[key]=row
-    identity=hashlib.sha256(json.dumps({'captures':captures,'times':times},sort_keys=True).encode()).hexdigest()
-    spool=inside(run,Path('derived_camera_frames')/identity)
+    # Equal physical-state receipts do not imply identical recorded RGB across
+    # independently rendered edges. Preserve each edge's own original pixels.
+    relative_edge=edge.resolve().relative_to(run.resolve()).as_posix()
+    identity=hashlib.sha256(json.dumps({'edge':relative_edge,'captures':captures,'times':times},sort_keys=True).encode()).hexdigest()
+    spool=inside(derived_root,identity) if derived_root is not None else inside(run,Path('derived_camera_frames')/identity)
     cleaned={camera:[] for camera in media['cameras']};receipt=[]
     for i,(timestamp,capture) in enumerate(zip(times,captures)):
         key=tuple(capture.get(k) for k in IDENTITY_KEYS)

@@ -29,3 +29,34 @@ def test_different_scene_or_corrupted_rgb_is_rejected(tmp_path):
     with pytest.raises(ValueError,match='NO_EXACT'):clean_media_from_ledger(tmp_path,edge,media,history)
     media['observation_captures'][0]['scene_sha256']='c';np.savez_compressed(history/'frame.npz',rgb=np.zeros_like(rgb))
     with pytest.raises(ValueError,match='IMAGE_HASH'):clean_media_from_ledger(tmp_path,edge,media,history)
+
+def test_equal_physics_receipts_keep_distinct_edge_pixels_and_do_not_write_acquisition(tmp_path):
+    run=tmp_path/'acquisition';run.mkdir()
+    history,edge,rgb,media=capture(run)
+    second=run/'other_edge';second.mkdir()
+    different=np.bitwise_xor(rgb,1)
+    np.savez_compressed(history/'second.npz',rgb=different)
+    row=json.loads((history/'frames.jsonl').read_text())
+    other={**row,'segment':str(second),'frame':'second.npz','image_sha256':[array_sha(x) for x in different]}
+    with (history/'frames.jsonl').open('a') as stream:stream.write(json.dumps(other)+'\n')
+    # Real capture receipts describe physics/cameras, not the RGB array hash.
+    same_capture={key:row[key] for key in IDENTITY_KEYS}
+    media['observation_captures']=[same_capture]
+    before={str(p.relative_to(run)):p.read_bytes() for p in run.rglob('*') if p.is_file()}
+    derived=tmp_path/'publication'/'.derived_camera_frames'
+    first=clean_media_from_ledger(run,edge,media,history,derived_root=derived)
+    second_media=clean_media_from_ledger(run,second,media,history,derived_root=derived)
+    assert first['frame_spool']!=second_media['frame_spool']
+    for result,expected in [(first,rgb),(second_media,different)]:
+        for i,camera in enumerate(result['cameras']):
+            with Image.open(Path(result['frame_spool'])/result['clean_camera_frame_paths'][camera][0]) as image:
+                assert np.array_equal(np.asarray(image),expected[i])
+    assert before=={str(p.relative_to(run)):p.read_bytes() for p in run.rglob('*') if p.is_file()}
+
+def test_changed_cached_png_is_still_rejected(tmp_path):
+    history,edge,rgb,media=capture(tmp_path)
+    result=clean_media_from_ledger(tmp_path,edge,media,history,derived_root=tmp_path/'published_frames')
+    camera=result['cameras'][0];target=Path(result['frame_spool'])/result['clean_camera_frame_paths'][camera][0]
+    Image.fromarray(np.zeros_like(rgb[0])).save(target)
+    with pytest.raises(ValueError,match='DERIVED_PNG_CHANGED'):
+        clean_media_from_ledger(tmp_path,edge,media,history,derived_root=tmp_path/'published_frames')

@@ -431,14 +431,15 @@ def publish_tree(root_path: Path, run: Path, output: Path, config: dict, scope: 
         media = read(old / "media.json", {})
         if (old / "execution.npz").exists() and history is not None:
             from cfact.storage.ledger_media import clean_media_from_ledger
-            media = clean_media_from_ledger(run,old,media,history)
+            media = clean_media_from_ledger(run,old,media,history,
+                derived_root=output/".derived_camera_frames")
         from cfact.storage.media import validate_media
 
         if (old / "execution.npz").exists():
             validate_media(media)
         media_base = media_root / "edges" / eid
         clean = {}
-        spool = media_spool(run, media)
+        spool = Path(media["frame_spool"]) if media.get("ledger_reconstruction_receipt") else media_spool(run, media)
         review_record = review_video(run, output, media, spool, media_base / "review.mp4")
         review = review_record["review_video"]
         for camera, paths in media.get("clean_camera_frame_paths", {}).items():
