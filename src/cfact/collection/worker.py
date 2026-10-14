@@ -376,6 +376,15 @@ def _propose_goals(args, cfg, context, node):
     return goals
 
 
+def _minimum_event_steps(cfg, option):
+    method=cfg.get("method",{})
+    if option.candidate_edit.get("effect_goal"):
+        return method.get("minimum_event_steps",0)
+    if option.source_method=="Reference" and method.get("recursive_goals_v2"):
+        return method.get("source_reference_minimum_event_steps",0)
+    return 0
+
+
 def _compile_goals(args, cfg, env, interface, context, goals, source, status, node, legacy):
     from cfact.generation.stage_compiler import compile_goal
     row = next(r for r in cfg["tasks"] if r["task"] == args.task)
@@ -1348,6 +1357,14 @@ def _expand_child_pool(
     )
     from cfact.generation.stage_compiler import source_suffix
     suffix_status, cut = source_suffix(source, next_action)
+    raw_suffix_status=suffix_status
+    if suffix_status=="AVAILABLE" and inherited_context.get("joint_binding") and cfg.get("method",{}).get("validate_source_suffix_entry"):
+        from cfact.generation.stage_compiler import contact_suffix_compatibility
+        limits=next(row.get("reference_neighborhood",{}) for row in cfg["tasks"] if row["task"]==args.task)
+        suffix_status,evidence=contact_suffix_compatibility(source,cut,np.asarray(info.object_poses[object_ref]),np.asarray(info.eef_pose),limits)
+        atomic_json(node/"source_suffix_compatibility.json",{**evidence,"raw_suffix_status":raw_suffix_status,
+            "source_suffix_status":suffix_status,"source_cursor":next_action,"source_episode":source.episode_id,
+            "classification_before_candidate_execution":True})
     progress = (cut or 0) / max(1, len(source.source_poses) - 1)
     source_prior = source
     if suffix_status == "AVAILABLE":
@@ -1634,7 +1651,7 @@ def _expand_child_pool(
                 trace,
                 detector,
                 max_steps=option.local_timeout,
-                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
+                minimum_event_steps=_minimum_event_steps(cfg,option),
                 frame_callback=quad.append,
                 contact_guard=_measured_arm_guard(env, cfg),
                 source_action_indices=connection["source_action_index"][1:],
@@ -2051,7 +2068,7 @@ def _expand_release_pool(
                 trace,
                 detector,
                 max_steps=option.local_timeout,
-                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
+                minimum_event_steps=_minimum_event_steps(cfg,option),
                 frame_callback=quad.append,
                 contact_guard=_measured_arm_guard(env, cfg),
                 source_action_indices=connection["source_action_index"][1:],
@@ -3037,7 +3054,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     trace,
                     detector,
                     max_steps=option.local_timeout,
-                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
+                    minimum_event_steps=_minimum_event_steps(cfg,option),
                     frame_callback=quad.append,
                     contact_guard=_measured_arm_guard(env, cfg),
                     source_action_indices=connection["source_action_index"][1:],

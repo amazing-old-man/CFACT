@@ -65,3 +65,26 @@ def test_source_prior_closing_event_is_preserved_in_recompiled_goal():
     assert np.all(option.gripper_actions[9:,0]==1)
     assert option.motion_template=='SOURCE_PRIOR_RECOMPILED'
     assert option.candidate_edit['continuation_origin']=='SOURCE_PRIOR_RECOMPILED'
+
+
+def test_source_entry_compatibility_preserves_existing_source_and_missing_limits():
+    from cfact.generation.stage_compiler import contact_suffix_compatibility
+    poses=np.repeat(np.eye(4)[None],8,axis=0);poses[3:,0,3]=.15
+    source=SimpleNamespace(source_poses=poses,motion_object_poses=np.repeat(np.eye(4)[None],8,axis=0))
+    saved=source.source_poses.copy();limits={'entry_translation_m':.06,'entry_rotation_rad':.6}
+    status,record=contact_suffix_compatibility(source,3,np.eye(4),np.eye(4),limits)
+    assert status=='INCOMPATIBLE' and record['remaining_source_waypoints']==5
+    assert record['source_preserved'] and np.array_equal(source.source_poses,saved)
+    assert contact_suffix_compatibility(source,3,np.eye(4),np.eye(4),{})[0]=='AVAILABLE'
+    assert contact_suffix_compatibility(source,0,np.eye(4),np.eye(4),limits)[0]=='AVAILABLE'
+
+
+def test_reference_minimum_requires_explicit_new_protocol_and_keeps_legacy_zero():
+    from cfact.collection.worker import _minimum_event_steps
+    option=SimpleNamespace(candidate_edit={},source_method='Reference')
+    cfg={'method':{'recursive_goals_v2':True,'source_reference_minimum_event_steps':20,'minimum_event_steps':20}}
+    assert _minimum_event_steps(cfg,option)==20
+    assert _minimum_event_steps({'method':{'recursive_goals_v2':True}},option)==0
+    assert _minimum_event_steps({'method':{**cfg['method'],'recursive_goals_v2':False}},option)==0
+    option.candidate_edit={'effect_goal':{'mode':'hold'}}
+    assert _minimum_event_steps(cfg,option)==20

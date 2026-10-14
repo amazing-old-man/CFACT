@@ -40,6 +40,29 @@ def source_suffix(source, cursor):
     return "AVAILABLE", int(remaining[0])
 
 
+def contact_suffix_compatibility(source, cut, current_object_pose, current_eef_pose, limits):
+    """Check the existing declared reference-entry bounds without deleting Source.
+
+    An old suffix can start in a later release/other-entity phase. Its tool/body
+    relation must fit the currently measured contact entry to serve as a suffix.
+    Missing declared limits remain unknown rather than creating a rejection.
+    """
+    required={"entry_translation_m","entry_rotation_rad"}
+    if not required.issubset(limits):
+        return "AVAILABLE",{"status":"NOT_CHECKED_NO_DECLARED_ENTRY_LIMITS"}
+    actual=np.linalg.inv(current_object_pose)@current_eef_pose
+    prior=np.linalg.inv(source.motion_object_poses[cut])@source.source_poses[cut]
+    translation=float(np.linalg.norm(actual[:3,3]-prior[:3,3]))
+    rotation=float(np.arccos(np.clip((np.trace(actual[:3,:3].T@prior[:3,:3])-1)/2,-1,1)))
+    good=translation<=limits["entry_translation_m"] and rotation<=limits["entry_rotation_rad"]
+    return "AVAILABLE" if good else "INCOMPATIBLE",{
+        "status":"MEASURED_SOURCE_AND_CURRENT_GEOMETRY","compatible":good,
+        "translation_m":translation,"rotation_rad":rotation,"limits":dict(limits),
+        "current_tool_to_body_relation":actual.tolist(),"recorded_suffix_entry_relation":prior.tolist(),
+        "source_entry_index":int(cut),"remaining_source_waypoints":len(source.source_poses)-cut,
+        "source_preserved":True,"reason":None if good else "SOURCE_ENTRY_OUTSIDE_DECLARED_CONTACT_NEIGHBORHOOD"}
+
+
 def propose_goals(task, context, *, horizon=40):
     """Generate goals before any robot candidate; original task stays immutable."""
     family = task.primitive_family
