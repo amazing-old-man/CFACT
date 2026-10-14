@@ -1,0 +1,16 @@
+{
+  "actual_collision_proof": "reports/PUBLISHER_V6_ACTUAL_COLLISION_REPRO.json",
+  "changes": [
+    "Bind image cache identity to recorded edge as well as measured captures and times",
+    "Write derived PNG caches only inside publication output",
+    "Retain all recorded image hash checks"
+  ],
+  "code_sha256": "3a01d878a1a2e869fe5379ea6692403a4171c8b11bb953a39b897ef25a8ec1f3",
+  "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/publisher_v6",
+  "physical_worker_unchanged": "manifests/DEVELOPMENT_V8_FREEZE.json",
+  "sha": "dd8ec79365018be04a29311de8e8484e744cd4d9",
+  "stage": "OFFICIAL_PUBLISHER_MEDIA_CACHE_FIX",
+  "tests": "tests/full_suite_publisher_v6.log",
+  "time_utc": "2026-10-14T10:19:46.924099+00:00",
+  "verified_e2e": "datasets/publisher_v6_verified_collision_root/FULL_READBACK.json"
+}

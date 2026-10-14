@@ -1,0 +1,12 @@
+{
+  "code_sha256": "b594e115f6ae7c804e1208d332eb916ec76811cb019f6d70bb01c0a7cf525c2a",
+  "cpu_lanes": 4,
+  "effect_protocol": "config/EFFECT_COMPARISON_POLICY_V4.json",
+  "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/orchestrator_v9",
+  "max_workers": 8,
+  "max_workers_per_gpu": 2,
+  "physical_worker_code_freeze": "manifests/DEVELOPMENT_V8_FREEZE.json",
+  "sha": "588f4f1372afd173d4cf3b1034c6058732ff83e9",
+  "stage": "ORCHESTRATION_EIGHT_WORKER_USER_OVERRIDE",
+  "tests": "tests/full_suite_orchestrator_v9.log"
+}

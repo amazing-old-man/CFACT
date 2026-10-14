@@ -1,0 +1,13 @@
+{
+  "calendar_hours": 48,
+  "control_steps": 1000000,
+  "cpu_worker_hours": 24,
+  "disk_bytes": 536870912000,
+  "gpu_cutoff_c": 92,
+  "gpu_worker_hours": 24,
+  "initial_workers": 1,
+  "max_workers": 8,
+  "reserve_bytes": 377930298163,
+  "root_timeout_seconds": 1200,
+  "temperature_admission_c": null
+}

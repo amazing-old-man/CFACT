@@ -1,0 +1,45 @@
+{
+  "core_proof": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/manifests/CURRENT_STATE_PRIMITIVE_V8_PHYSICAL_PROOF.json",
+  "final_method_frozen_before_heldout": true,
+  "historical_versions_kept_separate": true,
+  "orchestrator": {
+    "code_sha256": "b594e115f6ae7c804e1208d332eb916ec76811cb019f6d70bb01c0a7cf525c2a",
+    "cpu_lanes": 4,
+    "effect_protocol": "config/EFFECT_COMPARISON_POLICY_V4.json",
+    "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/orchestrator_v9",
+    "max_workers": 8,
+    "max_workers_per_gpu": 2,
+    "physical_worker_code_freeze": "manifests/DEVELOPMENT_V8_FREEZE.json",
+    "sha": "588f4f1372afd173d4cf3b1034c6058732ff83e9",
+    "stage": "ORCHESTRATION_EIGHT_WORKER_USER_OVERRIDE",
+    "tests": "tests/full_suite_orchestrator_v9.log"
+  },
+  "physical_worker": {
+    "code_sha256": "57188f3a67e23d72fe4517c5c133eb3ca8fd661c328a3268f7519006e6cd4d98",
+    "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/v8",
+    "method_changes": [
+      "explicit 20-action minimum for recursive Source Reference unless official termination or contact loss",
+      "existing declared entry translation/rotation limits also checked for remaining Source; original Source retained"
+    ],
+    "sha": "39bdf717dafbe93c43f8fdba4233af0614bc7e2d",
+    "stage": "DEVELOPMENT_BEFORE_HELD_OUT",
+    "tests": "tests/full_suite_reference_v8.log",
+    "unsupported_scope": "Missing declared entry limits are unknown, not rejections."
+  },
+  "publisher": {
+    "actual_collision_proof": "reports/PUBLISHER_V6_ACTUAL_COLLISION_REPRO.json",
+    "changes": [
+      "Bind image cache identity to recorded edge as well as measured captures and times",
+      "Write derived PNG caches only inside publication output",
+      "Retain all recorded image hash checks"
+    ],
+    "code_sha256": "3a01d878a1a2e869fe5379ea6692403a4171c8b11bb953a39b897ef25a8ec1f3",
+    "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/publisher_v6",
+    "physical_worker_unchanged": "manifests/DEVELOPMENT_V8_FREEZE.json",
+    "sha": "dd8ec79365018be04a29311de8e8484e744cd4d9",
+    "stage": "OFFICIAL_PUBLISHER_MEDIA_CACHE_FIX",
+    "tests": "tests/full_suite_publisher_v6.log",
+    "time_utc": "2026-10-14T10:19:46.924099+00:00",
+    "verified_e2e": "datasets/publisher_v6_verified_collision_root/FULL_READBACK.json"
+  }
+}

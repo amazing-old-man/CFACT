@@ -1,0 +1,12 @@
+{
+  "sha": "39bdf717dafbe93c43f8fdba4233af0614bc7e2d",
+  "code_sha256": "57188f3a67e23d72fe4517c5c133eb3ca8fd661c328a3268f7519006e6cd4d98",
+  "frozen_path": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runtime/v8",
+  "stage": "DEVELOPMENT_BEFORE_HELD_OUT",
+  "tests": "tests/full_suite_reference_v8.log",
+  "method_changes": [
+    "explicit 20-action minimum for recursive Source Reference unless official termination or contact loss",
+    "existing declared entry translation/rotation limits also checked for remaining Source; original Source retained"
+  ],
+  "unsupported_scope": "Missing declared entry limits are unknown, not rejections."
+}

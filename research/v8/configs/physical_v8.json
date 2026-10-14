@@ -1,0 +1,278 @@
+{
+  "candidate_pool": {
+    "g0_max": 2,
+    "g1_g2_slots": "shared_remaining_slots",
+    "max_executed_options_per_node": 4,
+    "max_raw_proposals_per_generator": 12,
+    "max_selected_g0": 2,
+    "outcome_based_selection": false,
+    "reference_max": 1,
+    "selection": "compatibility_then_mode_coverage"
+  },
+  "contact_guard": {
+    "mode": "off",
+    "reason": "ordinary physical contact is retained; technical invalidity remains separately recorded"
+  },
+  "execution": {
+    "budget_accounting": "all_env_steps_including_root_probe_restores_local_fixed_and_validation",
+    "continuation_steps": 0,
+    "control_hz": 20,
+    "interpolation_steps": 5,
+    "local_timeout_steps": 80,
+    "max_env_steps_per_root": 1800,
+    "max_task_path_steps": 1800,
+    "state_sampling": "every_control_step"
+  },
+  "generator_revision": "cfact-0.7.1.dev0",
+  "method": {
+    "button_direction_prior_actions": 5,
+    "comparison_horizon_s": {
+      "articulated_contact": 1.0,
+      "button_activation": 0.5,
+      "held_object_placement": 1.0
+    },
+    "frontier_attempt_budget": 8,
+    "g0_scale_policy": "source_geometry_v1",
+    "minimum_event_steps": 20,
+    "primitive_horizon_steps": 40,
+    "recursive_goals_v2": true,
+    "source_reference_minimum_event_steps": 20,
+    "stable_articulation_parent": true,
+    "stable_contact_steps": 4,
+    "task_effect_v2": true,
+    "validate_source_suffix_entry": true
+  },
+  "motion_validation": {
+    "mode": "off",
+    "reason": "candidate physics is measured during execution; no universal collision-proof gate"
+  },
+  "output_root": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/outputs/CFACT-20",
+  "prepared_source_manifest_sha256": "ac2897c39b8eb98426a0c4be2aca899b9312eece81740f300c6e00512f815f94",
+  "raw_routes_sha256": "114cdca8fa66604abb73984be828dee2bec0f6b60b182b83a186e3431ffdec3b",
+  "release_root": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/config/formal_v8_plan",
+  "resource": {
+    "admission_gpu_mib_per_scene": 2889,
+    "admission_gpu_reserve_mib": 2048,
+    "admission_ram_mib_per_scene": 6500,
+    "admission_ram_reserve_mib": 4096,
+    "ffmpeg_workers": 1,
+    "maximum_output_gb": 536.870912,
+    "minimum_free_inodes": 1000000,
+    "minimum_host_free_gib": 351.9750183103606,
+    "requested_scene_workers": 1,
+    "runtime_gpu_free_floor_mib": 4096,
+    "runtime_ram_reserve_fraction": 0.15
+  },
+  "run_seed": 20261014,
+  "schema_version": "5.0.0",
+  "source_mode": "development",
+  "storage": {
+    "allowed_write_root": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365",
+    "artifact_root": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365",
+    "auto_publish": false,
+    "export_python": "/mnt/ssd2/yanghc/CFACT/.runtime/export-venv/bin/python",
+    "output_root": "outputs/CFACT-20",
+    "quota_root": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365",
+    "schema": "cfact.dual-view.v1"
+  },
+  "tasks": [
+    {
+      "event_minimum_duration": 10,
+      "event_object_ref": "obj",
+      "event_signal": "stage_contact_obj",
+      "operation_object_ref": "cab",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/PickPlaceCounterToCabinet_generation_v7.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 0.8,
+        "entry_translation_m": 0.22,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "event_minimum_duration": 10,
+      "event_object_ref": "obj",
+      "event_signal": "stage_contact_obj",
+      "operation_object_ref": "sink",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/PickPlaceCounterToSink_generation_v7.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 1.0,
+        "entry_translation_m": 0.3,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle_1",
+      "event_signal": "stage_contact_handle_1",
+      "operation_object_ref": "handle_1",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/OpenCabinet_generation_v7.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 0.6,
+        "entry_translation_m": 0.06,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "OpenCabinet"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle",
+      "event_signal": "stage_contact_handle",
+      "operation_object_ref": "handle",
+      "prepared_hdf5": "/mnt/ssd2/yanghc/CFACT/source/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__522e4ffa__train40_v1/prepared/OpenDrawer.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 0.6,
+        "entry_translation_m": 0.06,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "OpenDrawer"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle",
+      "event_signal": "stage_contact_handle",
+      "operation_object_ref": "handle",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/OpenOven_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "OpenOven"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "door_1",
+      "event_signal": "stage_contact_door_1",
+      "operation_object_ref": "door_1",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/CloseCabinet_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "CloseCabinet"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle",
+      "event_signal": "stage_contact_drawer",
+      "operation_object_ref": "handle",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/CloseDrawer_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "CloseDrawer"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle",
+      "event_signal": "stage_contact_door",
+      "operation_object_ref": "handle",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/CloseOven_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "CloseOven"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "obj",
+      "event_signal": "stage_contact_obj",
+      "operation_object_ref": "coffee_machine",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/CoffeeSetupMug_generation_v7.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 1.0,
+        "entry_translation_m": 0.13,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "obj",
+      "event_signal": "stage_contact_obj",
+      "operation_object_ref": "coffee_machine",
+      "prepared_hdf5": "/mnt/ssd2/yanghc/CFACT/source/PhysicalAI-Robotics-Manipulation-Kitchen-Demos__522e4ffa__train40_v1/prepared/CoffeeServeMug.hdf5",
+      "reference_neighborhood": {
+        "entry_rotation_rad": 0.5,
+        "entry_translation_m": 0.1,
+        "source": "development_source_entry_statistics_and_fixture_contact_geometry"
+      },
+      "task": "CoffeeServeMug"
+    },
+    {
+      "event_minimum_duration": 3,
+      "event_object_ref": "button",
+      "event_signal": "stage_contact_button",
+      "operation_object_ref": "button",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/TurnOnMicrowave_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "button",
+      "event_signal": "success",
+      "operation_object_ref": "button",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/StartCoffeeMachine_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "rack",
+      "event_signal": "stage_contact_rack",
+      "operation_object_ref": "rack",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/SlideOvenRack_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "SlideOvenRack"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "handle",
+      "event_signal": "stage_contact_handle",
+      "operation_joint_role": {
+        "fixture_attribute": "sink",
+        "joint_property": "handle_joint"
+      },
+      "operation_object_ref": "handle",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/TurnOnSinkFaucet_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "knob",
+      "event_signal": "stage_contact_knob",
+      "operation_object_ref": "knob",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/TurnOnStove_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "TurnOnStove"
+    },
+    {
+      "event_minimum_duration": 1,
+      "event_object_ref": "knob",
+      "event_signal": "stage_contact_knob",
+      "operation_object_ref": "knob",
+      "prepared_hdf5": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/sources/prepared/AdjustToasterOvenTemperature_generation_v7.hdf5",
+      "reference_neighborhood": {},
+      "task": "AdjustToasterOvenTemperature"
+    }
+  ],
+  "tree_limits": {
+    "candidate_pools_per_root": 3,
+    "frontier_family_priority": [
+      "G2",
+      "G1",
+      "Reference",
+      "G0"
+    ],
+    "maximum_decision_depth": 3,
+    "second_depth_pools": 1,
+    "third_depth_pools": 1
+  },
+  "video": {
+    "camera_schema": "cfact.native-rgb224.v1",
+    "cameras": [
+      "robot0_agentview_left",
+      "robot0_agentview_right",
+      "robot0_eye_in_hand"
+    ],
+    "cell_height": 224,
+    "cell_width": 224,
+    "codec": "libx264",
+    "feature_scale": 1.0,
+    "fps": 20,
+    "review_only": true
+  }
+}

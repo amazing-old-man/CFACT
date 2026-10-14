@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+source /mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/activate.sh
+exec python3 "$CFACT_WORKSPACE/scripts/cfact_dispatch.py" "$@"

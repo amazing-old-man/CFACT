@@ -1,0 +1,1043 @@
+{
+  "code_freeze": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/manifests/DEVELOPMENT_V8_FREEZE.json",
+  "config": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/config/formal_v8_plan/config.json",
+  "config_sha256": "08ab8e74d53503addade92696d8d65592e695c8783954c9814e0969444b539c3",
+  "cpu_fallback_validated": true,
+  "fleet_workers": 8,
+  "halt_on_technical": true,
+  "jobs": [
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_5",
+      "request_id": "d37babf34890bf30deee42c7",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_6",
+      "request_id": "eda05194b0340adaabcde5b8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_7",
+      "request_id": "549280d8f0ae4023ef47ffdd",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_8",
+      "request_id": "e9d2709ee3cf314ad23fc122",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_9",
+      "request_id": "74212010fc2ff40a7635c842",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_10",
+      "request_id": "b060152608b5a660791c003a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_11",
+      "request_id": "fd68ec3b097e13405f8c131e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToCabinet_demo_12",
+      "request_id": "983e47ad81dabe45a9a7c685",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToCabinet_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_5",
+      "request_id": "7fa55faf14723ecf80b1fffb",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_6",
+      "request_id": "af20138d771befaee77ad4d8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_7",
+      "request_id": "c70ebe5104cf6fa1df859370",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_8",
+      "request_id": "a7991ca59a0a6bd00629f648",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_9",
+      "request_id": "8c7aef3f315a8ca6cef2a763",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_10",
+      "request_id": "de2d060773dc57446cfb7574",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_11",
+      "request_id": "9bcd058b44a628995b0b8720",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_PickPlaceCounterToSink_demo_12",
+      "request_id": "a3d8391d58a6aec771ae5fc9",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_PickPlaceCounterToSink_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "PickPlaceCounterToSink"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_5",
+      "request_id": "b2184e362a4559b8ed58d08e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_6",
+      "request_id": "168d1006f0e025c2ed767a40",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_7",
+      "request_id": "ec04d134f6cd2c3755eb7cbb",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_8",
+      "request_id": "0d0ceb912191b1a35f374681",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_9",
+      "request_id": "cb5eea1bd449a0d2ccfa9535",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_10",
+      "request_id": "422a2268003fd2715916f5d1",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_11",
+      "request_id": "7b43455b2e69f0c0f2ca769c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenCabinet_demo_12",
+      "request_id": "6978d6c3ddaf983ea84735c0",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenCabinet_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "OpenCabinet"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_12",
+      "request_id": "ee0e56bc83a6951931efb5f9",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_14",
+      "request_id": "59bd3f4f83df7f120abf5064",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_14",
+      "source_group": "demo_14",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_15",
+      "request_id": "327f3c77c5f85d5a8381c1d1",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_15",
+      "source_group": "demo_15",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_16",
+      "request_id": "f62269fc750bef72e292a629",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_16",
+      "source_group": "demo_16",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_19",
+      "request_id": "aed2a2f7a7111cd4e4bb4e40",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_19",
+      "source_group": "demo_19",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_25",
+      "request_id": "cf3e608953387a4cec10073a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_25",
+      "source_group": "demo_25",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_27",
+      "request_id": "bfd450b3c11856139e130f1c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_27",
+      "source_group": "demo_27",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenDrawer_demo_32",
+      "request_id": "4e217b35bbf261346a80b789",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenDrawer_demo_32",
+      "source_group": "demo_32",
+      "split": "formal",
+      "task": "OpenDrawer"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_5",
+      "request_id": "40d8a606dec3f54c5dc49aaf",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_6",
+      "request_id": "2c9df3947011bb72d28b013d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_7",
+      "request_id": "a50d4af5453bded18a445952",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_8",
+      "request_id": "a3af77f4915af28f85ef1d73",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_9",
+      "request_id": "546cc5b2a2f70016cba50ade",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_10",
+      "request_id": "ef1b7cf17663beb7138fe159",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_11",
+      "request_id": "c01d895bbbbff1dee028aac9",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_OpenOven_demo_12",
+      "request_id": "82cc923941f6bf860cf08211",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_OpenOven_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "OpenOven"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_5",
+      "request_id": "95349ec106b2f11a294ce87d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_6",
+      "request_id": "84e2c0fff2d342561ef565ed",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_7",
+      "request_id": "b5228a9aa49e78bf58021bf8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_8",
+      "request_id": "facd889f2593892e8efd526d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_9",
+      "request_id": "6ecfaef62da4c8300018c971",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_10",
+      "request_id": "7cc9580b152a6e5d5d2e0830",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_11",
+      "request_id": "74438be074690e724b7b2a3d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseCabinet_demo_12",
+      "request_id": "d9482f672f2ef9356694e720",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseCabinet_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "CloseCabinet"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_5",
+      "request_id": "55036d4d430cf55457802018",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_6",
+      "request_id": "6f358a69544b0935dfff812a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_7",
+      "request_id": "ee6ebe955888a6ab826a6c27",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_8",
+      "request_id": "dd692e5d137e5a3b2d2c844a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_9",
+      "request_id": "b15acb1aeaf676ee1c16e447",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_10",
+      "request_id": "5c9a405cdcebc4d4cee75155",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_11",
+      "request_id": "426befc74fa586829f9c6ece",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseDrawer_demo_12",
+      "request_id": "d89e5a757eadb731c7ca8b20",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseDrawer_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "CloseDrawer"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_5",
+      "request_id": "7628cc69605ba3779351c256",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_6",
+      "request_id": "1487276e57cca1e56f149afe",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_7",
+      "request_id": "0d6ed466af8758f3b5531709",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_8",
+      "request_id": "eb860a2d78e7ab4a124e1ca1",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_9",
+      "request_id": "03c66de76cd9421f53a79eec",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_10",
+      "request_id": "0ae390b6b08f794594d78d81",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_11",
+      "request_id": "7a2b65d4a1a0186800dc500f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CloseOven_demo_12",
+      "request_id": "3595873df222c1fdb30293e8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CloseOven_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "CloseOven"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_5",
+      "request_id": "8964f062f4ae93ae6a7d9533",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_6",
+      "request_id": "94a6822007d04a411cadb3ee",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_7",
+      "request_id": "32f5a3ad98bdcb178b603153",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_8",
+      "request_id": "1ba49dd4ff46f2f5e3b46f97",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_9",
+      "request_id": "9311d1778f68e53221b5fb0e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_10",
+      "request_id": "dc6a40940bbbc538dfaa400e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_11",
+      "request_id": "72598200097bfd93e278597a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeSetupMug_demo_12",
+      "request_id": "0e8d11838a08610d707b8590",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeSetupMug_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "CoffeeSetupMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_10",
+      "request_id": "a5e645d847676976c0bfef70",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_14",
+      "request_id": "2fd60e08e125f86ae6a34e0f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_14",
+      "source_group": "demo_14",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_32",
+      "request_id": "82a4d88a97b20ad16242fe25",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_32",
+      "source_group": "demo_32",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_33",
+      "request_id": "b77611a7f87f8a8eb74118ec",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_33",
+      "source_group": "demo_33",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_42",
+      "request_id": "36262f533b76c7c0f5dd558f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_42",
+      "source_group": "demo_42",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_43",
+      "request_id": "bc906f1eebeb837be205701d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_43",
+      "source_group": "demo_43",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_47",
+      "request_id": "35dbafc75c4c99e42d0fa507",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_47",
+      "source_group": "demo_47",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_CoffeeServeMug_demo_50",
+      "request_id": "dd7413e7fc47dce52ade11cf",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_CoffeeServeMug_demo_50",
+      "source_group": "demo_50",
+      "split": "formal",
+      "task": "CoffeeServeMug"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_5",
+      "request_id": "b5e3b71948ea023099869aab",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_6",
+      "request_id": "0cda4e88b6e7b5aee909ca4f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_7",
+      "request_id": "76bcbea9947d4c61b5538943",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_8",
+      "request_id": "eab18c65c7d8d7c61bbfd76c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_9",
+      "request_id": "cd000cedac86b00106afe38f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_10",
+      "request_id": "0d16f13911e3e5718a8e3277",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_11",
+      "request_id": "e3cc4b8203a28b267dfbc54a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_TurnOnMicrowave_demo_12",
+      "request_id": "db6992d5ff4e70ea4030f220",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnMicrowave_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "TurnOnMicrowave"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_5",
+      "request_id": "a984cf300b68fcdcfc6cafac",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_6",
+      "request_id": "ef18aafb02ba6d08c059b817",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_7",
+      "request_id": "1306b4c49d63bbc8589f81f6",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_8",
+      "request_id": "d2fa2a44112e916eff4c2488",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_9",
+      "request_id": "eeb9c989dfdbc48e66d6c998",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_10",
+      "request_id": "cff8d1b5a1412ecdd6f90367",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_11",
+      "request_id": "9fb80907a2bf67233a4535c0",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_StartCoffeeMachine_demo_12",
+      "request_id": "b1af2489431d1bfb75053f3c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_StartCoffeeMachine_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "StartCoffeeMachine"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_5",
+      "request_id": "945f928c9c11d91b21823120",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_6",
+      "request_id": "16969badc39f6c3904f5cfb8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_7",
+      "request_id": "fb719a5dd116f55e7a127b86",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_8",
+      "request_id": "2321058612c3b7df8caa5116",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_9",
+      "request_id": "9589502297694ba5f6616636",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_10",
+      "request_id": "8e8f428ef330fbba08e6a235",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_11",
+      "request_id": "a386fbd578ff66cb3d6fc31e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_SlideOvenRack_demo_12",
+      "request_id": "1fd6db9fa4950bf9c3070263",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_SlideOvenRack_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "SlideOvenRack"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_5",
+      "request_id": "6ee8a4d2e3d320e6c27ef5e3",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_6",
+      "request_id": "761b4b535ac149ac8b260ce3",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_7",
+      "request_id": "fe50a891bf76ddff95a3db5d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_8",
+      "request_id": "8ae03568fac9533ebafd2e0f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_9",
+      "request_id": "45cf6b43b71da2019976f09e",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_10",
+      "request_id": "f2799151083709f4af15d78b",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_11",
+      "request_id": "4031b7c1857fbd15c7cff227",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnSinkFaucet_demo_12",
+      "request_id": "5cd87e71713613f23f4e8dd6",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnSinkFaucet_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "TurnOnSinkFaucet"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_5",
+      "request_id": "c3b4d6a272b9890a7f32ff2d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_6",
+      "request_id": "19515c6873904ac410fbb102",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_7",
+      "request_id": "7ef22383cd02f6f1c1ace238",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_8",
+      "request_id": "e1272b75109851e113bbb8b0",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_9",
+      "request_id": "fbd6176742897023128b7c26",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_10",
+      "request_id": "585f4c70655af0f7367c9d78",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_11",
+      "request_id": "dbc756a92683e5ba4ad7449b",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_TurnOnStove_demo_12",
+      "request_id": "a3d30442c700fb8996d4031f",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_TurnOnStove_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "TurnOnStove"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_5",
+      "request_id": "6a5a29a18ef90d7019978462",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_5",
+      "source_group": "demo_5",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_6",
+      "request_id": "20f06400d16b0ab09892049d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_7",
+      "request_id": "199ef4a1ee9dd12d8276038d",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_7",
+      "source_group": "demo_7",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_8",
+      "request_id": "1a33cb9484d878521492ade5",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_8",
+      "source_group": "demo_8",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_9",
+      "request_id": "26f1ca2c6fb7aa0b7dddfde8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_9",
+      "source_group": "demo_9",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_10",
+      "request_id": "826bcdb68b08b9ac2cea623c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_10",
+      "source_group": "demo_10",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_11",
+      "request_id": "7dff4fcca28d6438a1ecbb0c",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_11",
+      "source_group": "demo_11",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    },
+    {
+      "job_id": "formal_v8_AdjustToasterOvenTemperature_demo_12",
+      "request_id": "81e0924c3903de098826a50a",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/formal_v8/formal_v8_AdjustToasterOvenTemperature_demo_12",
+      "source_group": "demo_12",
+      "split": "formal",
+      "task": "AdjustToasterOvenTemperature"
+    }
+  ],
+  "orchestrator_freeze": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/manifests/ORCHESTRATOR_V9_FREEZE.json",
+  "peak_rss_bytes": 6628753408,
+  "reserve_root_bytes": 4294967296,
+  "source_manifest": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/config/formal_v8_plan/source_manifest.json",
+  "source_manifest_sha256": "9337c2f740f6ea503d2903f95895e557069e558477da0f2fcee9593f3aa5d7c5",
+  "verified_gpu_uuids": [
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015"
+  ]
+}

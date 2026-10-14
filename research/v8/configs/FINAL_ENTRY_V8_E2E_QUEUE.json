@@ -1,0 +1,28 @@
+{
+  "code_freeze": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/manifests/DEVELOPMENT_V8_FREEZE.json",
+  "config": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/config/formal_v8_plan/config.json",
+  "config_sha256": "08ab8e74d53503addade92696d8d65592e695c8783954c9814e0969444b539c3",
+  "cpu_fallback_validated": true,
+  "fleet_workers": 1,
+  "halt_on_technical": true,
+  "jobs": [
+    {
+      "job_id": "reproduction_v8_final_entry_PickPlaceCounterToCabinet_demo_6",
+      "request_id": "eda05194b0340adaabcde5b8",
+      "run": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/runs/reproduction_v8_final_entry/reproduction_v8_final_entry_PickPlaceCounterToCabinet_demo_6",
+      "source_group": "demo_6",
+      "split": "formal",
+      "task": "PickPlaceCounterToCabinet"
+    }
+  ],
+  "orchestrator_freeze": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/manifests/ORCHESTRATOR_V9_FREEZE.json",
+  "peak_rss_bytes": 6628753408,
+  "reserve_root_bytes": 4294967296,
+  "scope_note": "Independent final unified CLI end-to-end check of an existing development Source; excluded from formal and heldout coverage, not a new independent Source.",
+  "source_manifest": "/mnt/ssd1/yanghc/CFACT_Research/rounds/recursive_generator_20261014T042404Z_418365/config/formal_v8_plan/source_manifest.json",
+  "source_manifest_sha256": "9337c2f740f6ea503d2903f95895e557069e558477da0f2fcee9593f3aa5d7c5",
+  "verified_gpu_uuids": [
+    "GPU-a0fe1514-1745-026c-35e6-41091ff00860",
+    "GPU-e8edd3d0-d615-bbac-b628-414f8f03a015"
+  ]
+}

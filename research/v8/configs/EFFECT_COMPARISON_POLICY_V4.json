@@ -1,0 +1,28 @@
+{
+  "schema": "cfact.comparison-policy.v1",
+  "frozen_at_utc": "2026-10-14T05:50:50.339179+00:00",
+  "stage": "DEVELOPMENT_BEFORE_ANY_HELD_OUT_OUTCOME",
+  "comparison_horizon_s": {
+    "articulated_contact": 1.0,
+    "held_object_placement": 1.0,
+    "button_activation": 0.5
+  },
+  "physical_floors": {
+    "slide": 0.005,
+    "hinge": 0.05,
+    "object": 0.01,
+    "activation": 1
+  },
+  "selection_basis": "Actual development TurnOnMicrowave demo_0 Reference first activation occurred at real elapsed 0.35 s (index 7), beyond the original 0.25 s observation. Freeze 0.5 s for all button tasks; retain original 0.25 s audits as prior protocol. No physical threshold changed. All comparisons require two actually recorded states at this identical elapsed time.",
+  "physics_method_unchanged": "manifests/DEVELOPMENT_V3_FREEZE.json",
+  "calibration_required": true,
+  "diagnostic_horizons_s": [
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0
+  ],
+  "held_out_outcomes_seen": false,
+  "original_protocol_evidence": "derived/scan_v3_first_health/ROOT_AUDIT.json"
+}
