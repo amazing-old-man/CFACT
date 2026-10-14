@@ -44,7 +44,7 @@ def verify_run(run: Path) -> dict:
     official = verify_rows(run, rows)
     lineages = [json.loads(line) for line in inside(run, record['lineage_paths']).read_text().splitlines() if line]
     reverse = _read(run, 'mappings/edge_segment_episode_lineage.json')
-    tree_reports, physical, transitions, leaves = [], 0, 0, set()
+    tree_reports, physical, transitions, prefix_transitions, leaves = [], 0, 0, 0, set()
     for path in record['trees']:
         tree = _read(run, path)
         nodes = {n['node_id']: n for n in tree['nodes']}
@@ -68,6 +68,7 @@ def verify_run(run: Path) -> dict:
             matches=[r for r in rows if r['segment_id']==prefix['segment_id']]
             if len(matches)!=1 or matches[0]['frame_count']!=len(measured['commanded_actions']):
                 raise ValueError('Shared source prefix does not map once to official episode')
+            prefix_transitions+=len(measured['commanded_actions'])
         outcomes = []
         for eid, edge in edges.items():
             if edge['parent_node'] not in nodes or (edge['actual_child'] and edge['actual_child'] not in nodes):
@@ -136,11 +137,13 @@ def verify_run(run: Path) -> dict:
                 raise ValueError('Full lineage video frame count or content mismatch')
             video_bytes += path.stat().st_size
     # Decode all actual prefix, edge and lineage media, including unused fixed tails.
-    for path in sorted((run / 'media').rglob('*.mp4')):
+    videos=set((run/'media').rglob('*.mp4'))|set((run/'videos').rglob('*.mp4'))
+    for path in sorted(videos):
         subprocess.run(['ffmpeg', '-v', 'error', '-xerror', '-i', str(path), '-f', 'null', '-'], check=True)
         video_count += 1
     report = {'status': 'PASS' if physical else 'NO_EDGES', 'official': official, 'trees': tree_reports,
-        'physical_edges': physical, 'measured_transitions': transitions, 'leaf_lineages': len(lineages),
+        'physical_edges': physical, 'candidate_transitions': transitions,'source_prefix_transitions':prefix_transitions,
+        'measured_transitions': transitions+prefix_transitions, 'leaf_lineages': len(lineages),
         'media_mode': 'full' if record['full_media'] else 'playlist', 'decoded_review_videos': video_count,
         'full_lineage_extra_disk_bytes': video_bytes}
     atomic_json(run / 'reports/verification.json', report)

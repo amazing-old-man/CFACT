@@ -37,7 +37,13 @@ def publish_acquisitions(acquisition, output, *, scope="DEVELOPMENT", root_names
             old=json.loads(marker.read_text())
             if old["input_fingerprint"]!=fingerprint or old["publisher_sha256"]!=implementation_digest():
                 raise ValueError("EXPORT_RESUME_CODE_OR_INPUT_CHANGED")
-            if old["status"]=="COMPLETE":verify_release(output,old);return old
+            if old["status"]=="COMPLETE":
+                verify_release(output,old)
+                if old.get("verification_status")!="PASS" or not (output/"FULL_READBACK.json").exists():
+                    checked=verify_run(output);atomic_json(output/"FULL_READBACK.json",checked)
+                    if checked["status"]!="PASS":raise ValueError("RESUMED_FULL_READBACK_DID_NOT_PASS")
+                    old["verification_status"]="PASS";atomic_json(marker,old)
+                return old
             raise ValueError("PARTIAL_EXPORT_REQUIRES_NEW_OUTPUT; RAW_INPUT_IS_UNCHANGED")
         record={"schema":"cfact.dual-view.v1","status":"BUILDING","scope":scope,
                 "input_fingerprint":fingerprint,"input_inventory":inventory,"collection_code_freeze":freeze,
@@ -64,6 +70,10 @@ def publish_acquisitions(acquisition, output, *, scope="DEVELOPMENT", root_names
         for task in sorted({s["task"] for s in segments}):
             rows.extend(write_dataset(output,[s for s in segments if s["task"]==task],Path("lerobot/by_task")/task))
         write_parquet(output/record["episode_tree_map"],rows)
+        # Arrow supplies explicit nulls for fields absent from some segment kinds.
+        # Use the persisted canonical rows in every JSON reverse/index mapping.
+        import pyarrow.parquet as pq
+        rows=pq.read_table(output/record["episode_tree_map"]).to_pylist()
         by_segment={row["segment_id"]:row for row in rows};terminals=[t for p in published for t in p["terminals"]]
         for terminal in terminals:
             row=by_segment.get(terminal["segment_id"])
