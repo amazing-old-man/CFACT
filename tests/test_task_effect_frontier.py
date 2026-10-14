@@ -75,6 +75,32 @@ def test_no_verified_held_child_is_never_called_recoverable():
     assert anchor.allowed_continuation is None
 
 
+def test_frontier_backfills_failed_compilation_with_another_saved_child():
+    calls=[];adapter=TaskEffectAdapter(target_task('OpenDrawer'))
+    def expand(c):
+        path=c.edge['edge_path'];calls.append(path)
+        edges=[] if path=='a' else [{'status':'PHYSICS_COMPLETE'},{'status':'PHYSICS_COMPLETE'}]
+        return {'node_id':'n_'+path,'edges':edges},[]
+    pools,decisions=expand_frontier([child(.01,1,'a'),child(.04,1,'b')],
+        adapter=adapter,expand=expand,maximum_depth=3,maximum_pools=1,
+        parents_per_level=1,remaining_budget=lambda:200,minimum_pool_steps=100,
+        maximum_attempted_pools=2)
+    assert calls==['a','b'] and len(pools)==2
+    assert [d['decision'] for d in decisions]==['COMPILATION_UNAVAILABLE','EXPANDED']
+    calls.clear()
+    expand_frontier([child(.01,1,'a'),child(.04,1,'b')],adapter=adapter,
+        expand=expand,maximum_depth=3,maximum_pools=1,parents_per_level=1,
+        remaining_budget=lambda:200,minimum_pool_steps=100,maximum_attempted_pools=1)
+    assert calls==['a']
+
+
+def test_explicit_source_first_policy_preserves_source_and_terminal_stops():
+    adapter=TaskEffectAdapter(target_task('OpenDrawer'))
+    c=child(.02,1,'z');c.option.source_method='Reference'
+    selected=select_effect_frontier([child(.01,1,'a'),c],adapter,1,source_first=True)
+    assert selected==[c]
+
+
 def test_proposed_release_or_unbound_local_goal_does_not_create_observed_stage():
     a=physical_arrays();adapter=TaskEffectAdapter(target_task('CoffeeServeMug'))
     anchor=adapter.classify_stage(a,source_cursor=40,local_event=True,release=True)

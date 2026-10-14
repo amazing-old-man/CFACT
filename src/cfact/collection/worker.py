@@ -3211,7 +3211,9 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                 maximum_pools=cfg["tree_limits"]["candidate_pools_per_root"]-1,
                 parents_per_level=cfg["tree_limits"]["second_depth_pools"],
                 remaining_budget=lambda: cfg["execution"]["max_env_steps_per_root"]-ledger(env).control_steps,
-                minimum_pool_steps=2*cfg["execution"]["local_timeout_steps"])
+                minimum_pool_steps=2*cfg["execution"]["local_timeout_steps"],
+                maximum_attempted_pools=cfg.get("method",{}).get("frontier_attempt_budget"),
+                source_first=cfg.get("method",{}).get("frontier_source_first",False))
             third_pools = []
             atomic_json(root_dir / "frontier_decisions.json", frontier_decisions)
         else:
