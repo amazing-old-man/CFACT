@@ -68,8 +68,8 @@ def choose_gpu(inventory, verified, *, measured_peak_mib=2889):
     return min(candidates, key=lambda g: (g["utilization_pct"], -g["free_mib"])) if candidates else None
 
 
-def ledger_steps(run, task, request):
-    path = run / "history/development" / task / request / "frames.jsonl"
+def ledger_steps(run, task, request, split="development"):
+    path = run / "history" / split / task / request / "frames.jsonl"
     if not path.exists():
         return 0
     with path.open("rb") as stream:
@@ -261,7 +261,7 @@ def run_queue(root, queue_path):
             else:env.pop("MUJOCO_EGL_DEVICE_ID",None)
             cmd=[sys.executable,"-B","-m","cfact.collection.worker","--config",queue["config"],
                  "--source-manifest",queue["source_manifest"],"--task",job["task"],"--root-id",job["request_id"],
-                 "--split","development","--run",str(run),"--gpu",str(device["index"] if device else -1)]
+                 "--split",job.get("split","development"),"--run",str(run),"--gpu",str(device["index"] if device else -1)]
             start=time.monotonic();peak=0;peak_gpu=0;reason=None;child=None;gpu_lock=None;last_disk=0;disk=0
             if device:
                 gpu_lock=RunLock(root/"logs"/(device["uuid"]+f".slot{queue.get('gpu_slot',0)}.lease"));gpu_lock.acquire()
@@ -275,13 +275,14 @@ def run_queue(root, queue_path):
                             rows=Path(f"/proc/{child.pid}/status").read_text().splitlines()
                             rss=int(next(x for x in rows if x.startswith("VmRSS:")).split()[1])*1024
                         except (FileNotFoundError,StopIteration):pass
-                        peak=max(peak,rss);steps=ledger_steps(run,job["task"],job["request_id"])
+                        peak=max(peak,rss);steps=ledger_steps(run,job["task"],job["request_id"],job.get("split","development"))
                         inv=preflight(root)
                         if time.monotonic()-last_disk>60:disk=directory_bytes(root);last_disk=time.monotonic()
                         state.update(active={**job,"pid":child.pid,"backend":backend,"device":device,"wall_seconds":elapsed,
                             "peak_rss_bytes":peak,"control_steps":steps,"disk_bytes":disk},heartbeat_utc=utc(),costs=total)
                         atomic_json(state_path,state)
                         if elapsed>=budget["root_timeout_seconds"]:reason="ROOT_TIMEOUT"
+                        if steps>=config["execution"]["max_env_steps_per_root"]:reason="ROOT_CONTROL_STEP_BUDGET"
                         if time.time()>=deadline:reason="CALENDAR_BUDGET"
                         if inv["free_disk_bytes"]<budget["reserve_bytes"] or disk>budget["disk_bytes"]:reason="DISK_RESERVE"
                         if inv["available_ram_bytes"]<24*2**30:reason="RAM_RESERVE"
@@ -325,7 +326,7 @@ def run_queue(root, queue_path):
                      result_paths=[str(p) for p in results],exit_code=child.returncode,pid=child.pid,
                      wall_seconds=elapsed,gpu_worker_seconds=elapsed if device else 0.,
                      cpu_worker_seconds=0. if device else elapsed,peak_rss_bytes=peak,peak_gpu_mib=peak_gpu,
-                     control_steps=ledger_steps(run,job["task"],job["request_id"]),backend=backend,device=device,
+                     control_steps=ledger_steps(run,job["task"],job["request_id"],job.get("split","development")),backend=backend,device=device,
                      code_sha256=freeze["code_sha256"],code_commit=freeze["sha"],finished_utc=utc(),
                      queue_wait_seconds=start-wait_start,command=cmd,audits=audits)
             atomic_json(receipt_path,rec);state["completed"].append(rec);state["active"]=None

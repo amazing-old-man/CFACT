@@ -138,14 +138,24 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument("--input",type=Path,required=True)
     p.add_argument("--output",type=Path,required=True);p.add_argument("--calibrations",type=Path)
     p.add_argument("--horizon",type=float);p.add_argument("--quick",action="store_true")
+    p.add_argument("--horizon-policy",type=Path,help="Frozen per-family comparison times; no endpoint padding")
     args=p.parse_args();out=args.output;out.mkdir(parents=True,exist_ok=True);cal={}
+    policy=read(args.horizon_policy) if args.horizon_policy else {}
+    times=policy.get("comparison_horizon_s",{})
+    if args.horizon is not None and times:raise ValueError("Use either --horizon or --horizon-policy")
+    for value in times.values():
+        if not np.isfinite(value) or value<=0 or not np.isclose(value/.05,round(value/.05)):
+            raise ValueError("Comparison horizon must be a positive physical control tick")
     if args.calibrations:
         for path in args.calibrations.rglob("SAME_PARENT_ABA.json"):
             c=read(path)
             if c["status"]=="PASS":cal[c["family"]+":"+c["threshold_unit"]]={**c,"path":str(path)}
-    rows=[audit_root(p,horizon=args.horizon,calibrations=cal,verify_rgb=not args.quick)
+    rows=[audit_root(p,horizon=times.get(family_for_task(target_task(read(p)["task"])),args.horizon),calibrations=cal,verify_rgb=not args.quick)
           for p in sorted(args.input.rglob("root_result.json")) if "data" in p.parts and (p.parent/"tree.json").exists()]
-    atomic_json(out/"ROOT_AUDIT.json",{"roots":rows,"horizon_s":args.horizon,"calibrations":cal})
+    import hashlib
+    atomic_json(out/"ROOT_AUDIT.json",{"roots":rows,"horizon_s":args.horizon,"calibrations":cal,
+        "horizon_policy":policy,"horizon_policy_path":str(args.horizon_policy) if args.horizon_policy else None,
+        "horizon_policy_sha256":hashlib.sha256(args.horizon_policy.read_bytes()).hexdigest() if args.horizon_policy else None})
     compact=[{k:v for k,v in r.items() if k not in {"edges","pairs","failures","primitive_examples"}} for r in rows]
     if compact:
         with (out/"ROOT_METRICS.csv").open("w") as f:

@@ -19,3 +19,6 @@ def test_incremental_cost_reads_actual_last_step_and_does_not_count_export(tmp_p
     (exported/'frames.jsonl').write_text(json.dumps({'control_step_total':999})+'\n')
     assert ledger_steps(tmp_path,'OpenDrawer','request')==100
     assert ledger_steps(tmp_path,'OpenDrawer','unknown')==0
+    formal=tmp_path/'history/formal/OpenDrawer/request/frames.jsonl';formal.parent.mkdir(parents=True)
+    formal.write_text(json.dumps({'control_step_total':42})+'\n')
+    assert ledger_steps(tmp_path,'OpenDrawer','request','formal')==42
