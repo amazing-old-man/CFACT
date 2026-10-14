@@ -140,20 +140,41 @@ def live_costs(root,exclude_job=None):
     return total
 
 
+def fleet_lanes(queue):
+    """Allocate GPU slots first, then explicit CPU lanes without oversubscribing."""
+    workers=int(queue["fleet_workers"])
+    if workers not in {1,2,4,8}:raise ValueError("ONLY_ONE_TWO_FOUR_OR_EIGHT_WORKER_FLEET_SUPPORTED")
+    verified=list(dict.fromkeys(queue.get("verified_gpu_uuids", [])))
+    if queue.get("force_cpu"):
+        verified=[]
+    elif len(verified)<min(2,(workers+1)//2):
+        raise ValueError("FLEET_REQUIRES_VERIFIED_PHYSICAL_GPU_MAPPING")
+    gpu_lanes=min(workers,2*len(verified))
+    if workers>gpu_lanes and not queue.get("cpu_fallback_validated"):
+        raise ValueError("CPU_LANES_REQUIRE_VALIDATED_BACKEND")
+    result=[]
+    for lane in range(workers):
+        gpu=lane<gpu_lanes
+        result.append({**queue,"fleet_workers":1,"jobs":queue["jobs"][lane::workers],
+            "verified_gpu_uuids":[verified[lane%len(verified)]] if gpu else [],
+            "gpu_slot":lane//len(verified) if gpu else None,
+            "gpu_concurrency":(gpu_lanes+len(verified)-1)//len(verified) if gpu else 0,
+            "force_cpu":not gpu,"cpu_slot":None if gpu else lane-gpu_lanes})
+    return result
+
+
 def run_fleet(root,queue_path,queue):
     """Fixed device lanes; at most two measured workers per physical GPU."""
     workers=int(queue["fleet_workers"])
-    if workers not in {1,2,4}:raise ValueError("ONLY_MEASURED_ONE_TWO_OR_FOUR_WORKER_FLEET_SUPPORTED")
+    if workers>read(root/"config/BUDGET.json")["max_workers"]:
+        raise ValueError("FLEET_EXCEEDS_AUTHORIZED_WORKER_LIMIT")
+    lane_queues=fleet_lanes(queue)
     verify_queue(root,queue)
-    if len(set(queue["verified_gpu_uuids"]))<((workers+1)//2):raise ValueError("FLEET_REQUIRES_VERIFIED_PHYSICAL_GPU_MAPPING")
     state_path=root/"logs/SCHEDULER_STATUS.json"
     with RunLock(root/"logs/scheduler.lock"):
         children=[]
         try:
-            for lane in range(workers):
-                child_queue={**queue,"fleet_workers":1,"jobs":queue["jobs"][lane::workers],
-                    "verified_gpu_uuids":[queue["verified_gpu_uuids"][lane%len(queue["verified_gpu_uuids"])]],
-                    "gpu_slot":lane//len(queue["verified_gpu_uuids"]),"gpu_concurrency":((workers+len(queue["verified_gpu_uuids"])-1)//len(queue["verified_gpu_uuids"]))}
+            for lane,child_queue in enumerate(lane_queues):
                 path=root/"config"/(queue_path.stem+f"_lane{lane}.json")
                 if path.exists() and read(path)!=child_queue:raise ValueError("FROZEN_LANE_QUEUE_CHANGED")
                 if not path.exists():atomic_json(path,child_queue)
@@ -169,6 +190,9 @@ def run_fleet(root,queue_path,queue):
                 status="RUNNING" if alive else "COMPLETE" if len(lanes)==workers and all(s["status"]=="COMPLETE" for s in lanes) else "PARTIAL_OR_STOPPED"
                 atomic_json(state_path,dict(status=status,scheduler_pid=os.getpid(),queue=str(queue_path),
                     heartbeat_utc=utc(),code_freeze=read(queue["code_freeze"]),fleet_workers=workers,
+                    lane_assignments=[dict(lane=i,verified_gpu_uuids=q["verified_gpu_uuids"],
+                        gpu_slot=q["gpu_slot"],force_cpu=q["force_cpu"],cpu_slot=q["cpu_slot"])
+                        for i,q in enumerate(lane_queues)],
                     lanes=lanes,active=[s["active"] for s in lanes if s.get("active")],
                     completed=[r for s in lanes for r in s["completed"]],costs=live_costs(root)))
                 if not alive:break
@@ -189,6 +213,8 @@ def run_queue(root, queue_path):
     lane=os.environ.get("CFACT_QUEUE_LANE")
     if int(queue.get("fleet_workers",1))>1 and lane is None:return run_fleet(root,queue_path,queue)
     config = read(queue["config"]); budget = read(root/"config/BUDGET.json")
+    if queue.get("force_cpu") and not queue.get("cpu_fallback_validated"):
+        raise ValueError("CPU_LANES_REQUIRE_VALIDATED_BACKEND")
     identity = read(root/"manifests/BASE_IDENTITY.json")
     deadline = datetime.fromisoformat(identity["started_utc"]).timestamp()+budget["calendar_hours"]*3600
     state_path = root/"logs"/(f"SCHEDULER_STATUS_lane{lane}.json" if lane is not None else "SCHEDULER_STATUS.json")
@@ -225,7 +251,7 @@ def run_queue(root, queue_path):
                 if inv["free_inodes"] < 1000000:hard.append("INODE_RESERVE")
                 if inv["scheduler"] == "SLURM_UNALLOCATED":hard.append("SCHEDULER_ALLOCATION_REQUIRED")
                 verified=queue.get("verified_gpu_uuids", [])
-                first=choose_gpu(inv, verified,measured_peak_mib=queue.get("peak_gpu_mib",2889)*queue.get("gpu_concurrency",1))
+                first=None if queue.get("force_cpu") else choose_gpu(inv, verified,measured_peak_mib=queue.get("peak_gpu_mib",2889)*queue.get("gpu_concurrency",1))
                 if first and not hard:
                     # Two separate checks; preserve task/root/seed while waiting.
                     time.sleep(15)
