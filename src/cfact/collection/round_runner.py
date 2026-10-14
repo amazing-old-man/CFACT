@@ -55,19 +55,17 @@ def preflight(root):
                 ("SLURM_UNALLOCATED" if __import__("shutil").which("squeue") else "LOCAL_LEASES"))
 
 
-def choose_gpu(inventory, verified, *, measured_peak_mib=1800, cooled=None):
+def choose_gpu(inventory, verified, *, measured_peak_mib=2889):
     candidates = []
     for g in inventory["gpu"]["gpus"]:
-        # Inherit the previous 80C ceiling and add cooling hysteresis for dispatch.
+        # User override: temperature is monitored during execution, not admission.
         reserve = max(4096, g["total_mib"]*.05) + measured_peak_mib*1.3
         if g["uuid"] not in verified or g["compute_mode"] != "Default":
             continue
-        if g["temperature_c"] > 77 or g["utilization_pct"] > 80 or g["free_mib"] < reserve:
-            continue
-        if cooled is not None and not cooled.get(g["uuid"], False):
+        if g["utilization_pct"] > 80 or g["free_mib"] < reserve:
             continue
         candidates.append(g)
-    return min(candidates, key=lambda g: (g["utilization_pct"], -g["free_mib"], g["temperature_c"])) if candidates else None
+    return min(candidates, key=lambda g: (g["utilization_pct"], -g["free_mib"])) if candidates else None
 
 
 def ledger_steps(run, task, request):
@@ -105,8 +103,8 @@ def verify_queue(root, queue):
         contained_path(Path(job["run"]), root)
     from cfact.sources.manifest import sha256_file
     sources = read(queue["source_manifest"])
-    for row in sources["tasks"]:
-        if sha256_file(Path(row["prepared_path"])) != row["sha256"]:
+    for path, row in sources["prepared_files"].items():
+        if sha256_file(Path(path)) != row["sha256"]:
             raise ValueError("FROZEN_PREPARED_SOURCE_CHANGED")
     return freeze
 
@@ -123,13 +121,73 @@ def costs(root):
             "receipts": len(receipts)}
 
 
+def live_costs(root,exclude_job=None):
+    total=costs(root)
+    for path in sorted((root/"logs").glob("SCHEDULER_STATUS_lane*.json")):
+        active=read(path).get("active")
+        if not active or active.get("job_id")==exclude_job or not active.get("pid"):continue
+        if (root/"logs/receipts"/(active["job_id"]+".json")).exists():continue
+        try:
+            command=Path(f'/proc/{active["pid"]}/cmdline').read_bytes()
+            if str(active["run"]).encode() not in command:continue
+        except FileNotFoundError:continue
+        total["control_steps"]+=active.get("control_steps",0)
+        key="gpu_worker_seconds" if active["backend"]=="egl" else "cpu_worker_seconds"
+        total[key]+=active.get("wall_seconds",0.)
+    return total
+
+
+def run_fleet(root,queue_path,queue):
+    """Two fixed device lanes; every lane runs the same immutable physics code."""
+    workers=int(queue["fleet_workers"])
+    if workers not in {1,2}:raise ValueError("ONLY_MEASURED_ONE_OR_TWO_WORKER_FLEET_SUPPORTED")
+    verify_queue(root,queue)
+    if len(queue["verified_gpu_uuids"])<workers:raise ValueError("FLEET_REQUIRES_VERIFIED_PHYSICAL_GPU_MAPPING")
+    state_path=root/"logs/SCHEDULER_STATUS.json"
+    with RunLock(root/"logs/scheduler.lock"):
+        children=[]
+        try:
+            for lane in range(workers):
+                child_queue={**queue,"fleet_workers":1,"jobs":queue["jobs"][lane::workers],
+                    "verified_gpu_uuids":[queue["verified_gpu_uuids"][lane]]}
+                path=root/"config"/(queue_path.stem+f"_lane{lane}.json")
+                if path.exists() and read(path)!=child_queue:raise ValueError("FROZEN_LANE_QUEUE_CHANGED")
+                if not path.exists():atomic_json(path,child_queue)
+                env=dict(os.environ,CFACT_QUEUE_LANE=str(lane),CFACT_FLEET_WIDTH=str(workers))
+                log=(root/"logs"/(queue_path.stem+f"_lane{lane}.log")).open("a")
+                child=subprocess.Popen([sys.executable,"-B","-m","cfact.collection.round_runner","run",
+                    "--round",str(root),"--queue",str(path)],env=env,stdout=log,stderr=subprocess.STDOUT)
+                log.close();children.append(child)
+            while True:
+                lanes=[read(p) for p in sorted((root/"logs").glob("SCHEDULER_STATUS_lane*.json"))
+                       if read(p).get("queue") in [str(root/"config"/(queue_path.stem+f"_lane{x}.json")) for x in range(workers)]]
+                alive=any(p.poll() is None for p in children)
+                status="RUNNING" if alive else "COMPLETE" if len(lanes)==workers and all(s["status"]=="COMPLETE" for s in lanes) else "PARTIAL_OR_STOPPED"
+                atomic_json(state_path,dict(status=status,scheduler_pid=os.getpid(),queue=str(queue_path),
+                    heartbeat_utc=utc(),code_freeze=read(queue["code_freeze"]),fleet_workers=workers,
+                    lanes=lanes,active=[s["active"] for s in lanes if s.get("active")],
+                    completed=[r for s in lanes for r in s["completed"]],costs=live_costs(root)))
+                if not alive:break
+                time.sleep(5)
+            if any(p.returncode for p in children):
+                state=read(state_path);state.update(status="TECHNICAL_SCHEDULER_FAILURE",lane_exit_codes=[p.returncode for p in children]);atomic_json(state_path,state)
+            return read(state_path)
+        finally:
+            for p in children:
+                if p.poll() is None:p.terminate()
+            for p in children:
+                if p.poll() is None:p.wait(timeout=1250)
+
+
 def run_queue(root, queue_path):
     root = root.resolve(); queue_path=queue_path.resolve(); contained_path(queue_path, root)
     queue = read(queue_path); freeze = verify_queue(root, queue)
+    lane=os.environ.get("CFACT_QUEUE_LANE")
+    if int(queue.get("fleet_workers",1))>1 and lane is None:return run_fleet(root,queue_path,queue)
     config = read(queue["config"]); budget = read(root/"config/BUDGET.json")
     identity = read(root/"manifests/BASE_IDENTITY.json")
     deadline = datetime.fromisoformat(identity["started_utc"]).timestamp()+budget["calendar_hours"]*3600
-    state_path = root/"logs/SCHEDULER_STATUS.json"
+    state_path = root/"logs"/(f"SCHEDULER_STATUS_lane{lane}.json" if lane is not None else "SCHEDULER_STATUS.json")
     (root/"logs/receipts").mkdir(exist_ok=True)
     stop_requested = False
     def stop(signum, frame):
@@ -139,7 +197,7 @@ def run_queue(root, queue_path):
     state = dict(status="RUNNING", scheduler_pid=os.getpid(), started_utc=utc(),
                  queue=str(queue_path), code_freeze=freeze, completed=[], active=None)
     atomic_json(state_path, state)
-    lock = RunLock(root/"logs/scheduler.lock"); lock.acquire()
+    lock = RunLock(root/"logs"/(f"scheduler_lane{lane}.lock" if lane is not None else "scheduler.lock")); lock.acquire()
     try:
         for job in queue["jobs"]:
             receipt_path = root/"logs/receipts"/(job["job_id"]+".json")
@@ -150,8 +208,9 @@ def run_queue(root, queue_path):
                 state["completed"].append(prior); continue
             if stop_requested or (root/"logs/PAUSE_REQUESTED").exists():
                 state["status"]="PAUSED"; break
-            total = costs(root)
-            if time.time() >= deadline or total["control_steps"]+config["execution"]["max_env_steps_per_root"] > budget["control_steps"]:
+            total = live_costs(root)
+            width=int(os.environ.get("CFACT_FLEET_WIDTH",1))
+            if time.time() >= deadline or total["control_steps"]+width*config["execution"]["max_env_steps_per_root"] > budget["control_steps"]:
                 state["status"]="BUDGET_EXHAUSTED"; break
             wait_start=time.monotonic(); backoff=15; device=None
             while True:
@@ -180,7 +239,7 @@ def run_queue(root, queue_path):
             backend="egl" if device else "osmesa"
             lane="gpu_worker_seconds" if device else "cpu_worker_seconds"
             lane_limit=budget["gpu_worker_hours" if device else "cpu_worker_hours"]*3600
-            if total[lane]+budget["root_timeout_seconds"] > lane_limit:
+            if total[lane]+width*budget["root_timeout_seconds"] > lane_limit:
                 state["status"]="BUDGET_EXHAUSTED";break
             run=Path(job["run"]);run.mkdir(parents=True,exist_ok=True)
             # Full worker inputs and effective configuration are archived at dispatch.
@@ -220,10 +279,14 @@ def run_queue(root, queue_path):
                         if time.time()>=deadline:reason="CALENDAR_BUDGET"
                         if inv["free_disk_bytes"]<budget["reserve_bytes"] or disk>budget["disk_bytes"]:reason="DISK_RESERVE"
                         if inv["available_ram_bytes"]<24*2**30:reason="RAM_RESERVE"
-                        if total["control_steps"]+steps>=budget["control_steps"]:reason="CONTROL_STEP_BUDGET"
+                        charged=live_costs(root,exclude_job=job["job_id"])
+                        if charged["control_steps"]+steps>=budget["control_steps"]:reason="CONTROL_STEP_BUDGET"
+                        if charged["gpu_worker_seconds" if device else "cpu_worker_seconds"]+elapsed>=lane_limit-10:reason="WORKER_TIME_BUDGET"
                         if device:
                             g=next((g for g in inv["gpu"]["gpus"] if g["uuid"]==device["uuid"]),None)
-                            if g is None or g["temperature_c"]>=80 or g["free_mib"]<4096:reason="GPU_HARD_RESOURCE_LIMIT"
+                            if g is None:reason="GPU_QUERY_UNAVAILABLE"
+                            elif g["temperature_c"]>=budget.get("gpu_cutoff_c",92):reason="GPU_TEMPERATURE_CUTOFF"
+                            elif g["free_mib"]<4096:reason="GPU_MEMORY_RESERVE"
                             # Query only this worker's process metadata, including EGL graphics contexts.
                             pmon=subprocess.run(["nvidia-smi","pmon","-c","1","-s","m"],capture_output=True,text=True,timeout=10)
                             for line in pmon.stdout.splitlines():
@@ -275,15 +338,26 @@ def run_queue(root, queue_path):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action",choices=["preflight","run","resume","status","pause"])
+    parser.add_argument("action",choices=["preflight","run","generate","smoke","resume","status","pause","verify","export"])
     parser.add_argument("--round",type=Path,required=True)
     parser.add_argument("--queue",type=Path)
+    parser.add_argument("--input",type=Path);parser.add_argument("--output",type=Path)
+    parser.add_argument("--scope",default="DEVELOPMENT");parser.add_argument("--calibrations",type=Path)
     args=parser.parse_args();root=args.round.resolve()
     if args.action=="preflight":result=preflight(root);atomic_json(root/"logs/PREFLIGHT.json",result)
     elif args.action=="status":result=read(root/"logs/SCHEDULER_STATUS.json")
     elif args.action=="pause":(root/"logs/PAUSE_REQUESTED").touch();result={"status":"PAUSE_REQUESTED_AFTER_ACTIVE_ROOT"}
+    elif args.action in {"verify","export"}:
+        if not args.input or not args.output:parser.error("--input and --output are required")
+        python=os.environ.get("CFACT_EXPORT_PYTHON",sys.executable) if args.action=="export" else sys.executable
+        command=[python,"-B","-m","cfact","export-recursive" if args.action=="export" else "audit-recursive",
+            "--input",str(args.input),"--output",str(args.output)]
+        if args.action=="export":command.extend(["--scope",args.scope])
+        elif args.calibrations:command.extend(["--calibrations",str(args.calibrations)])
+        subprocess.run(command,check=True);result={"status":"COMMAND_COMPLETE","action":args.action,"output":str(args.output)}
     else:
         if not args.queue:parser.error("--queue is required")
+        if args.action=="smoke" and len(read(args.queue)["jobs"])!=1:parser.error("smoke requires exactly one frozen root job")
         if args.action=="resume":(root/"logs/PAUSE_REQUESTED").unlink(missing_ok=True)
         result=run_queue(root,args.queue)
     print(json.dumps(result,indent=2))

@@ -12,7 +12,7 @@ def media_spool(run: Path, media: dict) -> Path:
         relocated = inside(run, media["video"]).with_suffix(".frames")
         if relocated.is_dir():
             return relocated
-    spool = Path(media.get("frame_spool", ""))
+    spool = Path(media.get("frame_spool") or "")
     return spool if spool.is_absolute() else run / spool
 
 

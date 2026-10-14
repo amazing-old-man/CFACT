@@ -250,7 +250,9 @@ def publish_tree(root_path: Path, run: Path, output: Path, config: dict, scope: 
                 raise ValueError("Replay prefix video integrity mismatch")
         else:
             prefix_media = render_replay_prefix(
-                output / history_rel, output / prefix_video, fps=config["video"]["fps"]
+                output / history_rel, output / prefix_video, fps=config["video"]["fps"],
+                canonical_frames=[row["frame"] for row in context.get("history_refs",[])]
+                if config.get("method",{}).get("recursive_goals_v2") else None,
             )
         prefix_media.update({"video": str(prefix_video), "history_directory": str(history_rel)})
         # Convert renderer's local output receipt to release-relative paths.

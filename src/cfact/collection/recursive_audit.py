@@ -34,10 +34,13 @@ def effect_value(a, index, family):
     return None,None
 
 
-def audit_root(result_path, *, horizon=1., calibrations=None, verify_rgb=True):
+def audit_root(result_path, *, horizon=None, calibrations=None, verify_rgb=True):
     calibrations=calibrations or {}
     rp=Path(result_path).resolve();root=rp.parent;run=rp.parents[4];result=read(rp)
     family=family_for_task(target_task(result["task"]));tree=read(root/"tree.json")
+    if horizon is None:
+        config=read(run/"config_frozen.json")
+        horizon=config.get("method",{}).get("comparison_horizon_s",{}).get(family,1.)
     parentmap={p["node_id"]:run/p["parent_edge"] for p in tree.get("child_pools",[])+tree.get("third_pools",[]) if p.get("parent_edge")}
     manifest=read(root/"root_manifest.json")
     hist=run/"history"/result["split"]/result["task"]/manifest["source_episode"]
@@ -134,7 +137,7 @@ def audit_root(result_path, *, horizon=1., calibrations=None, verify_rgb=True):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument("--input",type=Path,required=True)
     p.add_argument("--output",type=Path,required=True);p.add_argument("--calibrations",type=Path)
-    p.add_argument("--horizon",type=float,default=1.);p.add_argument("--quick",action="store_true")
+    p.add_argument("--horizon",type=float);p.add_argument("--quick",action="store_true")
     args=p.parse_args();out=args.output;out.mkdir(parents=True,exist_ok=True);cal={}
     if args.calibrations:
         for path in args.calibrations.rglob("SAME_PARENT_ABA.json"):
@@ -148,6 +151,7 @@ def main():
         with (out/"ROOT_METRICS.csv").open("w") as f:
             writer=csv.DictWriter(f,fieldnames=compact[0]);writer.writeheader();writer.writerows(compact)
     print(json.dumps({"roots":len(rows),"levels":[(r["task"],r["source_group"],r["level"]) for r in rows],"integrity_failures":sum(r["integrity"]!="PASS" for r in rows)}))
+    if any(r["integrity"]!="PASS" for r in rows):raise SystemExit(2)
 
 
 if __name__=="__main__":main()

@@ -60,6 +60,14 @@ def verify_run(run: Path) -> dict:
                 raise ValueError('Saved backend snapshot differs from actual node')
             node_states[nid] = state
         starts = {}
+        prefix=tree.get('official_source_prefix')
+        if prefix:
+            measured=_trace(run,prefix['trace_path'])
+            if not np.array_equal(measured['sim_state'][-1],node_states[tree['root_node']]):
+                raise ValueError('Official source prefix does not terminate at actual root parent')
+            matches=[r for r in rows if r['segment_id']==prefix['segment_id']]
+            if len(matches)!=1 or matches[0]['frame_count']!=len(measured['commanded_actions']):
+                raise ValueError('Shared source prefix does not map once to official episode')
         outcomes = []
         for eid, edge in edges.items():
             if edge['parent_node'] not in nodes or (edge['actual_child'] and edge['actual_child'] not in nodes):

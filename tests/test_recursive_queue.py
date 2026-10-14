@@ -4,13 +4,12 @@ def inventory(temp=70,util=10,free=12000):
     return {'gpu':{'gpus':[dict(uuid='verified',index=1,temperature_c=temp,
         utilization_pct=util,free_mib=free,total_mib=98000,compute_mode='Default')]}}
 
-def test_shared_resources_require_verified_mapping_and_cooling_hysteresis():
+def test_shared_resources_require_verified_mapping_and_reserves_without_temperature_admission():
     assert choose_gpu(inventory(),[]) is None
-    assert choose_gpu(inventory(temp=78),['verified']) is None
+    assert choose_gpu(inventory(temp=91),['verified'])['index']==1
     assert choose_gpu(inventory(util=81),['verified']) is None
     assert choose_gpu(inventory(free=5000),['verified']) is None
-    assert choose_gpu(inventory(),['verified'],cooled={'verified':False}) is None
-    assert choose_gpu(inventory(),['verified'],cooled={'verified':True})['index']==1
+    assert choose_gpu(inventory(),['verified'])['index']==1
 
 def test_incremental_cost_reads_actual_last_step_and_does_not_count_export(tmp_path):
     import json

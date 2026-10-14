@@ -123,6 +123,13 @@ def verify_rows(output: Path, rows: list[dict]) -> dict:
                         height, width, channels = feature["shape"]
                         if tuple(sample[key].shape) != (channels, height, width) or not np.isfinite(sample[key].numpy()).all():
                             raise ValueError("Official video decode failed")
+                        camera=key.removeprefix("observation.images.")
+                        media=json.loads((output/row["media"]).read_text())
+                        with Image.open(output/media["clean_camera_frame_paths"][camera][step]) as saved:
+                            native=np.asarray(saved.convert("RGB"),dtype=float)
+                        decoded=np.moveaxis(sample[key].numpy(),0,-1)*255
+                        if np.mean(np.abs(decoded-native))>8.:
+                            raise ValueError("Official decoded RGB differs from mapped native frame beyond H264 tolerance")
                 checked += 1
     for path, reader in readers.items():
         expected = sum(r["frame_count"] for r in rows if r["shard_path"] == path)

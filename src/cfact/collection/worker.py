@@ -547,6 +547,60 @@ def _probe_held_parent(
     raise RuntimeError("source replay never established measured held-object parent")
 
 
+def _probe_articulation_parent(env, interface, initial, actions, row, stable_steps=4):
+    """First real stable operation contact, before any candidate is proposed.
+
+    An early contact may precede the recorded closing event. Continue the paid
+    source replay to the first measured stable bound-body contact. Selection
+    uses contact and grasp evidence, never a candidate's future effect.
+    """
+    first=_probe_parent(env,interface,initial,actions,row["event_signal"],row["event_minimum_duration"])
+    fallback=capture_snapshot(env)
+    try:
+        role=resolve_role_binding(interface,row["event_object_ref"])
+        declared=declared_operation_joint(interface,row.get("operation_joint_role"))
+        binding=bind_joint(env.env.sim.model,role,explicit_joint=declared or row.get("operation_joint"))
+    except (ValueError,KeyError,AttributeError):
+        first["event"]["contact_parent_rule"]="first_source_contact_unsupported_topology"
+        return first
+    start=int(first["parent_action_count"])
+    # A discrete closing command is used only if this source actually has one.
+    needs_closed=bool(np.any(actions[start:,actions.shape[1]-6]>0))
+    target_body=int(binding["joint_body_id"])
+    model=env.env.sim.model
+    def bound_body(body):
+        while body>0:
+            if body==target_body:return True
+            body=int(model.body_parentid[body])
+        return False
+    previous=None;stable=0
+    for step in range(start,min(len(actions),start+80)):
+        if bool(env.is_success()["task"]):break
+        env.step(actions[step])
+        if bool(env.is_success()["task"]):break
+        info=current_info(env,interface)
+        relative=np.linalg.inv(info.eef_pose)@info.object_poses[row["event_object_ref"]]
+        _,contacts=observed_gripper_target_pairs(env)
+        contact=any(bound_body(int(b)) for _,b in contacts["observed_gripper_target_body_contacts"])
+        closed=not needs_closed or actions[step,actions.shape[1]-6]>0
+        drift=np.inf if previous is None else float(np.linalg.norm(relative[:3,3]-previous[:3,3]))
+        rotation=np.inf if previous is None else float(np.linalg.norm(relative[:3,:3]-previous[:3,:3]))
+        stable=stable+1 if contact and closed and drift<=.003 and rotation<=.03 else 0
+        previous=relative
+        if stable>=stable_steps:
+            return {"event":{"event_name":row["event_signal"],"rule":"first_stable_bound_body_contact",
+                    "stable_steps":stable,"required_closed_source_gripper":needs_closed,
+                    "bound_joint":binding["joint_name"],"per_step_relative_translation_m":.003,
+                    "per_step_relative_rotation_frobenius":.03,"original_contact_action_count":start},
+                    "parent_action_count":step+1,"parent_state":np.asarray(env.env.sim.get_state().flatten()).copy(),
+                    "parent_signals":{str(k):bool(v) for k,v in info.subtask_term_signals.items()},
+                    "first_success_step_before_parent":first.get("first_success_step_before_parent")}
+    _restore(env,initial,fallback)
+    first["event"]["contact_parent_rule"]="first_contact_fallback_no_stable_preterminal_contact"
+    first["event"]["additional_source_probe_steps_paid"]=max(0,step-start+1) if start<len(actions) else 0
+    return first
+
+
 def _probe_button_parent(env, interface, initial, actions, event_signal, lookback=5):
     """Pick a saved real pre-activation state by a fixed source-event rule.
 
@@ -2380,6 +2434,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         env._cfact_step_ledger = ControlStepLedger(
             env,
             args.run.resolve() / "history" / args.split / args.task / args.root_id,
+            interface=interface,
             width=cfg["video"]["cell_width"],
             height=cfg["video"]["cell_height"],
         )
@@ -2410,6 +2465,9 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     raise
             elif task.primitive_family == "button" and cfg.get("method", {}).get("recursive_goals_v2"):
                 probe = _probe_button_parent(env, interface, root["initial"], root["actions"], row["event_signal"])
+            elif cfg.get("method", {}).get("stable_articulation_parent"):
+                probe = _probe_articulation_parent(env,interface,root["initial"],root["actions"],row,
+                    stable_steps=cfg["method"].get("stable_contact_steps",4))
             else:
                 probe = _probe_parent(
                     env,

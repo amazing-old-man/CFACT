@@ -52,6 +52,14 @@ def publish_acquisitions(acquisition, output, *, scope="DEVELOPMENT", root_names
             run=path.parents[4];scope_manifest=json.loads((run/"source_split_frozen.json").read_text())
             published.append(publish_tree(path.parent,run,output,config,scope_manifest))
         if len({p["tree"]["root_id"] for p in published})!=len(published):raise ValueError("DUPLICATE_SOURCE_ROOT_IDENTITY")
+        from cfact.storage.prefix import publish_prefix
+        prefix_status=[]
+        for p in published:
+            segment,terminal=publish_prefix(output,p)
+            if segment:
+                p["segments"].insert(0,segment);p["terminals"].insert(0,terminal)
+                prefix_status.append(dict(root=p["tree"]["root_id"],status="OFFICIAL_AND_NATIVE",actions=segment["action_count"]))
+            elif terminal:prefix_status.append(dict(root=p["tree"]["root_id"],**terminal))
         segments=[s for p in published for s in p["segments"]];rows=[]
         for task in sorted({s["task"] for s in segments}):
             rows.extend(write_dataset(output,[s for s in segments if s["task"]==task],Path("lerobot/by_task")/task))
@@ -67,7 +75,8 @@ def publish_acquisitions(acquisition, output, *, scope="DEVELOPMENT", root_names
         edge_map={}
         for segment in segments:
             entry=edge_map.setdefault(segment["edge_id"],{"tree_id":segment["root_id"],"segments":[],
-                "lineages":[l["lineage_id"] for l in lineages if segment["edge_id"] in l["edge_ids"]]})
+                "lineages":[l["lineage_id"] for l in lineages if segment["edge_id"] in l["edge_ids"] or
+                    (segment["segment"]=="source_prefix" and segment["root_id"]==l["root_id"])]})
             entry["segments"].append({"segment_id":segment["segment_id"],"kind":segment["segment"],"episode":by_segment.get(segment["segment_id"])})
         atomic_json(output/"mappings/edge_segment_episode_lineage.json",edge_map)
         for p in published:
@@ -79,11 +88,17 @@ def publish_acquisitions(acquisition, output, *, scope="DEVELOPMENT", root_names
             atomic_json(output/"lerobot/by_tree"/tree["task"]/tree["root_id"]/"index.json",index)
             atomic_json((output/tree["tree_path"]).with_name("lineage.json"),selected_lineages)
         official=verify_rows(output,rows);atomic_json(output/"reports/official_readback.json",official)
-        record.update(status="COMPLETE",trees=[p["tree"]["tree_path"] for p in published],roots=len(roots),
+        record.update(status="COMPLETE",verification_status="PENDING",source_prefix_exports=prefix_status,
+                      trees=[p["tree"]["tree_path"] for p in published],roots=len(roots),
                       edges=sum(len(p["tree"]["edges"]) for p in published),episodes=len(rows),
                       frames=sum(r["frame_count"] for r in rows),official_readback="reports/official_readback.json")
         atomic_json(output/record["file_integrity"],release_inventory(output));atomic_json(marker,record)
-    result=verify_run(output);atomic_json(output/"FULL_READBACK.json",result)
+    try:
+        result=verify_run(output);atomic_json(output/"FULL_READBACK.json",result)
+        if result["status"]!="PASS":raise ValueError("FULL_READBACK_DID_NOT_PASS")
+    except Exception as exc:
+        record.update(status="VERIFY_FAILED",verification_status="FAIL",verification_error=str(exc));atomic_json(marker,record);raise
+    record["verification_status"]="PASS";atomic_json(marker,record)
     return record
 
 

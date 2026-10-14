@@ -55,7 +55,7 @@ def _review_panel(images: np.ndarray, sim_time: float, phase: str) -> np.ndarray
 
 
 def render_replay_prefix(
-    history_directory: Path, output: Path, *, fps: int = 20
+    history_directory: Path, output: Path, *, fps: int = 20, canonical_frames=None
 ) -> dict:
     """Render the latest actual source-prefix replay from a control ledger.
 
@@ -74,6 +74,11 @@ def render_replay_prefix(
     rows_path = _inside(history_directory, index.get("frames", "frames.jsonl"))
     rows = [json.loads(line) for line in rows_path.read_text().splitlines() if line.strip()]
     candidates = [row for row in rows if row["segment"] == "source_prefix"]
+    if canonical_frames is not None:
+        names=set(canonical_frames)
+        candidates=[row for row in candidates if row["frame"] in names]
+        if [row["frame"] for row in candidates]!=list(canonical_frames):
+            raise ValueError("canonical_source_prefix_frame_order_mismatch")
     if not candidates:
         raise ValueError("actual_source_prefix_history_missing")
     selected: list[dict] = []

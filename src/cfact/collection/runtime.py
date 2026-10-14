@@ -57,6 +57,10 @@ def _create_env(
     env_meta: dict[str, Any], seed: int, camera: str, render_gpu_device_id: int = 0,
     *, width: int = 224, height: int = 224
 ) -> Any:
+    from cfact.runtime.readonly_assets import install_generated_xml_redirect, install_write_boundary
+    from cfact.paths import workspace_root
+    install_generated_xml_redirect(workspace_root())
+    install_write_boundary(workspace_root())
     wrapper = robocasa_env_wrapper_class()
     kwargs = dict(env_meta["env_kwargs"])
     for key in (

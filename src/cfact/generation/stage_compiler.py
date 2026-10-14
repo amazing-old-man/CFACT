@@ -124,7 +124,7 @@ def compile_goal(goal, context, *, geometry=None, source=None, source_status="EX
         if source is None:
             raise ValueError("NO_VERIFIED_BUTTON_APPROACH_PRIOR")
         # Source provides the direction only; current state provides the origin.
-        delta = source.source_poses[min(20, len(source.source_poses)-1), :3, 3] - source.source_poses[0, :3, 3]
+        delta = source.source_poses[min(5, len(source.source_poses)-1), :3, 3] - source.source_poses[0, :3, 3]
         norm = np.linalg.norm(delta)
         if norm < 1e-6 and goal.mode != "hold":
             raise ValueError("BUTTON_APPROACH_DIRECTION_UNAVAILABLE")

@@ -11,8 +11,9 @@ from cfact.execution.observation import observe, array_sha
 
 
 class ControlStepLedger:
-    def __init__(self, env: Any, directory: Path, *, width: int, height: int):
+    def __init__(self, env: Any, directory: Path, *, width: int, height: int, interface=None):
         self.env = env
+        self.interface=interface
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         if (self.directory / "frames.jsonl").exists() or any(self.directory.glob("frame_*.npz")):
@@ -46,6 +47,14 @@ class ControlStepLedger:
         )
         state = observation.state
         values = {"sim_state": state, "sim_time_s": np.asarray(float(sim.data.time)), "rgb": images}
+        if self.interface is not None:
+            from cfact.execution.observation import _shadow_interface_view
+            robot=self.env.env.robots[0]
+            values.update(robot_qpos=np.asarray(sim.data.qpos[robot._ref_joint_pos_indexes]).copy(),
+                robot_qvel=np.asarray(sim.data.qvel[robot._ref_joint_vel_indexes]).copy(),
+                robot_qpos_joint_names=np.asarray(robot.robot_joints),
+                actual_eef_pose=np.asarray(_shadow_interface_view(self.interface,sim).get_robot_eef_pose()).copy(),
+                task_success=np.asarray(bool(self.env.is_success()["task"])))
         values.update(observation.archive_values())
         model = getattr(getattr(sim, "model", None), "_model", None)
         if model is not None:

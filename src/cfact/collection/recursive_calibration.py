@@ -33,20 +33,24 @@ def main():
     context=json.loads((rp/"nodes/n_root/context.json").read_text())
     snapshot=load_snapshot(rp/"nodes/n_root/parent_snapshot.json")
     cards=sorted((rp/"nodes/n_root/edges").glob("*/option.json"))
-    ref=next(c for c in cards if json.loads(c.read_text())["source_method"]=="Reference" and (c.parent/"execution.npz").exists())
-    with np.load(ref.parent/"execution.npz",allow_pickle=False) as a:commands=a["commanded_actions"][:20].copy()
-    if len(commands)<20:raise ValueError("CALIBRATION_REQUIRES_ONE_SECOND_ACTUAL_ACTIONS")
-    b=commands.copy();b[:,:3]*=-1
+    eligible=[]
+    for card in sorted(cards,key=lambda c:(json.loads(c.read_text())["source_method"]!="Reference",str(c))):
+        if not (card.parent/"execution.npz").exists():continue
+        with np.load(card.parent/"execution.npz",allow_pickle=False) as trace:
+            commands=trace["commanded_actions"][:20].copy()
+        if len(commands)==20:eligible.append((card,commands))
+    if len(eligible)<2:raise ValueError("CALIBRATION_REQUIRES_TWO_ONE_SECOND_ACTUAL_CANDIDATES")
+    ref,commands=eligible[0];bref,b=eligible[1]
     cfg=json.loads((args.run/"config_frozen.json").read_text())
     policy=next(row for row in cfg["tasks"] if row["task"]==task.name)
-    env=_create_env(root["env_meta"],manifest["seed"],"robot0_agentview_left",args.gpu)
     status="TECHNICAL_ERROR"
     try:
+        env=_create_env(root["env_meta"],manifest["seed"],"robot0_agentview_left",args.gpu)
         import robocasa, mimicgen.env_interfaces.robocasa, cfact.adapters.interfaces
         from mimicgen.env_interfaces.base import make_interface
         interface=make_interface(task.adapter_interface or task.mimicgen_interface,"robosuite",env.env)
         install_action_codec(interface)
-        ledger=ControlStepLedger(env,out/"history",width=224,height=224);env._cfact_step_ledger=ledger
+        ledger=ControlStepLedger(env,out/"history",width=224,height=224,interface=interface);env._cfact_step_ledger=ledger
         spec=trace_joint_spec(context["operation_context"]["joint_binding"])
         traces=[];restores=[]
         for label,issued in [("A1",commands),("B",b),("A2",commands)]:
@@ -90,11 +94,11 @@ def main():
                     backend=os.environ.get("MUJOCO_GL"),code_sha256=implementation_digest(),
                     acquisition_code_freeze=json.loads((args.run/"run_manifest.json").read_text())["code_freeze"],
                     commands_sha256=hashlib.sha256(commands.tobytes()).hexdigest(),
+                    A_candidate=str(ref),B_candidate=str(bref),selection_rule="Reference_first_else_frozen_card_order_duration_only",
                     wall_seconds=time.monotonic()-started,calibration_scope="REPRESENTATIVE_FAMILY_DEVELOPMENT_ROOT")
         atomic_json(out/"SAME_PARENT_ABA.json",record);print(json.dumps(record),flush=True)
     finally:
         if ledger:ledger.finish()
-        if env:env.close()
         elapsed=time.monotonic()-started;backend=os.environ.get("MUJOCO_GL")
         receipt=dict(status=status,task=task.name,job_id="aba_"+out.name,run=str(out),
                      control_steps=ledger.control_steps if ledger else 0,
@@ -102,6 +106,7 @@ def main():
                      wall_seconds=elapsed,peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024,
                      backend=backend,code_sha256=implementation_digest())
         atomic_json(r/"logs/receipts"/(receipt["job_id"]+".json"),receipt)
+        if env and callable(getattr(env.env,"close",None)):env.env.close()
 
 
 if __name__=="__main__":main()
