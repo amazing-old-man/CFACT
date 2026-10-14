@@ -244,6 +244,8 @@ def _case_seed(
 def _card(option: Any) -> dict[str, Any]:
     from cfact.generation.effect_intents import intent_for_option
     return {
+        "effect_goal": option.candidate_edit.get("effect_goal"),
+        "continuation_origin": option.candidate_edit.get("continuation_origin", "SOURCE_SUFFIX"),
         "effect_intent": intent_for_option(option, option.parent_context_id.split("__")[0]).record() if option.operation_context else None,
         "candidate_id": option.candidate_id,
         "generator_revision": option.generator_revision,
@@ -336,12 +338,13 @@ def _save_actual_child(
         current_eef_pose=eef_pose,
         source_cursor=int(source_cursor["next_action_index"]),
         stage=anchor.stage.value if anchor else option.operation_context.stage,
+        holding_object=anchor.evidence["held_verified"] if anchor else option.operation_context.holding_object,
     )
     context_record = context.record()
     parent_record = json.loads((edge_dir.parent.parent / "context.json").read_text())
     parent_history = parent_record.get("history_refs", [])
     current_history = ledger(env).references(segment=str(edge_dir)) if ledger(env) else []
-    history = (parent_history + current_history[1:])[-3:]
+    history = parent_history + current_history[1:]
     atomic_json(
         edge_dir / "child_context.json",
         make_child_context(
@@ -362,10 +365,59 @@ def _save_actual_child(
     return state
 
 
+def _propose_goals(args, cfg, context, node):
+    if not cfg.get("method", {}).get("recursive_goals_v2"):
+        return []
+    from cfact.generation.stage_compiler import propose_goals
+    goals = propose_goals(target_task(args.task), context,
+        horizon=cfg.get("method", {}).get("primitive_horizon_steps", 40))
+    atomic_json(node / "effect_goals.json", {"goals": [g.record() for g in goals],
+        "frozen_before_compilation": True})
+    return goals
+
+
+def _compile_goals(args, cfg, env, interface, context, goals, source, status, node, legacy):
+    from cfact.generation.stage_compiler import compile_goal
+    row = next(r for r in cfg["tasks"] if r["task"] == args.task)
+    signals = interface.get_subtask_term_signals()
+    contact = bool(signals.get(row["event_signal"], False))
+    if context.holding_object:
+        contact = True  # Verified held parent probe or actual child evidence.
+    geometry = _articulation_geometry(env, context.joint_binding, context.task_goal) if context.joint_binding else None
+    if target_task(args.task).primitive_family == "button":
+        from cfact.generation.task_adapters import activation_state
+        if activation_state(env).get("turned_on"):
+            atomic_json(node / "goal_compile.json", {"status":"ALREADY_ACTIVATED", "source_suffix_status":status})
+            return []
+    generated=[]; records=[]
+    grip = float(source.gripper_actions[0,0]) if source is not None else 1.
+    for goal in goals:
+        try:
+            option = compile_goal(goal, context, geometry=geometry, source=source,
+                source_status=status, gripper=grip, contact_verified=contact,
+                sim_time=float(env.env.sim.data.time))
+            generated.append(option)
+            records.append({"goal":goal.record(), "candidate_id":option.candidate_id, "status":"COMPILED"})
+        except ValueError as exc:
+            records.append({"goal":goal.record(), "status":"UNSUPPORTED", "reason":str(exc)})
+    atomic_json(node / "goal_compile.json", {"records":records, "source_suffix_status":status,
+        "current_geometry":context.record(), "contact_verified":contact})
+    return legacy + generated
+
+
+def _select_pool(cfg, options, *, max_executed, max_g0):
+    if cfg.get("method", {}).get("recursive_goals_v2"):
+        from cfact.generation.stage_compiler import select_goal_pool
+        return select_goal_pool(options, maximum=max_executed)
+    return select_option_pool(options, max_executed=max_executed, max_g0=max_g0)
+
+
 def _engineering_select(selected, rejected, cfg):
     profile = cfg.get("engineering_profile") or {}
     maximum = profile.get("max_candidates_per_family")
     if maximum is None:
+        return selected
+    if cfg.get("method", {}).get("recursive_goals_v2"):
         return selected
     counts = {}
     result = []
@@ -581,6 +633,8 @@ def _g0_amplitude(cfg, env, args, source, info, contract, binding, task_goal, no
 def _option_has_event_geometry(
     option: Any, primitive_family: str, minimum_translation_m: float
 ) -> bool:
+    if option.candidate_edit.get("kind") == "effect_goal_compilation":
+        return option.executable
     path = option.intended_object_path
     if path is None or len(path) < 2:
         return False
@@ -1163,6 +1217,10 @@ def _expand_child_pool(
     saved_child_context = json.loads((ancestor_edge / "child_context.json").read_text())
     inherited = saved_child_context["goal_binding"]
     inherited_context = saved_child_context["operation_context"]
+    if cfg.get("method", {}).get("recursive_goals_v2"):
+        anchor_record = json.loads((ancestor_edge / "event_anchor.json").read_text())
+        contract = dataclasses.replace(contract, holding_object=anchor_record["evidence"]["held_verified"])
+
     atomic_json(
         node / "context.json",
         {
@@ -1192,26 +1250,19 @@ def _expand_child_pool(
         if source_indices is not None
         else np.asarray([next_action - source.event_first_step + 1])
     )
-    if not len(remaining):
-        return (
-            {"node_id": node_id, "status": "NO_SUPPORTED_CONTINUATION", "edges": []},
-            charged_steps,
-            [],
-        )
-    cut = int(remaining[0])
-    progress = cut / max(1, len(source.source_poses) - 1)
-    try:
-        source = _slice_source(source, cut)
-    except ValueError as error:
-        atomic_json(
-            node / "candidate_pool.json",
-            {"selected_ids": [], "reason": str(error), "frozen_before_execution": True},
-        )
-        return (
-            {"node_id": node_id, "status": "NO_SUPPORTED_CONTINUATION", "edges": []},
-            charged_steps,
-            [],
-        )
+    from cfact.generation.stage_compiler import source_suffix
+    suffix_status, cut = source_suffix(source, next_action)
+    progress = (cut or 0) / max(1, len(source.source_poses) - 1)
+    source_prior = source
+    if suffix_status == "AVAILABLE":
+        try:
+            source = _slice_source(source, cut)
+        except ValueError:
+            suffix_status = "INCOMPATIBLE"
+    if suffix_status != "AVAILABLE" and not cfg.get("method", {}).get("recursive_goals_v2"):
+        atomic_json(node / "candidate_pool.json", {"selected_ids": [],
+            "reason": "SOURCE_SUFFIX_" + suffix_status, "frozen_before_execution": True})
+        return {"node_id": node_id, "status": "NO_SUPPORTED_CONTINUATION", "edges": []}, charged_steps, []
     suffix_donors = []
     for donor in donors:
         try:
@@ -1238,7 +1289,7 @@ def _expand_child_pool(
             else inherited_context["task_goal"]
         ),
         joint_binding=inherited_context["joint_binding"],
-        stage="placement_approach" if contract.holding_object else "articulation_followthrough",
+        stage=inherited_context["stage"] if cfg.get("method", {}).get("recursive_goals_v2") else ("placement_approach" if contract.holding_object else "articulation_followthrough"),
         source_cursor=cursor,
     )
     child_context_record = json.loads((ancestor_edge / "child_context.json").read_text())
@@ -1251,6 +1302,7 @@ def _expand_child_pool(
         }
     )
     atomic_json(node / "context.json", node_context)
+    goals = _propose_goals(args, cfg, operation_context, node)
     raw, donor_audit = build_object_effect_options(
         g0_amplitude_m=_g0_amplitude(cfg,env,args,source,info,contract,operation_context.joint_binding,operation_context.task_goal,node),
         root=source,
@@ -1315,7 +1367,11 @@ def _expand_child_pool(
             )
         except (AttributeError, KeyError, ValueError):
             pass
-    selected, rejected = select_option_pool(
+    if cfg.get("method", {}).get("recursive_goals_v2"):
+        raw = _compile_goals(args, cfg, env, interface, operation_context, goals,
+            source if suffix_status == "AVAILABLE" else source_prior, suffix_status, node,
+            raw if suffix_status == "AVAILABLE" else [])
+    selected, rejected = _select_pool(cfg,
         raw,
         max_executed=cfg["candidate_pool"]["max_executed_options_per_node"],
         max_g0=cfg["candidate_pool"]["max_selected_g0"],
@@ -1482,6 +1538,7 @@ def _expand_child_pool(
                 trace,
                 detector,
                 max_steps=option.local_timeout,
+                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
                 frame_callback=quad.append,
                 contact_guard=_measured_arm_guard(env, cfg),
                 source_action_indices=connection["source_action_index"][1:],
@@ -1898,6 +1955,7 @@ def _expand_release_pool(
                 trace,
                 detector,
                 max_steps=option.local_timeout,
+                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
                 frame_callback=quad.append,
                 contact_guard=_measured_arm_guard(env, cfg),
                 source_action_indices=connection["source_action_index"][1:],
@@ -2611,14 +2669,15 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
             {
                 "operation_context": operation_context.record(),
                 "snapshot": "parent_snapshot.json",
-                "history_refs": ledger(env).references(segment="source_prefix", last=3),
-                "history_complete": len(ledger(env).references(segment="source_prefix", last=3))
+                "history_refs": ledger(env).references(segment="source_prefix"),
+                "history_complete": len(ledger(env).references(segment="source_prefix"))
                 >= 3,
                 "source_replay_history": str(ledger(env).directory),
                 "source_video_identity": original_status,
             }
         )
         atomic_json(node / "context.json", root_context)
+        goals = _propose_goals(args, cfg, operation_context, node)
         options, donor_audit = build_object_effect_options(
             g0_amplitude_m=_g0_amplitude(cfg,env,args,segment,parent,contract,joint_binding,task_goal,node),
             root=segment,
@@ -2687,7 +2746,10 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                 dataclasses.replace(option, rejection_reason="operation_binding:" + binding_error)
                 for option in options
             ]
-        selected, rejected = select_option_pool(
+        if cfg.get("method", {}).get("recursive_goals_v2"):
+            options = _compile_goals(args, cfg, env, interface, operation_context, goals,
+                segment, "AVAILABLE", node, options)
+        selected, rejected = _select_pool(cfg,
             options,
             max_executed=cfg["candidate_pool"]["max_executed_options_per_node"],
             max_g0=cfg["candidate_pool"]["max_selected_g0"],
@@ -2863,6 +2925,7 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                     trace,
                     detector,
                     max_steps=option.local_timeout,
+                minimum_event_steps=cfg.get("method", {}).get("minimum_event_steps", 0) if option.candidate_edit.get("effect_goal") else 0,
                     frame_callback=quad.append,
                     contact_guard=_measured_arm_guard(env, cfg),
                     source_action_indices=connection["source_action_index"][1:],
@@ -3003,92 +3066,129 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         )
         child_frontier = []
         third_frontier = []
-        if (
-            cfg["tree_limits"]["maximum_decision_depth"] >= 2
-            and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
-            > 1
-        ):
-            # Round-robin by selected option order; no terminal outcome is used
-            # to select which genuine event children receive another pool.
-            eligible = [
-                (option, edge)
-                for option in selected
-                for edge in edges
-                if option.candidate_id == edge["candidate_id"]
-                and edge.get("local_event") == "local_event_reached"
-                and not json.loads((run / edge["edge_path"] / "local_result.json").read_text())[
-                    "official_success_at_child"
+        frontier_decisions = []
+        if cfg.get("method", {}).get("recursive_goals_v2"):
+            from cfact.generation.frontier import FrontierChild, expand_frontier
+            from cfact.generation.event_anchor import EventAnchor, OperationStage
+            from cfact.generation.task_adapters import TaskEffectAdapter
+            adapter = TaskEffectAdapter(task, joint_binding)
+            def children_for(options, edges, depth):
+                children = []
+                for option in options:
+                    for edge in edges:
+                        if edge.get("status") != "PHYSICS_COMPLETE" or edge["candidate_id"] != option.candidate_id:
+                            continue
+                        rec = json.loads((run / edge["edge_path"] / "event_anchor.json").read_text())
+                        rec.pop("label_origin", None)
+                        rec["stage"] = OperationStage(rec["stage"])
+                        children.append(FrontierChild(option, edge, EventAnchor(**rec), depth))
+                return children
+            def expand(child):
+                nonlocal charged_steps
+                pool, charged_steps, options = _expand_child_pool(
+                    args=args, cfg=cfg, env=env, interface=interface, root=root,
+                    root_segment=segment, donors=donors, ancestor_option=child.option,
+                    ancestor_edge=run / child.edge["edge_path"], root_dir=root_dir,
+                    root_key=root_key, object_ref=object_ref, fixture_ref=fixture_ref,
+                    contract=contract, joint_spec=joint_spec, charged_steps=charged_steps,
+                    source_transform=pose_utils.transform_source_data_segment_using_object_pose)
+                return pool, children_for(options, pool["edges"], child.decision_depth+1)
+            child_pools, frontier_decisions = expand_frontier(children_for(selected, edges, 1),
+                adapter=adapter, expand=expand,
+                maximum_depth=cfg["tree_limits"]["maximum_decision_depth"],
+                maximum_pools=cfg["tree_limits"]["candidate_pools_per_root"]-1,
+                parents_per_level=cfg["tree_limits"]["second_depth_pools"],
+                remaining_budget=lambda: cfg["execution"]["max_env_steps_per_root"]-ledger(env).control_steps,
+                minimum_pool_steps=2*cfg["execution"]["local_timeout_steps"])
+            third_pools = []
+            atomic_json(root_dir / "frontier_decisions.json", frontier_decisions)
+        else:
+            if (
+                cfg["tree_limits"]["maximum_decision_depth"] >= 2
+                and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
+                > 1
+            ):
+                # Round-robin by selected option order; no terminal outcome is used
+                # to select which genuine event children receive another pool.
+                eligible = [
+                    (option, edge)
+                    for option in selected
+                    for edge in edges
+                    if option.candidate_id == edge["candidate_id"]
+                    and edge.get("local_event") == "local_event_reached"
+                    and not json.loads((run / edge["edge_path"] / "local_result.json").read_text())[
+                        "official_success_at_child"
+                    ]
                 ]
-            ]
-            child_frontier = select_child_frontier(
-                eligible,
-                family_priority=frontier_priority,
-                maximum=min(
-                    cfg["tree_limits"]["second_depth_pools"],
-                    int(cfg.get("engineering_profile", {}).get("max_children_per_parent", 100000)),
-                ),
-            )
-            for ancestor_option, edge in child_frontier:
-                child_pool, charged_steps, child_options = _expand_child_pool(
-                    args=args,
-                    cfg=cfg,
-                    env=env,
-                    interface=interface,
-                    root=root,
-                    root_segment=segment,
-                    donors=donors,
-                    ancestor_option=ancestor_option,
-                    ancestor_edge=run / edge["edge_path"],
-                    root_dir=root_dir,
-                    root_key=root_key,
-                    object_ref=object_ref,
-                    fixture_ref=fixture_ref,
-                    contract=contract,
-                    joint_spec=joint_spec,
-                    charged_steps=charged_steps,
-                    source_transform=pose_utils.transform_source_data_segment_using_object_pose,
+                child_frontier = select_child_frontier(
+                    eligible,
+                    family_priority=frontier_priority,
+                    maximum=min(
+                        cfg["tree_limits"]["second_depth_pools"],
+                        int(cfg.get("engineering_profile", {}).get("max_children_per_parent", 100000)),
+                    ),
                 )
-                child_pools.append(child_pool)
-                if contract.holding_object:
-                    third_candidates.extend(
-                        (option, candidate_edge)
-                        for option in child_options
-                        for candidate_edge in child_pool["edges"]
-                        if option.candidate_id == candidate_edge["candidate_id"]
-                        and candidate_edge.get("local_event") == "local_event_reached"
-                        and not json.loads(
-                            (run / candidate_edge["edge_path"] / "local_result.json").read_text()
-                        )["official_success_at_child"]
+                for ancestor_option, edge in child_frontier:
+                    child_pool, charged_steps, child_options = _expand_child_pool(
+                        args=args,
+                        cfg=cfg,
+                        env=env,
+                        interface=interface,
+                        root=root,
+                        root_segment=segment,
+                        donors=donors,
+                        ancestor_option=ancestor_option,
+                        ancestor_edge=run / edge["edge_path"],
+                        root_dir=root_dir,
+                        root_key=root_key,
+                        object_ref=object_ref,
+                        fixture_ref=fixture_ref,
+                        contract=contract,
+                        joint_spec=joint_spec,
+                        charged_steps=charged_steps,
+                        source_transform=pose_utils.transform_source_data_segment_using_object_pose,
                     )
-        third_pools = []
-        if (
-            cfg["tree_limits"]["maximum_decision_depth"] >= 3
-            and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
-            > 2
-        ):
-            third_frontier = select_child_frontier(
-                third_candidates,
-                family_priority=frontier_priority,
-                maximum=cfg["tree_limits"]["third_depth_pools"],
-            )
-            for ancestor_option, edge in third_frontier:
-                third_pool, charged_steps = _expand_release_pool(
-                    args=args,
-                    cfg=cfg,
-                    env=env,
-                    interface=interface,
-                    root=root,
-                    ancestor_option=ancestor_option,
-                    ancestor_edge=run / edge["edge_path"],
-                    root_dir=root_dir,
-                    root_key=root_key,
-                    object_ref=object_ref,
-                    fixture_ref=fixture_ref,
-                    contract=contract,
-                    joint_spec=joint_spec,
-                    charged_steps=charged_steps,
+                    child_pools.append(child_pool)
+                    if contract.holding_object:
+                        third_candidates.extend(
+                            (option, candidate_edge)
+                            for option in child_options
+                            for candidate_edge in child_pool["edges"]
+                            if option.candidate_id == candidate_edge["candidate_id"]
+                            and candidate_edge.get("local_event") == "local_event_reached"
+                            and not json.loads(
+                                (run / candidate_edge["edge_path"] / "local_result.json").read_text()
+                            )["official_success_at_child"]
+                        )
+            third_pools = []
+            if (
+                cfg["tree_limits"]["maximum_decision_depth"] >= 3
+                and int(cfg.get("engineering_profile", {}).get("max_decision_parents_per_root", 100000))
+                > 2
+            ):
+                third_frontier = select_child_frontier(
+                    third_candidates,
+                    family_priority=frontier_priority,
+                    maximum=cfg["tree_limits"]["third_depth_pools"],
                 )
-                third_pools.append(third_pool)
+                for ancestor_option, edge in third_frontier:
+                    third_pool, charged_steps = _expand_release_pool(
+                        args=args,
+                        cfg=cfg,
+                        env=env,
+                        interface=interface,
+                        root=root,
+                        ancestor_option=ancestor_option,
+                        ancestor_edge=run / edge["edge_path"],
+                        root_dir=root_dir,
+                        root_key=root_key,
+                        object_ref=object_ref,
+                        fixture_ref=fixture_ref,
+                        contract=contract,
+                        joint_spec=joint_spec,
+                        charged_steps=charged_steps,
+                    )
+                    third_pools.append(third_pool)
         all_edges = (
             edges
             + [edge for pool in child_pools for edge in pool["edges"]]
@@ -3119,7 +3219,8 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
                 "third_depth_parent_edges": [e["edge_path"] for _, e in third_frontier],
                 "ranking_uses_terminal_outcomes": False,
             },
-            "observed_max_decision_depth": (
+            "generic_frontier_decisions": frontier_decisions,
+            "observed_max_decision_depth": max([1]+[p.get("decision_depth",2) for p in child_pools if p["edges"]]) if cfg.get("method", {}).get("recursive_goals_v2") else (
                 3
                 if any(x["edges"] for x in third_pools)
                 else (2 if any(x["edges"] for x in child_pools) else 1)

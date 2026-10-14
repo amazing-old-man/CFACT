@@ -602,6 +602,7 @@ def execute_option(
     detector: LocalEventDetector,
     *,
     max_steps: int,
+    minimum_event_steps: int = 0,
     frame_callback: Any = None,
     contact_guard: MeasuredArmContactGuard | None = None,
     source_action_indices: list[int] | None = None,
@@ -658,7 +659,7 @@ def execute_option(
             if trace.task_success[-1]:
                 reason = "official_task_success"
                 break
-            if reached:
+            if reached and waypoint_count >= minimum_event_steps:
                 reason = "local_event_reached"
                 break
             if not event_values["contact_relation_valid"]:

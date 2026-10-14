@@ -24,7 +24,7 @@ def validate_config(config: dict) -> None:
     # Coverage selection always considers one candidate per nonempty family.
     # Setting max_selected_g0=0 is not an implemented way to disable G0.
     depth = integer("tree_limits", "maximum_decision_depth", 1)
-    if depth > 3:
+    if depth > 3 and not config.get("method", {}).get("recursive_goals_v2"):
         raise ValueError("maximum_decision_depth above 3 is not implemented")
     for key in ("second_depth_pools", "third_depth_pools"):
         integer("tree_limits", key, 0)
