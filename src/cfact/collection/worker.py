@@ -391,10 +391,20 @@ def _compile_goals(args, cfg, env, interface, context, goals, source, status, no
             return []
     generated=[]; records=[]
     grip = float(source.gripper_actions[0,0]) if source is not None else 1.
+    parent_record = json.loads((node / "context.json").read_text())
+    parent_edge = parent_record.get("parent_edge")
+    if parent_edge:
+        with np.load(args.run.resolve() / parent_edge / "execution.npz", allow_pickle=False) as trace:
+            commands = trace["commanded_actions"]
+            if len(commands):grip = float(commands[-1,commands.shape[1]-6])
+    closing_prior = None
+    if context.joint_binding and grip < 0 and status == "AVAILABLE":
+        timeline = np.asarray(source.gripper_actions).reshape(-1)
+        if np.any(timeline > 0):closing_prior = timeline
     for goal in goals:
         try:
             option = compile_goal(goal, context, geometry=geometry, source=source,
-                source_status=status, gripper=grip, contact_verified=contact,
+                source_status=status, gripper=grip, gripper_timeline=closing_prior, contact_verified=contact,
                 sim_time=float(env.env.sim.data.time))
             generated.append(option)
             records.append({"goal":goal.record(), "candidate_id":option.candidate_id, "status":"COMPILED"})
@@ -2320,6 +2330,13 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
     if len(completed_roots) > 1:
         raise ValueError("ambiguous_existing_root_results")
     if completed_roots:
+        if cfg.get("method", {}).get("recursive_goals_v2"):
+            from cfact.collection.snapshot import implementation_digest
+            identity = json.loads(completed_roots[0].with_name("root_manifest.json").read_text())
+            if identity.get("execution_code_sha256") != implementation_digest():
+                raise ValueError("completed_root_code_changed_create_a_new_run")
+            if identity.get("execution_config_sha256") != hashlib.sha256(args.config.read_bytes()).hexdigest():
+                raise ValueError("completed_root_config_changed_create_a_new_run")
         return json.loads(completed_roots[0].read_text())
     task = target_task(args.task)
     seed = stable_seed(cfg["run_seed"], args.task, args.root_id, "root_initialization")
@@ -2583,6 +2600,9 @@ def run_root(args: argparse.Namespace) -> dict[str, Any]:
         atomic_json(
             root_dir / "root_manifest.json",
             {
+                "execution_code_sha256": __import__("cfact.collection.snapshot", fromlist=["implementation_digest"]).implementation_digest(),
+                "execution_config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
+                "render_backend": os.environ.get("MUJOCO_GL"),
                 "root_id": root_key,
                 "task": args.task,
                 "split": args.split,

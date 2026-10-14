@@ -103,6 +103,11 @@ def verify_queue(root, queue):
             raise ValueError("FROZEN_"+key.upper()+"_CHANGED")
     for job in queue["jobs"]:
         contained_path(Path(job["run"]), root)
+    from cfact.sources.manifest import sha256_file
+    sources = read(queue["source_manifest"])
+    for row in sources["tasks"]:
+        if sha256_file(Path(row["prepared_path"])) != row["sha256"]:
+            raise ValueError("FROZEN_PREPARED_SOURCE_CHANGED")
     return freeze
 
 
@@ -114,6 +119,7 @@ def costs(root):
     return {"control_steps": sum(x.get("control_steps", 0) for x in receipts),
             "gpu_worker_seconds": sum(x.get("gpu_worker_seconds", 0.) for x in receipts),
             "cpu_worker_seconds": sum(x.get("cpu_worker_seconds", 0.) for x in receipts),
+            "queue_wait_seconds": sum(x.get("queue_wait_seconds", 0.) for x in receipts),
             "receipts": len(receipts)}
 
 
@@ -164,7 +170,7 @@ def run_queue(root, queue_path):
                     if picked and picked["uuid"] == first["uuid"]:device=picked;break
                 if not hard and queue.get("cpu_fallback_validated") and total["cpu_worker_seconds"]+1200 < budget["cpu_worker_hours"]*3600:
                     break
-                if time.monotonic()-wait_start >= 4*3600 or time.time() >= deadline:
+                if time.monotonic()-wait_start >= 4*3600 or total["queue_wait_seconds"]+time.monotonic()-wait_start >= 12*3600 or time.time() >= deadline:
                     state["status"]="RESOURCE_DEFERRED";break
                 state.update(active={**job,"status":"RESOURCE_DEFERRED","reasons":hard or ["GPU_ADMISSION"],"wait_seconds":time.monotonic()-wait_start},heartbeat_utc=utc())
                 atomic_json(state_path,state)
@@ -237,6 +243,14 @@ def run_queue(root, queue_path):
                 if gpu_lock:gpu_lock.release()
             elapsed=time.monotonic()-start
             results=list(run.glob("data/*/*/*/root_result.json"))
+            audits=[]
+            from cfact.collection.recursive_audit import audit_root
+            for p in results:
+                if (p.parent/"tree.json").exists():
+                    audited=audit_root(p,verify_rgb=False)
+                    atomic_json(root/"derived"/(job["job_id"]+"_integrity.json"),audited)
+                    audits.append({k:audited[k] for k in ["integrity","complete_edges","nonroot_parents","observed_depth"]})
+            if any(a["integrity"]!="PASS" for a in audits):reason="DATA_INTEGRITY_FAILURE"
             rec=dict(job_id=job["job_id"],task=job["task"],request_id=job["request_id"],run=str(run),
                      status=reason or ("COMPLETE" if child.returncode==0 else "TECHNICAL_ERROR"),
                      result_paths=[str(p) for p in results],exit_code=child.returncode,pid=child.pid,
@@ -244,9 +258,10 @@ def run_queue(root, queue_path):
                      cpu_worker_seconds=0. if device else elapsed,peak_rss_bytes=peak,peak_gpu_mib=peak_gpu,
                      control_steps=ledger_steps(run,job["task"],job["request_id"]),backend=backend,device=device,
                      code_sha256=freeze["code_sha256"],code_commit=freeze["sha"],finished_utc=utc(),
-                     queue_wait_seconds=start-wait_start,command=cmd)
+                     queue_wait_seconds=start-wait_start,command=cmd,audits=audits)
             atomic_json(receipt_path,rec);state["completed"].append(rec);state["active"]=None
             atomic_json(state_path,state)
+            if rec["status"]=="DATA_INTEGRITY_FAILURE":state["status"]="DATA_INTEGRITY_FAILURE";break
             if queue.get("halt_on_technical", True) and (rec["status"]=="TECHNICAL_ERROR" or any(
                     any(e.get("status")=="TECHNICAL_ERROR" for e in read(p).get("edges", [])) for p in results)):
                 state["status"]="NEEDS_TECHNICAL_FIX";break

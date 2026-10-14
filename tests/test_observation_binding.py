@@ -225,3 +225,17 @@ def test_rejected_copy_alias_preserves_original_pointers(alias, monkeypatch):
     assert interface.env is original_env
     assert env.env is original_env
     assert original_env.sim is original_sim
+
+def test_zero_argument_super_class_cell_can_rebind_to_shadow_without_live_capture():
+    from cfact.execution.observation import _shadow_interface_view
+    from types import SimpleNamespace
+    class Base:
+        def get_object_poses(self):return {'object':self.env.sim}
+        def get_robot_eef_pose(self):return self.env.sim
+    class Derived(Base):
+        def get_object_poses(self):return super().get_object_poses()
+    interface=Derived();interface.env=SimpleNamespace(sim='live')
+    shadow=SimpleNamespace(label='shadow')
+    view=_shadow_interface_view(interface,shadow)
+    assert view.get_object_poses()['object'] is shadow
+    assert interface.get_object_poses()['object']=='live'

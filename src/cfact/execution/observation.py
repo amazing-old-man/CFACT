@@ -129,6 +129,16 @@ def observe(env) -> Observation:
     return Observation(shadow, state, values, metadata)
 
 
+def _safe_descriptor(function):
+    # Python's zero-argument super() closes over __class__, not live simulator
+    # data. Other closures remain unsupported because rebinding cannot redirect
+    # an opaque captured environment, MjData or interface.
+    if not function.__closure__:
+        return True
+    return function.__code__.co_freevars == ("__class__",) and all(
+        isinstance(cell.cell_contents, type) for cell in function.__closure__)
+
+
 def _shadow_interface_view(interface, sim):
     """Rebind Python descriptors, rejecting opaque instance captures of live data.
 
@@ -148,7 +158,7 @@ def _shadow_interface_view(interface, sim):
         if not callable(value):
             continue
         if (not inspect.ismethod(value) or value.__self__ is not interface
-                or value.__func__.__closure__):
+                or not _safe_descriptor(value.__func__)):
             raise TypeError(f"observation_unsupported_binding:{name}")
         setattr(view, name, value.__func__.__get__(view, type(view)))
     required = ["get_object_poses", "get_robot_eef_pose"]
@@ -157,7 +167,7 @@ def _shadow_interface_view(interface, sim):
     for name in required:
         getter = getattr(view, name, None)
         if (not inspect.ismethod(getter) or getter.__self__ is not view
-                or getter.__func__.__closure__):
+                or not _safe_descriptor(getter.__func__)):
             raise TypeError(f"observation_unsupported_binding:{name}")
     return view
 

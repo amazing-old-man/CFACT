@@ -101,5 +101,7 @@ class CandidatePlan:
                 "complete_task_goal_constraint",
                 "candidate_edit",
                 "shared_discrete_event_mapping",
-            ],
+            ] if self.edit.get("kind") != "effect_goal_compilation" else [
+                "restored_current_parent", "propose_effect_goals", "compile_current_geometry",
+                "shared_discrete_event_mapping"],
         }

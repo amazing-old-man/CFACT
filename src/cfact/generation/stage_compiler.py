@@ -70,7 +70,7 @@ def propose_goals(task, context, *, horizon=40):
 
 
 def compile_goal(goal, context, *, geometry=None, source=None, source_status="EXHAUSTED",
-                 gripper=1., contact_verified=False, sim_time=0.):
+                 gripper=1., gripper_timeline=None, contact_verified=False, sim_time=0.):
     """Compile one goal, including a bounded source-independent contact primitive."""
     n = goal.horizon + 1
     obj = context.current_object_pose
@@ -133,6 +133,11 @@ def compile_goal(goal, context, *, geometry=None, source=None, source_status="EX
     else:
         raise ValueError("NO_SUPPORTED_CONTINUATION")
     grips = np.full((n, 1), float(gripper))
+    if gripper_timeline is not None:
+        timeline = np.asarray(gripper_timeline).reshape(-1)
+        # Preserve the prior's actual discrete closing event; do not interpolate it.
+        grips[:,0] = timeline[np.minimum(np.arange(n),len(timeline)-1)]
+        origin = "SOURCE_PRIOR_RECOMPILED"
     cid = _stable_option_id(context.parent_context_id, "G2", goal.mode, poses, binding, 90)
     return OptionProposal(
         candidate_id=cid, generator_revision="cfact-recursive-goals-v2",

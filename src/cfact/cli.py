@@ -11,6 +11,9 @@ import sys
 
 COMMANDS = {
     "recursive": ("cfact.collection.round_runner", "Run a frozen recursive generation queue with server resource checks"),
+    "audit-recursive": ("cfact.collection.recursive_audit", "Audit physical sibling effects and actual child ancestry"),
+    "calibrate-recursive": ("cfact.collection.recursive_calibration", "Execute actual same-parent A/B/A noise calibration"),
+    "export-recursive": ("cfact.export.recursive", "Export measured recursive trees and read all official LeRobot rows"),
     "download": ("cfact.sources.download", "Download or verify a fixed official Source archive"),
     "validate-source": ("cfact.sources.validation", "Validate authoritative replay fields and identity"),
     "manifest": ("cfact.collection.manifest_runner", "Prepare and run explicit resumable root jobs"),

@@ -55,3 +55,13 @@ def test_compiled_joint_goal_matches_existing_measured_outcome_contract():
     result=_goal_realization(option,trace,fixed,1)
     assert result['valid'] and result['target']==pytest.approx(.16)
     assert result['local_end_error']==pytest.approx(.02)
+
+def test_source_prior_closing_event_is_preserved_in_recompiled_goal():
+    ctx=context();goal=propose_goals(target_task('OpenDrawer'),ctx)[0]
+    timeline=np.r_[np.full(9,-1.),np.ones(30)]
+    option=compile_goal(goal,ctx,geometry=geom(),contact_verified=True,
+        gripper=-1.,gripper_timeline=timeline,source_status='AVAILABLE')
+    assert np.all(option.gripper_actions[:9,0]==-1)
+    assert np.all(option.gripper_actions[9:,0]==1)
+    assert option.motion_template=='SOURCE_PRIOR_RECOMPILED'
+    assert option.candidate_edit['continuation_origin']=='SOURCE_PRIOR_RECOMPILED'
